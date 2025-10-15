@@ -46,7 +46,7 @@ const CompleteSentence: React.FC = () => {
         return 'bg-slate-800/80 text-white border-purple-400/30 hover:bg-slate-700/80';
     };
 
-    const topicOptions: (GrammaticalConcept | 'الكل')[] = ['الكل', 'المفعول المطلق', 'المفعول لأجله', 'الحال', 'الفعل اللازم', 'الفعل المتعدي'];
+    const topicOptions: (GrammaticalConcept | 'الكل')[] = ['الكل', 'المفعول المطلق', 'المفعول لأجله', 'الحال', 'الفعل المجرد والمزيد', 'الفعل اللازم', 'الفعل المتعدي'];
 
     return (
     <div className="bg-slate-900/80 glowing-border border rounded-2xl shadow-2xl shadow-purple-500/10 animation-pop-in p-6 md:p-8 backdrop-blur-sm">

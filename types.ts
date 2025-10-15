@@ -6,10 +6,11 @@ export interface Example {
 export interface GrammarTopic {
   title: string;
   description: string[]; // كل عنصر يمثل فقرة لتنظيم الشرح
+  summary: string[]; // ملخص سريع لأهم النقاط
   examples: Example[];
 }
 
-export type GrammaticalConcept = 'المفعول المطلق' | 'المفعول لأجله' | 'الحال' | 'الفعل اللازم والمتعدي' | 'الفعل اللازم' | 'الفعل المتعدي';
+export type GrammaticalConcept = 'المفعول المطلق' | 'المفعول لأجله' | 'الحال' | 'الفعل المجرد والمزيد' | 'الفعل اللازم والمتعدي' | 'الفعل اللازم' | 'الفعل المتعدي';
 
 export interface QuizQuestion {
   question: string;

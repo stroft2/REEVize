@@ -17,7 +17,7 @@ const App: React.FC = () => {
   // Quiz State
   const [selectedQuizSet, setSelectedQuizSet] = useState<QuizSet | null>(null);
   const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[] | null>(null);
-
+  
   const [pillStyle, setPillStyle] = useState({});
   const buttonRefs = {
     lessons: useRef<HTMLButtonElement>(null),
@@ -63,11 +63,6 @@ const App: React.FC = () => {
     if (!selectedQuizSet) return;
     const shuffled = [...selectedQuizSet.questions].sort(() => 0.5 - Math.random());
     setQuizQuestions(shuffled.slice(0, questionCount));
-  }
-
-  const handleBackToQuizSelection = () => {
-    setQuizQuestions(null);
-    // Keep selectedQuizSet so user can choose a different length
   }
 
   const selectedTopic = GRAMMAR_TOPICS[selectedTopicIndex];
@@ -165,7 +160,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-transparent text-gray-200">
       <ParticleBackground />
-      <header className="bg-slate-950/50 backdrop-blur-sm p-5 shadow-lg sticky top-0 z-20 border-b border-purple-400/20">
+      <header className="bg-slate-950/50 backdrop-blur-sm p-5 shadow-lg sticky top-0 z-20 border-b border-purple-400/30">
         <div className="container mx-auto max-w-6xl flex justify-center items-center">
           <div className="text-center">
             <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400 tracking-wide">
@@ -195,6 +190,7 @@ const App: React.FC = () => {
       <footer className="text-center p-6 mt-10">
         <p className="text-slate-400">صنع بحب في مصر ❤️ <span className="font-bold text-lg text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-fuchsia-400">بيتر جرجس</span></p>
       </footer>
+      
     </div>
   );
 };
