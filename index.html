@@ -9,13 +9,43 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
+      :root {
+        --c-brand: #a855f7; /* purple-500 */
+        --c-brand-light: #c084fc; /* purple-400 */
+        --c-accent: #d946ef; /* fuchsia-500 */
+        --c-bg: #020617; /* slate-950 */
+        --c-bg-surface: #0f172a; /* slate-900 */
+        --c-bg-muted: #1e293b; /* slate-800 */
+        --c-border: #334155; /* slate-700 */
+        --c-text-primary: #f1f5f9; /* slate-100 */
+        --c-text-secondary: #94a3b8; /* slate-400 */
+      }
+      
+      :root.light-theme {
+        --c-brand: #8b5cf6; /* violet-500 */
+        --c-brand-light: #a78bfa; /* violet-400 */
+        --c-accent: #c026d3; /* fuchsia-600 */
+        --c-bg: #f8fafc; /* slate-50 */
+        --c-bg-surface: #ffffff; /* white */
+        --c-bg-muted: #f1f5f9; /* slate-100 */
+        --c-border: #cbd5e1; /* slate-300 */
+        --c-text-primary: #1e293b; /* slate-800 */
+        --c-text-secondary: #64748b; /* slate-500 */
+      }
+      
       body {
         font-family: 'Tajawal', sans-serif;
         font-weight: 500;
-        background-color: #020617; /* slate-950 */
-        color: #e2e8f0;
+        background-color: var(--c-bg);
+        color: var(--c-text-primary);
         overflow-x: hidden;
+        transition: background-color 0.3s ease, color 0.3s ease;
       }
+      body.light-theme {
+        background-image: radial-gradient(circle at 10% 20%, rgba(167, 139, 250, 0.1), transparent 40%), 
+                          radial-gradient(circle at 90% 80%, rgba(192, 38, 211, 0.1), transparent 40%);
+      }
+      
       h1, h2, h3 {
         font-family: 'Cairo', sans-serif;
         font-weight: 700;
@@ -40,6 +70,18 @@
         font-weight: 700;
         color: #f3e8ff; /* purple-100 */
       }
+      .light-theme code {
+        background-color: rgba(139, 92, 246, 0.1);
+        border: 1px solid rgba(167, 139, 250, 0.2);
+        color: #5b21b6; /* violet-800 */
+      }
+
+      .app-bg {
+        background-image: radial-gradient(circle at 10% 20%, rgba(126, 34, 206, 0.15), transparent 40%), 
+                          radial-gradient(circle at 90% 80%, rgba(217, 70, 239, 0.15), transparent 40%);
+      }
+
+      /* Animations */
       @keyframes fadeInUp {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
@@ -57,39 +99,59 @@
         100% { opacity: 1; transform: scale(1); }
       }
       @keyframes slideInUpStaggered {
-        from {
-          opacity: 0;
-          transform: translateY(40px) scale(0.95);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
+        from { opacity: 0; transform: translateY(40px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
       }
-      @keyframes glow {
-        0% { border-color: rgba(168, 85, 247, 0.4); box-shadow: 0 0 5px rgba(168, 85, 247, 0.2); }
-        50% { border-color: rgba(216, 180, 254, 0.6); box-shadow: 0 0 20px rgba(192, 132, 252, 0.4); }
-        100% { border-color: rgba(168, 85, 247, 0.4); box-shadow: 0 0 5px rgba(168, 85, 247, 0.2); }
+      .animation-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+      .animation-fade-in { animation: fadeIn 0.4s ease-in-out forwards; }
+      .animation-fade-out { animation: fadeOut 0.3s ease-in-out forwards; }
+      .animation-pop-in { animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      .animation-slide-in-staggered { animation: slideInUpStaggered 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+      /* Custom Progress Bar for Levels */
+      .progress-bar-bg {
+        background-color: var(--c-bg-muted);
+        border-radius: 9999px;
+        height: 10px;
+        width: 100%;
+        overflow: hidden;
+        border: 1px solid var(--c-border);
+      }
+      .progress-bar-fg {
+        height: 100%;
+        border-radius: 9999px;
+        background-image: linear-gradient(to left, var(--c-brand), var(--c-accent));
+        transition: width 0.5s ease-out;
+      }
+      
+      /* Gamified Button */
+      .btn-primary {
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        transition: color 0.4s ease-in-out;
+      }
+      .btn-primary:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-image: linear-gradient(to right, var(--c-brand), var(--c-accent));
+        z-index: -1;
+        transition: transform 0.4s ease-in-out;
+        transform: scaleX(0);
+        transform-origin: right;
+      }
+      .btn-primary:hover:before {
+        transform: scaleX(1);
+        transform-origin: left;
+      }
+      .btn-primary {
+        border: 2px solid var(--c-brand);
       }
 
-      .animation-fade-in-up {
-        animation: fadeInUp 0.5s ease-out forwards;
-      }
-      .animation-fade-in {
-        animation: fadeIn 0.4s ease-in-out forwards;
-      }
-      .animation-fade-out {
-        animation: fadeOut 0.3s ease-in-out forwards;
-      }
-      .animation-pop-in {
-        animation: popIn 0.4s ease-out forwards;
-      }
-      .animation-slide-in-staggered {
-        animation: slideInUpStaggered 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      }
-      .glowing-border {
-        animation: glow 4s linear infinite;
-      }
     </style>
   <script type="importmap">
 {
@@ -101,9 +163,10 @@
 }
 </script>
 </head>
-  <body>
+  <body class="app-bg">
     <canvas id="particle-canvas"></canvas>
     <div id="root"></div>
+    <audio id="alarm-sound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
     <script type="module" src="index.tsx"></script>
   </body>
 </html>

@@ -1,9 +1,19 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { SIMPLE_EXAMPLES, GRAMMAR_TOPICS } from '../constants';
-import { SimpleExample } from '../types';
+import { SimpleExample, GrammaticalConcept } from '../types';
 
-const ExampleGenerator: React.FC = () => {
-  const [filter, setFilter] = useState('الكل');
+interface ExampleGeneratorProps {
+    addXP: (amount: number) => void;
+}
+
+interface QuickQuizData {
+    question: string;
+    options: string[];
+    correctAnswer: string;
+}
+
+const ExampleGenerator: React.FC<ExampleGeneratorProps> = ({ addXP }) => {
+  const [filter, setFilter] = useState<GrammaticalConcept | 'الكل'>('الكل');
 
   const filteredExamples = useMemo(() => {
     if (filter === 'الكل') {
@@ -14,21 +24,93 @@ const ExampleGenerator: React.FC = () => {
 
   const [currentExample, setCurrentExample] = useState<SimpleExample>(() => filteredExamples[Math.floor(Math.random() * filteredExamples.length)]);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [quickQuiz, setQuickQuiz] = useState<QuickQuizData | null>(null);
+  const [quizResult, setQuizResult] = useState<'correct' | 'incorrect' | null>(null);
+  const [selectedQuizAnswer, setSelectedQuizAnswer] = useState<string | null>(null);
 
-  const generateNewExample = () => {
+  const generateQuizForExample = useCallback((example: SimpleExample): QuickQuizData | null => {
+    switch (example.topicTitle) {
+      case 'المفعول المطلق':
+        return {
+          question: 'ما هو الغرض من المفعول المطلق في هذه الجملة؟',
+          options: ['تأكيد الفعل', 'بيان النوع', 'بيان العدد'],
+          correctAnswer: 'تأكيد الفعل', // Simple examples are all for confirmation
+        };
+      case 'المفعول لأجله':
+        return {
+          question: 'ما السؤال الذي تجيب عليه كلمة `' + example.sentence.split(' ')[1] + '`?',
+          options: ['كيف؟', 'متى؟', 'لماذا؟'],
+          correctAnswer: 'لماذا?',
+        };
+      case 'الحال':
+        return {
+          question: 'ما نوع الحال في المثال السابق؟',
+          options: ['مفردة', 'جملة', 'شبه جملة'],
+          correctAnswer: example.explanation.includes('شبه جملة') ? 'شبه جملة' : 'مفردة',
+        };
+      case 'الفعل اللازم والمتعدي':
+        return {
+          question: 'هل الفعل في هذه الجملة لازم أم متعدٍ؟',
+          options: ['لازم', 'متعدٍ'],
+          correctAnswer: example.explanation.includes('لازم') ? 'لازم' : 'متعدٍ',
+        };
+       case 'الفعل المجرد والمزيد':
+         return {
+          question: 'هل الفعل في هذه الجملة مجرد أم مزيد؟',
+          options: ['مجرد', 'مزيد'],
+          correctAnswer: example.explanation.includes('مجرد') ? 'مجرد' : 'مزيد',
+         }
+      default:
+        return null;
+    }
+  }, []);
+
+  const generateNewExample = useCallback(() => {
     if (isAnimating) return;
     setIsAnimating(true);
+    setQuizResult(null);
+    setSelectedQuizAnswer(null);
     setTimeout(() => {
       let newExample;
       do {
         newExample = filteredExamples[Math.floor(Math.random() * filteredExamples.length)];
       } while (newExample?.sentence === currentExample.sentence && filteredExamples.length > 1);
       setCurrentExample(newExample);
-      setTimeout(() => setIsAnimating(false), 50);
+      setQuickQuiz(generateQuizForExample(newExample));
+      setTimeout(() => {
+          setIsAnimating(false);
+      }, 50);
     }, 300);
-  };
+  }, [isAnimating, filteredExamples, currentExample, generateQuizForExample]);
   
-  const topicOptions = ['الكل', ...GRAMMAR_TOPICS.map(topic => topic.title)];
+  useEffect(() => {
+    setQuickQuiz(generateQuizForExample(currentExample));
+  }, [currentExample, generateQuizForExample]);
+  
+  const handleQuizAnswer = (answer: string) => {
+      if(quizResult || !quickQuiz) return;
+      
+      setSelectedQuizAnswer(answer);
+      const isCorrect = answer === quickQuiz.correctAnswer;
+      
+      if(isCorrect) {
+          setQuizResult('correct');
+          addXP(10);
+      } else {
+          setQuizResult('incorrect');
+      }
+  }
+
+  const getButtonClass = (option: string) => {
+    if (selectedQuizAnswer && quickQuiz) {
+      if (option === quickQuiz.correctAnswer) return 'bg-green-500/80';
+      if (option === selectedQuizAnswer) return 'bg-red-500/80';
+      return 'bg-slate-800/60 opacity-60';
+    }
+    return 'bg-slate-700/80 hover:bg-slate-600/80';
+  };
+
+  const topicOptions: (GrammaticalConcept | 'الكل')[] = ['الكل', ...GRAMMAR_TOPICS.map(topic => topic.title as GrammaticalConcept)];
 
   return (
     <div className="bg-slate-900/80 glowing-border border rounded-2xl shadow-2xl shadow-purple-500/10 animation-pop-in p-6 md:p-8 backdrop-blur-sm">
@@ -36,7 +118,7 @@ const ExampleGenerator: React.FC = () => {
         مولّد الأمثلة السريعة
       </h2>
       <p className="text-lg text-gray-300 mb-6">
-        اختر درسًا محددًا أو "الكل"، ثم اضغط على الزر للحصول على مثال نحوي عشوائي مع شرحه.
+        احصل على مثال نحوي، ثم أجب عن سؤال سريع لكسب 10 نقاط خبرة!
       </p>
 
       <div className="mb-6">
@@ -44,7 +126,7 @@ const ExampleGenerator: React.FC = () => {
         <select 
           id="topic-filter"
           value={filter}
-          onChange={(e) => setFilter(e.target.value)}
+          onChange={(e) => setFilter(e.target.value as GrammaticalConcept | 'الكل')}
           className="bg-slate-800 border border-purple-400/30 text-white text-md rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
         >
             {topicOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -61,6 +143,26 @@ const ExampleGenerator: React.FC = () => {
             </p>
         </div>
       </div>
+      
+       {quickQuiz && (
+        <div className="animation-fade-in-up my-6 bg-slate-800/60 p-5 rounded-lg border border-purple-400/30">
+            <p className="font-bold text-lg text-center mb-4" dangerouslySetInnerHTML={{ __html: quickQuiz.question }}></p>
+            <div className="flex flex-col sm:flex-row justify-center gap-3">
+                {quickQuiz.options.map(opt => (
+                     <button 
+                        key={opt}
+                        onClick={() => handleQuizAnswer(opt)}
+                        disabled={!!quizResult}
+                        className={`w-full text-center p-3 rounded-lg font-semibold transition-all duration-200 ${getButtonClass(opt)}`}
+                    >
+                        {opt}
+                    </button>
+                ))}
+            </div>
+            {quizResult === 'correct' && <p className="text-center mt-3 text-green-400 font-bold">إجابة صحيحة! +10 XP ✨</p>}
+            {quizResult === 'incorrect' && <p className="text-center mt-3 text-red-400 font-bold">إجابة خاطئة! الصحيح هو: {quickQuiz.correctAnswer}</p>}
+        </div>
+       )}
 
       <button
         onClick={generateNewExample}

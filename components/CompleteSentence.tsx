@@ -2,15 +2,17 @@ import React, { useState, useMemo } from 'react';
 import { FILL_IN_THE_BLANK_EXERCISES } from '../constants';
 import type { FillInTheBlankExercise, GrammaticalConcept } from '../types';
 
-const CompleteSentence: React.FC = () => {
+interface CompleteSentenceProps {
+    addXP: (amount: number) => void;
+}
+
+const CompleteSentence: React.FC<CompleteSentenceProps> = ({ addXP }) => {
     const [filter, setFilter] = useState<GrammaticalConcept | 'الكل'>('الكل');
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
     const filteredExercises = useMemo(() => {
-        if (filter === 'الكل') {
-            return FILL_IN_THE_BLANK_EXERCISES;
-        }
+        if (filter === 'الكل') return FILL_IN_THE_BLANK_EXERCISES;
         return FILL_IN_THE_BLANK_EXERCISES.filter(ex => ex.requiredType === filter);
     }, [filter]);
 
@@ -31,22 +33,21 @@ const CompleteSentence: React.FC = () => {
         setSelectedAnswer(answer);
         const correct = answer === currentExercise.correctAnswer;
         setIsCorrect(correct);
+        if (correct) {
+            addXP(5);
+        }
     }
     
     const getButtonClass = (option: string) => {
         if (selectedAnswer) {
-          if (option === currentExercise.correctAnswer) {
-            return 'bg-green-500/80 border-green-500/80 text-white';
-          }
-          if (option === selectedAnswer) {
-            return 'bg-red-500/80 border-red-500/80 text-white line-through';
-          }
+          if (option === currentExercise.correctAnswer) return 'bg-green-500/80 border-green-500/80 text-white';
+          if (option === selectedAnswer) return 'bg-red-500/80 border-red-500/80 text-white line-through';
           return 'bg-slate-800/60 border-slate-700/80 opacity-50';
         }
         return 'bg-slate-800/80 text-white border-purple-400/30 hover:bg-slate-700/80';
     };
 
-    const topicOptions: (GrammaticalConcept | 'الكل')[] = ['الكل', 'المفعول المطلق', 'المفعول لأجله', 'الحال', 'الفعل المجرد والمزيد', 'الفعل اللازم', 'الفعل المتعدي'];
+    const topicOptions: (GrammaticalConcept | 'الكل')[] = ['الكل', 'المفعول المطلق', 'المفعول لأجله', 'الحال', 'الفعل اللازم', 'الفعل المتعدي'];
 
     return (
     <div className="bg-slate-900/80 glowing-border border rounded-2xl shadow-2xl shadow-purple-500/10 animation-pop-in p-6 md:p-8 backdrop-blur-sm">
@@ -54,7 +55,7 @@ const CompleteSentence: React.FC = () => {
         أكمل الجملة
       </h2>
       <p className="text-lg text-gray-300 mb-6">
-        اختر الكلمة المناسبة لإكمال الفراغ حسب المطلوب.
+        اختر الكلمة المناسبة لإكمال الفراغ. كل إجابة صحيحة تمنحك 5 نقاط خبرة!
       </p>
 
       <div className="mb-6">
@@ -63,8 +64,9 @@ const CompleteSentence: React.FC = () => {
           id="topic-filter-completer"
           value={filter}
           onChange={(e) => {
-              setFilter(e.target.value as GrammaticalConcept | 'الكل');
-              const newFiltered = e.target.value === 'الكل' ? FILL_IN_THE_BLANK_EXERCISES : FILL_IN_THE_BLANK_EXERCISES.filter(ex => ex.requiredType === e.target.value);
+              const newFilter = e.target.value as GrammaticalConcept | 'الكل';
+              setFilter(newFilter);
+              const newFiltered = newFilter === 'الكل' ? FILL_IN_THE_BLANK_EXERCISES : FILL_IN_THE_BLANK_EXERCISES.filter(ex => ex.requiredType === newFilter);
               setCurrentExercise(newFiltered[Math.floor(Math.random() * newFiltered.length)]);
               setSelectedAnswer(null);
               setIsCorrect(null);
@@ -100,7 +102,7 @@ const CompleteSentence: React.FC = () => {
         {selectedAnswer && (
             <div className={`p-4 rounded-lg animation-fade-in-up border ${isCorrect ? 'bg-green-900/30 border-green-500/30' : 'bg-red-900/30 border-red-500/30'}`}>
                 <p className={`font-bold text-xl mb-1 ${isCorrect ? 'text-green-400' : 'text-red-400' }`}>
-                {isCorrect ? 'إجابة صحيحة!' : 'إجابة خاطئة.'}
+                {isCorrect ? 'إجابة صحيحة! +5 XP ✨' : 'إجابة خاطئة.'}
                 </p>
                 <p className="text-gray-300">
                     الإجابة الصحيحة هي: <code>{currentExercise.correctAnswer}</code>
