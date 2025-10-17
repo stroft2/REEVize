@@ -115,6 +115,7 @@ const GrammarSection: React.FC<GrammarSectionProps> = ({ topic, onBack, complete
   const [selectedLevelIndex, setSelectedLevelIndex] = useState(completedLevels < topic.levels.length ? completedLevels : 0);
   const [quizState, setQuizState] = useState<QuizState>('idle');
   const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
+  const [isTopicMastered, setIsTopicMastered] = useState(false);
 
   const currentLevel = topic.levels[selectedLevelIndex];
   const progressPercentage = (completedLevels / topic.levels.length) * 100;
@@ -145,6 +146,8 @@ const GrammarSection: React.FC<GrammarSectionProps> = ({ topic, onBack, complete
           onCompleteLevel(topic.id, currentLevel.id);
           if(selectedLevelIndex + 1 < topic.levels.length) {
              setSelectedLevelIndex(prev => prev + 1);
+          } else {
+             setIsTopicMastered(true);
           }
       }
   };
@@ -156,8 +159,8 @@ const GrammarSection: React.FC<GrammarSectionProps> = ({ topic, onBack, complete
         if(selectedLevelIndex + 1 < topic.levels.length) {
             setSelectedLevelIndex(prev => prev + 1);
         } else {
-            // If it's the last level, stay but show as completed
-            // The state change from onCompleteLevel will handle the UI update
+            // It's the last level
+            setIsTopicMastered(true);
         }
         setQuizState('idle');
       }, 1500);
@@ -172,16 +175,36 @@ const GrammarSection: React.FC<GrammarSectionProps> = ({ topic, onBack, complete
 
   return (
     <div className="animation-pop-in">
+        {isTopicMastered && (
+            <div className="mastery-modal-backdrop">
+                <div className="mastery-modal-content">
+                    <div className="icon-container" dangerouslySetInnerHTML={{ __html: topic.icon }} />
+                    <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-300 mb-2">
+                        لقد أتقنت الدرس!
+                    </h2>
+                    <p className="text-slate-300 mb-6">
+                        أحسنت! لقد أكملت جميع مستويات درس "{topic.title}". أنت الآن خبير في هذا الموضوع!
+                    </p>
+                    <button 
+                        onClick={() => setIsTopicMastered(false)}
+                        className="px-8 py-3 font-bold text-white text-lg rounded-lg bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:shadow-[0_0_20px_rgba(217,70,239,0.5)] transition-all duration-300"
+                    >
+                        متابعة التعلم
+                    </button>
+                </div>
+            </div>
+        )}
+
         <button onClick={onBack} className="flex items-center gap-2 text-purple-400 hover:text-purple-300 font-bold mb-6 transition-colors">
-             <svg xmlns="http://www.w.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
             العودة إلى قائمة الدروس
         </button>
 
         <header className="mb-8">
             <div className="flex items-center mb-4">
-                <span className="text-5xl mr-4">{topic.icon}</span>
+                <div className="w-16 h-16 mr-4 text-purple-400 shrink-0" dangerouslySetInnerHTML={{ __html: topic.icon }} />
                 <div>
-                    <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">
+                    <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">
                         {topic.title}
                     </h1>
                     <p className="text-slate-400 text-lg">{topic.description}</p>
@@ -228,9 +251,9 @@ const GrammarSection: React.FC<GrammarSectionProps> = ({ topic, onBack, complete
         </aside>
 
         {/* Level Content */}
-        <main className="flex-1 bg-slate-900/70 border border-slate-700/50 rounded-2xl p-6 md:p-8 backdrop-blur-sm">
+        <main className="flex-1 level-content-area p-6 md:p-8">
             <div className="flex items-center mb-6 pb-4 border-b-2 border-slate-700/50">
-                <SectionIcon icon={<>📖</>} />
+                <SectionIcon icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>} />
                 <h2 className="text-3xl font-bold text-white">{currentLevel.title}</h2>
             </div>
             
@@ -243,7 +266,7 @@ const GrammarSection: React.FC<GrammarSectionProps> = ({ topic, onBack, complete
             {currentLevel.examples.length > 0 && (
             <div className="mb-8">
                 <div className="flex items-center mb-4">
-                    <SectionIcon icon={<>💡</>} />
+                    <SectionIcon icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 5.25a7.5 7.5 0 001.5-1.5m-1.5 1.5a7.5 7.5 0 01-1.5-1.5m3-3l3-3m0 0l-3-3m3 3H3" /></svg>} />
                     <h3 className="text-2xl font-semibold text-white">أمثلة توضيحية:</h3>
                 </div>
                 <ul className="space-y-4">

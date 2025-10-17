@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import GrammarSection from './components/GrammarSection';
 import ExampleGenerator from './components/ExampleGenerator';
 import Quiz from './components/Quiz';
@@ -8,7 +8,8 @@ import Settings from './components/Settings'; // Import the new Settings compone
 import { GRAMMAR_TOPICS, QUIZ_SETS, STORE_ITEMS, ACHIEVEMENTS } from './constants';
 import type { QuizSet, QuizQuestion, GrammarTopic, UserProgress, StoreItem, Achievement } from './types';
 
-type View = 'dashboard' | 'lesson' | 'generator' | 'completer' | 'quiz' | 'store' | 'settings';
+type View = 'dashboard' | 'lesson' | 'generator' | 'completer' | 'quiz' | 'store' | 'settings' | 'profile';
+type Sound = 'correct' | 'incorrect' | 'level-up' | 'purchase' | 'achievement';
 
 const ICONS: Record<Exclude<View, 'lesson'>, React.ReactNode> = {
     dashboard: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg>,
@@ -16,6 +17,7 @@ const ICONS: Record<Exclude<View, 'lesson'>, React.ReactNode> = {
     completer: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M15.5,5.5h-0.959c-0.23,0-0.45,0.082-0.627,0.24L10.5,9.586L8.087,7.172C7.91,7.016,7.69,6.934,7.459,6.934H6.5c-0.414,0-0.75,0.336-0.75,0.75v0.922c0,0.229,0.084,0.449,0.244,0.625l3.5,3.594c0.195,0.199,0.451,0.293,0.707,0.293s0.512-0.094,0.707-0.293l4.5-4.594C15.916,10.375,16,10.156,16,9.926V9c0-0.414-0.336-0.75-0.75-0.75h-0.922c-0.229,0-0.449-0.084-0.625-0.244L10.5,4.414l2.413,2.413C12.984,6.899,13.204,6.98,13.434,6.98H14.5c0.414,0,0.75-0.336,0.75-0.75V5.5C15.25,5.086,14.914,4.75,14.5,4.75z M4,4h8c0.552,0,1,0.448,1,1s-0.448,1-1,1H4C3.448,6,3,5.552,3,5S3.448,4,4,4z M13,15h-1v-2c0-0.552-0.448-1-1-1H5c-0.552,0-1,0.448-1,1v2H3c-0.552,0-1,0.448-1,1s0.448,1,1,1h10c0.552,0,1-0.448,1-1S13.552,15,13,15z" clipRule="evenodd"/></svg>,
     quiz: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M11.3,2.268a2,2,0,0,0-2.6,0l-6,5.25A2,2,0,0,0,2,9.25v6.5a2,2,0,0,0,2,2h12a2,2,0,0,0,2-2v-6.5a2,2,0,0,0-0.7-1.732l-6-5.25ZM10,4.5l6,5.25v6.5H4v-6.5L10,4.5ZM9,11v4h2v-4H9Zm0-3h2v2H9V8Z" clipRule="evenodd" /></svg>,
     store: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l.237-.237.954-3.818.008-.032.01-.041L9.4 3H15a1 1 0 000-2H3zM6 16a2 2 0 100 4 2 2 0 000-4zm9-2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>,
+    profile: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" /></svg>,
     settings: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01-.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" /></svg>,
 };
 
@@ -44,7 +46,7 @@ const Toast: React.FC<{ notification: Notification; onDismiss: () => void }> = (
 
   return (
     <div className="fixed bottom-5 right-5 bg-slate-800 border border-purple-500/50 rounded-xl shadow-2xl shadow-purple-500/20 p-4 flex items-center gap-4 z-50 animation-fade-in-up">
-      <div className="text-3xl">{notification.icon}</div>
+      <div className="w-10 h-10 text-purple-400" dangerouslySetInnerHTML={{ __html: notification.icon }} />
       <div>
         <p className="font-bold text-white">تهانينا!</p>
         <p className="text-slate-300">{notification.message}</p>
@@ -60,6 +62,7 @@ const App: React.FC = () => {
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [isHeaderExpanded, setIsHeaderExpanded] = useState(false);
   
   // Gamification State
   const [progress, setProgress] = useState<UserProgress>({
@@ -70,6 +73,33 @@ const App: React.FC = () => {
      achievements: [], 
      lastLoginDate: '' 
     });
+  const [xpGain, setXpGain] = useState<{ amount: number; base: number; multiplier: number; key: number } | null>(null);
+
+  // Timers State
+  const [timerSeconds, setTimerSeconds] = useState(0);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [stopwatchSeconds, setStopwatchSeconds] = useState(0);
+  const [isStopwatchRunning, setIsStopwatchRunning] = useState(false);
+  
+  const timerIntervalRef = useRef<number | null>(null);
+  const stopwatchIntervalRef = useRef<number | null>(null);
+
+  const playSound = (sound: Sound) => {
+    try {
+        const soundMap = {
+            'correct': 'correct-sound',
+            'incorrect': 'incorrect-sound',
+            'level-up': 'level-up-sound',
+            'purchase': 'purchase-sound',
+            'achievement': 'level-up-sound', // Reuse for achievements
+        };
+        const audio = document.getElementById(soundMap[sound]) as HTMLAudioElement;
+        audio.currentTime = 0;
+        audio.play().catch(e => console.error("Sound play failed:", e));
+    } catch (e) {
+        console.error("Could not play sound:", e);
+    }
+  };
 
   const showNotification = useCallback((message: string, icon: string) => {
     const newNotif = { id: Date.now(), message, icon };
@@ -82,17 +112,24 @@ const App: React.FC = () => {
 
   const applyTheme = useCallback((themeId: string, isPreview = false) => {
     const root = document.documentElement;
-    const defaultTheme = {
-      '--c-brand': theme === 'light' ? '#8b5cf6' : '#a855f7', 
-      '--c-brand-light': theme === 'light' ? '#a78bfa' : '#c084fc', 
-      '--c-accent': theme === 'light' ? '#c026d3' : '#d946ef'
-    };
-    
     const themeItem = STORE_ITEMS.find(item => item.id === themeId && item.type === 'theme');
-    const colorsToApply = themeItem?.payload?.colors || defaultTheme;
+    const themeColors = themeItem?.payload?.colors?.[theme];
 
-    for (const [key, value] of Object.entries(colorsToApply)) {
-      root.style.setProperty(key, value);
+    const colorProps = ['--c-brand', '--c-brand-light', '--c-accent', '--c-bg', '--c-bg-surface', '--c-bg-muted', '--c-border', '--c-text-primary', '--c-text-secondary'];
+    
+    if (themeColors) {
+        for (const prop of colorProps) {
+            const key = prop as keyof typeof themeColors;
+            if (themeColors[key]) {
+                root.style.setProperty(prop, themeColors[key]);
+            } else {
+                root.style.removeProperty(prop);
+            }
+        }
+    } else { // Reverting to default theme
+        for (const prop of colorProps) {
+            root.style.removeProperty(prop);
+        }
     }
   }, [theme]);
 
@@ -108,7 +145,6 @@ const App: React.FC = () => {
     document.body.classList.toggle('light-theme', theme === 'light');
     document.documentElement.classList.toggle('light-theme', theme === 'light');
     localStorage.setItem('appTheme', theme);
-    // Re-apply store theme to get correct base colors for light/dark mode
     applyTheme(progress.activeThemeId);
   }, [theme, progress.activeThemeId, applyTheme]);
   
@@ -128,6 +164,7 @@ const App: React.FC = () => {
                 newProgress.achievements = [...newProgress.achievements, achievement.id];
                 awardedXp += achievement.xpReward;
                 showNotification(`أحرزت إنجاز "${achievement.name}"! +${achievement.xpReward} XP`, achievement.icon);
+                playSound('achievement');
                 newAchievements = true;
             }
         }
@@ -191,37 +228,56 @@ const App: React.FC = () => {
   const addXP = useCallback((amount: number) => {
     const finalAmount = Math.round(amount * xpMultiplier);
     setProgress(prev => ({ ...prev, xp: prev.xp + finalAmount }));
-  }, [xpMultiplier]);
+    setXpGain({
+        amount: finalAmount,
+        base: amount,
+        multiplier: xpMultiplier,
+        key: Date.now()
+    });
+    if (xpMultiplier > 1 && amount > 0) {
+        showNotification(`+${finalAmount} XP (${amount} × ${xpMultiplier.toFixed(2)})`, '✨');
+    }
+  }, [xpMultiplier, showNotification]);
   
-  const grantDebugXP = useCallback(() => {
-    setProgress(prev => ({...prev, xp: prev.xp + 5000}));
-    showNotification("تمت إضافة 5000 XP بنجاح!", "🤫");
+  const grantDebugXP = useCallback((amount: number) => {
+    setProgress(prev => ({...prev, xp: prev.xp + amount}));
+    showNotification(`تمت إضافة ${amount} XP بنجاح!`, "🤫");
   }, [showNotification]);
 
   const handleCompleteLevel = useCallback((topicId: string, levelId: number) => {
-      const topic = GRAMMAR_TOPICS.find(t => t.id === topicId);
-      if (!topic) return;
-      const level = topic.levels.find(l => l.id === levelId);
-      if (!level) return;
-
       setProgress(prev => {
-          const newCompleted = { ...prev.completedLevels };
-          const currentCompleted = newCompleted[topicId] || 0;
+          const topic = GRAMMAR_TOPICS.find(t => t.id === topicId);
+          if (!topic) return prev;
+          const level = topic.levels.find(l => l.id === levelId);
+          if (!level) return prev;
+
+          const currentCompleted = prev.completedLevels[topicId] || 0;
           if (currentCompleted < levelId) {
-             newCompleted[topicId] = levelId;
+             playSound('level-up');
              const finalXp = Math.round(level.xpReward * xpMultiplier);
-             const updatedProgress = { ...prev, xp: prev.xp + finalXp, completedLevels: newCompleted };
-             // Check achievements immediately after state update
+             const newCompleted = { ...prev.completedLevels, [topicId]: levelId };
+             
+             setXpGain({
+                 amount: finalXp,
+                 base: level.xpReward,
+                 multiplier: xpMultiplier,
+                 key: Date.now()
+             });
+             if (xpMultiplier > 1) {
+                showNotification(`+${finalXp} XP (${level.xpReward} × ${xpMultiplier.toFixed(2)})`, '✨');
+             }
              setTimeout(() => checkAndAwardAchievements(), 0);
-             return updatedProgress;
+
+             return { ...prev, xp: prev.xp + finalXp, completedLevels: newCompleted };
           }
           return prev; 
       });
-  }, [checkAndAwardAchievements, xpMultiplier]);
+  }, [xpMultiplier, showNotification, checkAndAwardAchievements]);
   
   const handlePurchaseItem = useCallback((item: StoreItem) => {
     setProgress(prev => {
         if (prev.xp >= item.cost && !prev.purchasedItems.includes(item.id)) {
+            playSound('purchase');
             const updatedProgress = {
                 ...prev,
                 xp: prev.xp - item.cost,
@@ -238,11 +294,68 @@ const App: React.FC = () => {
       setProgress(prev => ({ ...prev, activeThemeId: themeId }));
   }, []);
 
+  const handleResetTheme = useCallback(() => {
+    setProgress(prev => ({ ...prev, activeThemeId: 'default' }));
+    showNotification("تمت إعادة تعيين الثيم إلى الوضع الافتراضي.", "🎨");
+  }, [showNotification]);
+
   const handleQuizComplete = useCallback((result: { score: number, total: number }) => {
     const earnedXp = Math.round((result.score / result.total) * 50); // Max 50 XP
     addXP(earnedXp);
     checkAndAwardAchievements(result);
   }, [addXP, checkAndAwardAchievements]);
+  
+    // Timer Logic
+    useEffect(() => {
+        if (isTimerRunning) {
+            timerIntervalRef.current = window.setInterval(() => {
+                setTimerSeconds(prev => {
+                    if (prev <= 1) {
+                        clearInterval(timerIntervalRef.current!);
+                        setIsTimerRunning(false);
+                        const alarmSound = document.getElementById('alarm-sound') as HTMLAudioElement;
+                        if (alarmSound) {
+                           alarmSound.play().catch(e => console.error("Audio play failed:", e));
+                        }
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+        } else if (timerIntervalRef.current) {
+            clearInterval(timerIntervalRef.current);
+        }
+        return () => {
+            if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+        };
+    }, [isTimerRunning]);
+
+    // Stopwatch Logic
+    useEffect(() => {
+        if (isStopwatchRunning) {
+            stopwatchIntervalRef.current = window.setInterval(() => {
+                setStopwatchSeconds(prev => prev + 1);
+            }, 1000);
+        } else if (stopwatchIntervalRef.current) {
+            clearInterval(stopwatchIntervalRef.current);
+        }
+        return () => {
+            if (stopwatchIntervalRef.current) clearInterval(stopwatchIntervalRef.current);
+        };
+    }, [isStopwatchRunning]);
+
+    const formatTime = (totalSeconds: number) => {
+        const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+        const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+        return `${minutes}:${seconds}`;
+    };
+    
+    const formatStopwatchTime = (totalSeconds: number) => {
+        const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+        const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+        const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+        return `${hours}:${minutes}:${seconds}`;
+    };
 
   // Quiz State
   const [selectedQuizSet, setSelectedQuizSet] = useState<QuizSet | null>(null);
@@ -300,11 +413,30 @@ const App: React.FC = () => {
             onStartQuiz={handleQuizStart}
             onBack={() => { setQuizQuestions(null); setSelectedQuizSet(null); }}
             onQuizComplete={handleQuizComplete}
+            playSound={playSound}
         />;
       case 'store':
         return <Store progress={progress} onPurchase={handlePurchaseItem} onActivateTheme={handleActivateTheme} onPreviewTheme={applyTheme} />;
+      case 'profile':
+        return <Profile progress={progress} topics={GRAMMAR_TOPICS} />;
       case 'settings':
-        return <Settings theme={theme} onSetTheme={setTheme} onGrantDebugXP={grantDebugXP} />;
+        return <Settings 
+            theme={theme} 
+            onSetTheme={setTheme} 
+            onGrantDebugXP={grantDebugXP}
+            timerSeconds={timerSeconds}
+            isTimerRunning={isTimerRunning}
+            onSetIsTimerRunning={setIsTimerRunning}
+            onSetTimerSeconds={setTimerSeconds}
+            formatTime={formatTime}
+            stopwatchSeconds={stopwatchSeconds}
+            isStopwatchRunning={isStopwatchRunning}
+            onSetIsStopwatchRunning={setIsStopwatchRunning}
+            onSetStopwatchSeconds={setStopwatchSeconds}
+            formatStopwatchTime={formatStopwatchTime}
+            onResetTheme={handleResetTheme}
+            activeThemeId={progress.activeThemeId}
+         />;
       default:
         return null;
     }
@@ -316,29 +448,62 @@ const App: React.FC = () => {
       {notifications.map(n => 
         <Toast key={n.id} notification={n} onDismiss={() => dismissNotification(n.id)} />
       )}
-      <header className="bg-slate-950/60 backdrop-blur-sm p-4 shadow-lg sticky top-0 z-20 border-b border-slate-700/50">
-        <div className="container mx-auto max-w-7xl flex justify-between items-center">
-          <div className="flex items-center space-x-3 space-x-reverse">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-purple-400" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10.392C2.057 15.71 3.245 16 4.5 16c1.255 0 2.443-.29 3.5-.804V4.804zM14.5 4c-1.255 0-2.443.29-3.5.804v10.392c1.057.514 2.245.804 3.5.804 1.255 0 2.443-.29 3.5-.804V4.804C16.943 4.29 15.755 4 14.5 4z" />
-            </svg>
-            <h1 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400 tracking-wide">
-              موسوعة النحو المبسط
-            </h1>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <div className="bg-slate-800/80 border border-slate-700/50 rounded-lg px-4 py-2 font-bold text-lg flex items-center gap-2">
-                <span className="text-yellow-400">XP:</span> {progress.xp}
-                {xpMultiplier > 1 && <span className="text-xs bg-fuchsia-500/30 text-fuchsia-300 px-2 py-0.5 rounded-full font-bold">x{xpMultiplier.toFixed(2)}</span>}
+      <header className="app-header p-4">
+        <div className="container mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center">
+            <div className="w-full flex justify-between items-center">
+                <div className="flex items-center space-x-3 space-x-reverse">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-purple-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10.392C2.057 15.71 3.245 16 4.5 16c1.255 0 2.443-.29 3.5-.804V4.804zM14.5 4c-1.255 0-2.443.29-3.5.804v10.392c1.057.514 2.245.804 3.5.804 1.255 0 2.443-.29 3.5-.804V4.804C16.943 4.29 15.755 4 14.5 4z" />
+                    </svg>
+                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400 tracking-wide">
+                    موسوعة النحو المبسط
+                    </h1>
+                </div>
+                <button 
+                    onClick={() => setIsHeaderExpanded(!isHeaderExpanded)}
+                    className="md:hidden p-2 rounded-md text-slate-300 hover:text-white hover:bg-slate-700/50"
+                    aria-label="Toggle navigation"
+                >
+                    {isHeaderExpanded ? 
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg> :
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" /></svg>
+                    }
+                </button>
             </div>
-            <nav className="bg-slate-800/60 border border-slate-700/50 rounded-xl p-1.5 flex items-center space-x-1 space-x-reverse">
-                {(['dashboard', 'generator', 'completer', 'quiz', 'store', 'settings'] as Exclude<View, 'lesson'>[]).map((view) => (
-                    <NavButton key={view} isActive={activeView === view} onClick={() => handleViewChange(view)} icon={ICONS[view]}>
-                        {view === 'dashboard' ? 'الرئيسية' : view === 'generator' ? 'مولّد الأمثلة' : view === 'completer' ? 'أكمل الجملة' : view === 'quiz' ? 'الاختبار' : view === 'store' ? 'المتجر' : 'الإعدادات'}
-                    </NavButton>
-                ))}
-            </nav>
+          
+          <div className={`header-nav-mobile md:!max-h-none md:!opacity-100 md:!overflow-visible md:flex md:items-center md:gap-2 ${isHeaderExpanded ? 'expanded' : ''}`}>
+            <div className="flex flex-col sm:flex-row items-center gap-2 mt-4 md:mt-0">
+                <div className="flex items-center gap-2">
+                    {isTimerRunning && timerSeconds > 0 && (
+                        <div className="bg-slate-800/80 border border-slate-700/50 rounded-lg px-3 py-2 font-mono text-base font-bold text-yellow-300">
+                            <span>⏰</span> {formatTime(timerSeconds)}
+                        </div>
+                    )}
+                    {isStopwatchRunning && (
+                        <div className="bg-slate-800/80 border border-slate-700/50 rounded-lg px-3 py-2 font-mono text-base font-bold text-cyan-300">
+                            <span>⏱️</span> {formatStopwatchTime(stopwatchSeconds)}
+                        </div>
+                    )}
+                    <div className="relative">
+                        <div className="bg-slate-800/80 border border-slate-700/50 rounded-lg px-4 py-2 font-bold text-lg flex items-center gap-2">
+                            <span className="text-yellow-400">XP:</span> {progress.xp}
+                            {xpMultiplier > 1 && <span className="text-xs bg-fuchsia-500/30 text-fuchsia-300 px-2 py-0.5 rounded-full font-bold">x{xpMultiplier.toFixed(2)}</span>}
+                        </div>
+                         {xpGain && (
+                            <div key={xpGain.key} className="xp-gain-popup text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-400">
+                                +{xpGain.amount} XP!
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <nav className="bg-slate-800/60 border border-slate-700/50 rounded-xl p-1.5 flex flex-wrap justify-center gap-1 mt-2 sm:mt-0">
+                    {(['dashboard', 'generator', 'completer', 'quiz', 'store', 'profile', 'settings'] as Exclude<View, 'lesson'>[]).map((view) => (
+                        <NavButton key={view} isActive={activeView === view} onClick={() => handleViewChange(view)} icon={ICONS[view]}>
+                            {view === 'dashboard' ? 'الرئيسية' : view === 'generator' ? 'مولّد الأمثلة' : view === 'completer' ? 'أكمل الجملة' : view === 'quiz' ? 'الاختبار' : view === 'store' ? 'المتجر' : view === 'profile' ? 'الملف الشخصي' : 'الإعدادات'}
+                        </NavButton>
+                    ))}
+                </nav>
+             </div>
           </div>
         </div>
       </header>
@@ -354,7 +519,7 @@ const App: React.FC = () => {
   );
 };
 
-const Dashboard: React.FC<{onSelectTopic: (topic: GrammarTopic) => void; progress: UserProgress}> = ({ onSelectTopic, progress }) => (
+const Dashboard = React.memo<{onSelectTopic: (topic: GrammarTopic) => void; progress: UserProgress}>(({ onSelectTopic, progress }) => (
     <div className="animation-pop-in">
         <h2 className="text-4xl font-bold text-center mb-10 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">
             اختر درسًا لتبدأ رحلتك
@@ -368,12 +533,12 @@ const Dashboard: React.FC<{onSelectTopic: (topic: GrammarTopic) => void; progres
                 return (
                     <div
                         key={topic.id}
-                        className="bg-slate-900/70 border border-slate-700/50 rounded-2xl shadow-xl transition-all duration-300 transform hover:scale-[1.03] cursor-pointer hover:border-fuchsia-500/50 hover:shadow-2xl hover:shadow-fuchsia-500/20 backdrop-blur-sm overflow-hidden"
+                        className="topic-card"
                         onClick={() => onSelectTopic(topic)}
                     >
                         <div className="p-6 h-full flex flex-col">
                             <div className="flex items-center mb-4">
-                               <span className="text-4xl ml-4">{topic.icon}</span>
+                               <div className="w-12 h-12 ml-4 text-purple-400" dangerouslySetInnerHTML={{ __html: topic.icon }} />
                                <h3 className="text-2xl font-bold text-white">{topic.title}</h3>
                             </div>
                             <p className="text-gray-400 flex-grow mb-6">{topic.description}</p>
@@ -392,7 +557,7 @@ const Dashboard: React.FC<{onSelectTopic: (topic: GrammarTopic) => void; progres
             })}
         </div>
     </div>
-);
+));
 
 const QuizFlow: React.FC<{
     selectedQuizSet: QuizSet | null,
@@ -401,9 +566,10 @@ const QuizFlow: React.FC<{
     onStartQuiz: (count: number) => void,
     onBack: () => void,
     onQuizComplete: (result: { score: number, total: number }) => void,
-}> = ({ selectedQuizSet, quizQuestions, onSelectQuizSet, onStartQuiz, onBack, onQuizComplete }) => {
+    playSound: (sound: Sound) => void;
+}> = ({ selectedQuizSet, quizQuestions, onSelectQuizSet, onStartQuiz, onBack, onQuizComplete, playSound }) => {
     if (quizQuestions) {
-      return <Quiz questions={quizQuestions} onBack={onBack} onQuizComplete={onQuizComplete} />;
+      return <Quiz questions={quizQuestions} onBack={onBack} onQuizComplete={onQuizComplete} playSound={playSound} />;
     }
     if (selectedQuizSet) {
          const availableCounts = [5, 10, 15].filter(count => selectedQuizSet.questions.length >= count);
@@ -491,14 +657,14 @@ const Store: React.FC<{
 
                 return (
                     <div key={item.id} className={`bg-slate-900/70 border border-slate-700/50 rounded-2xl p-6 flex flex-col text-center items-center transition-opacity ${isPurchased && !isActiveTheme ? 'opacity-70' : ''}`}>
-                        <div className="text-6xl mb-4">{item.icon}</div>
+                        <div className="w-20 h-20 mb-4 text-purple-400" dangerouslySetInnerHTML={{ __html: item.icon }} />
                         <h4 className="text-xl font-bold text-white mb-2">{item.name}</h4>
                         <p className="text-slate-400 text-sm mb-4 flex-grow">{item.description}</p>
                         
                         {item.type === 'theme' && (
                           <div className="flex justify-center items-center gap-2 mb-4">
-                            {Object.entries(item.payload?.colors || {}).map(([key, value]) => (
-                                <div key={key} className="w-6 h-6 rounded-full border-2 border-slate-500" style={{ backgroundColor: value }} title={key}></div>
+                            {Object.values(item.payload?.colors?.dark || {}).slice(0, 3).map((value, index) => (
+                                <div key={index} className="w-6 h-6 rounded-full border-2 border-slate-500" style={{ backgroundColor: value }}></div>
                             ))}
                             <button
                                 onMouseEnter={() => onPreviewTheme(item.id, true)}
@@ -539,6 +705,73 @@ const Store: React.FC<{
         </div>
     </div>
     );
+}
+
+// FIX: Define the Profile component to resolve 'Cannot find name Profile' error.
+const Profile: React.FC<{ progress: UserProgress, topics: GrammarTopic[] }> = ({ progress, topics }) => {
+    const totalLevels = useMemo(() => topics.reduce((sum, topic) => sum + topic.levels.length, 0), [topics]);
+    const completedLevelsCount = useMemo(() => Object.values(progress.completedLevels).reduce((sum, count) => sum + count, 0), [progress.completedLevels]);
+    const completionPercentage = totalLevels > 0 ? (completedLevelsCount / totalLevels) * 100 : 0;
+    
+    const unlockedAchievements = useMemo(() => ACHIEVEMENTS.filter(ach => progress.achievements.includes(ach.id)), [progress.achievements]);
+
+    return (
+        <div className="animation-pop-in space-y-8">
+            <div className="text-center">
+                <h2 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">
+                    الملف الشخصي
+                </h2>
+                <p className="text-lg text-slate-400 mt-2">نظرة عامة على تقدمك وإنجازاتك.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Progress Card */}
+                <div className="bg-slate-900/70 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-sm">
+                    <h3 className="text-2xl font-bold text-white mb-4">إحصائيات التقدم</h3>
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center bg-slate-800/60 p-3 rounded-lg">
+                            <span className="font-bold">✨ نقاط الخبرة (XP):</span>
+                            <span className="font-bold text-2xl text-yellow-300">{progress.xp}</span>
+                        </div>
+                         <div className="flex justify-between items-center bg-slate-800/60 p-3 rounded-lg">
+                            <span className="font-bold">📚 المستويات المكتملة:</span>
+                            <span className="font-bold text-xl text-purple-300">{completedLevelsCount} / {totalLevels}</span>
+                        </div>
+                        <div>
+                            <div className="flex justify-between items-center mb-1 text-sm text-slate-300">
+                                <span>إجمالي التقدم</span>
+                                <span>{completionPercentage.toFixed(1)}%</span>
+                            </div>
+                            <div className="progress-bar-bg">
+                                <div className="progress-bar-fg" style={{ width: `${completionPercentage}%` }}></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Achievements Card */}
+                <div className="bg-slate-900/70 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-sm">
+                    <h3 className="text-2xl font-bold text-white mb-4">الإنجازات المحققة ({unlockedAchievements.length} / {ACHIEVEMENTS.length})</h3>
+                    {unlockedAchievements.length > 0 ? (
+                        <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
+                            {unlockedAchievements.map(ach => (
+                                <div key={ach.id} className="flex items-center gap-4 bg-slate-800/60 p-3 rounded-lg">
+                                    <div className="w-10 h-10 text-yellow-400 shrink-0" dangerouslySetInnerHTML={{ __html: ach.icon }} />
+                                    <div>
+                                        <p className="font-bold text-white">{ach.name}</p>
+                                        <p className="text-sm text-slate-400">{ach.description}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-slate-400 text-center py-8">لم تحقق أي إنجازات بعد. استمر في التعلم!</p>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
 };
 
+// FIX: Add default export for App component to be used in index.tsx
 export default App;

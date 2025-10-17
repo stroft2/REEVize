@@ -28,7 +28,7 @@ export interface GrammarTopic {
   levels: LessonLevel[];
 }
 
-export type GrammaticalConcept = 'المفعول المطلق' | 'المفعول لأجله' | 'الحال' | 'الفعل المجرد والمزيد' | 'الفعل اللازم والمتعدي' | 'الفعل اللازم' | 'الفعل المتعدي';
+export type GrammaticalConcept = 'المفعول المطلق' | 'المفعول لأجله' | 'الحال' | 'الفعل المجرد والمزيد' | 'الفعل اللازم والمتعدي' | 'الفعل اللازم' | 'الفعل المتعدي' | 'اسم الفاعل واسم المفعول' | 'علامات الإعراب الأصلية والفرعية';
 
 
 export interface SimpleExample {
@@ -61,7 +61,11 @@ export interface StoreItem {
     cost: number;
     type: 'badge' | 'theme';
     payload?: {
-        colors?: Record<string, string>;
+        colors?: {
+            [key: string]: { [key: string]: string } | undefined;
+            dark?: { [key: string]: string };
+            light?: { [key: string]: string };
+        };
         multiplier?: number;
     };
 }

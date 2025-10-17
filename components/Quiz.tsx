@@ -5,9 +5,10 @@ interface QuizProps {
   questions: QuizQuestion[];
   onBack: () => void;
   onQuizComplete: (result: { score: number, total: number }) => void;
+  playSound: (sound: 'correct' | 'incorrect') => void;
 }
 
-const Quiz: React.FC<QuizProps> = ({ questions, onBack, onQuizComplete }) => {
+const Quiz: React.FC<QuizProps> = ({ questions, onBack, onQuizComplete, playSound }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -29,8 +30,11 @@ const Quiz: React.FC<QuizProps> = ({ questions, onBack, onQuizComplete }) => {
     setIsCorrect(correct);
     let currentScore = score;
     if (correct) {
+      playSound('correct');
       currentScore = score + 1;
       setScore(currentScore);
+    } else {
+      playSound('incorrect');
     }
 
     setTimeout(() => {

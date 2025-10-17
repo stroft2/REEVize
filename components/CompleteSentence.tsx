@@ -50,7 +50,7 @@ const CompleteSentence: React.FC<CompleteSentenceProps> = ({ addXP }) => {
     const topicOptions: (GrammaticalConcept | 'الكل')[] = ['الكل', 'المفعول المطلق', 'المفعول لأجله', 'الحال', 'الفعل اللازم', 'الفعل المتعدي'];
 
     return (
-    <div className="bg-slate-900/80 glowing-border border rounded-2xl shadow-2xl shadow-purple-500/10 animation-pop-in p-6 md:p-8 backdrop-blur-sm">
+    <div className="bg-slate-900/70 border border-slate-700/50 rounded-2xl shadow-xl shadow-purple-500/10 animation-pop-in p-6 md:p-8 backdrop-blur-sm">
       <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400 mb-2">
         أكمل الجملة
       </h2>

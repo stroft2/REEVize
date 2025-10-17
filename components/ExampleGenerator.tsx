@@ -113,7 +113,7 @@ const ExampleGenerator: React.FC<ExampleGeneratorProps> = ({ addXP }) => {
   const topicOptions: (GrammaticalConcept | 'الكل')[] = ['الكل', ...GRAMMAR_TOPICS.map(topic => topic.title as GrammaticalConcept)];
 
   return (
-    <div className="bg-slate-900/80 glowing-border border rounded-2xl shadow-2xl shadow-purple-500/10 animation-pop-in p-6 md:p-8 backdrop-blur-sm">
+    <div className="bg-slate-900/70 border border-slate-700/50 rounded-2xl shadow-xl shadow-purple-500/10 animation-pop-in p-6 md:p-8 backdrop-blur-sm">
       <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400 mb-2">
         مولّد الأمثلة السريعة
       </h2>
@@ -139,7 +139,7 @@ const ExampleGenerator: React.FC<ExampleGeneratorProps> = ({ addXP }) => {
             {`" ${currentExample.sentence} "`}
             </p>
             <p className="text-md text-gray-400">
-            <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-fuchsia-400">توضيح:</span> {currentExample.explanation}
+            <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-fuchsia-300">توضيح:</span> {currentExample.explanation}
             </p>
         </div>
       </div>
