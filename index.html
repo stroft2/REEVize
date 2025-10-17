@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>موسوعة النحو المبسط</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com/"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -310,6 +310,30 @@
         height: 80px;
         margin: 0 auto 1rem;
         color: var(--c-brand);
+      }
+
+      /* Reset Confirmation Modal */
+      .reset-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0,0,0,0.7);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        animation: fadeIn 0.3s ease-out;
+      }
+      .reset-modal-content {
+        background-color: var(--c-bg-surface);
+        border: 1px solid #ef4444; /* red-500 */
+        border-radius: 1.5rem;
+        padding: 2.5rem;
+        text-align: center;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 0 40px rgba(239, 68, 68, 0.4);
+        animation: popIn 0.4s 0.1s cubic-bezier(0.16, 1, 0.3, 1) backwards;
       }
 
     </style>

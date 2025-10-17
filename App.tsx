@@ -239,10 +239,29 @@ const App: React.FC = () => {
     }
   }, [xpMultiplier, showNotification]);
   
-  const grantDebugXP = useCallback((amount: number) => {
-    setProgress(prev => ({...prev, xp: prev.xp + amount}));
-    showNotification(`تمت إضافة ${amount} XP بنجاح!`, "🤫");
+  const modifyXP = useCallback((amount: number) => {
+    setProgress(prev => ({...prev, xp: Math.max(0, prev.xp + amount)}));
+    const action = amount > 0 ? 'إضافة' : 'خصم';
+    const absAmount = Math.abs(amount);
+    showNotification(`تم ${action} ${absAmount} XP بنجاح!`, "🤫");
   }, [showNotification]);
+  
+  const resetXP = useCallback(() => {
+    setProgress(prev => ({...prev, xp: 0}));
+    showNotification(`تمت إعادة تعيين نقاط الخبرة!`, "🤫");
+  }, [showNotification]);
+  
+  const handleResetAllData = useCallback(() => {
+    try {
+        localStorage.removeItem('nahwProgress');
+        localStorage.removeItem('appTheme'); // Also clear theme setting
+        window.location.reload();
+    } catch (error) {
+        console.error("Failed to reset data:", error);
+        showNotification("فشل مسح البيانات. يرجى المحاولة مرة أخرى.", "⚠️");
+    }
+  }, [showNotification]);
+
 
   const handleCompleteLevel = useCallback((topicId: string, levelId: number) => {
       setProgress(prev => {
@@ -423,7 +442,8 @@ const App: React.FC = () => {
         return <Settings 
             theme={theme} 
             onSetTheme={setTheme} 
-            onGrantDebugXP={grantDebugXP}
+            onModifyXP={modifyXP}
+            onResetXP={resetXP}
             timerSeconds={timerSeconds}
             isTimerRunning={isTimerRunning}
             onSetIsTimerRunning={setIsTimerRunning}
@@ -436,6 +456,7 @@ const App: React.FC = () => {
             formatStopwatchTime={formatStopwatchTime}
             onResetTheme={handleResetTheme}
             activeThemeId={progress.activeThemeId}
+            onResetAllData={handleResetAllData}
          />;
       default:
         return null;
@@ -710,7 +731,7 @@ const Store: React.FC<{
 // FIX: Define the Profile component to resolve 'Cannot find name Profile' error.
 const Profile: React.FC<{ progress: UserProgress, topics: GrammarTopic[] }> = ({ progress, topics }) => {
     const totalLevels = useMemo(() => topics.reduce((sum, topic) => sum + topic.levels.length, 0), [topics]);
-    const completedLevelsCount = useMemo(() => Object.values(progress.completedLevels).reduce((sum, count) => sum + count, 0), [progress.completedLevels]);
+    const completedLevelsCount = useMemo(() => Object.values(progress.completedLevels).reduce((sum: number, count: number) => sum + count, 0), [progress.completedLevels]);
     const completionPercentage = totalLevels > 0 ? (completedLevelsCount / totalLevels) * 100 : 0;
     
     const unlockedAchievements = useMemo(() => ACHIEVEMENTS.filter(ach => progress.achievements.includes(ach.id)), [progress.achievements]);
