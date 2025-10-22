@@ -1,15 +1,24 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import GrammarSection from './components/GrammarSection';
 import ExampleGenerator from './components/ExampleGenerator';
-import Quiz from './components/Quiz';
+import QuizFlow from './components/QuizFlow';
 import ParticleBackground from './components/ParticleBackground';
 import CompleteSentence from './components/CompleteSentence';
-import Settings from './components/Settings'; // Import the new Settings component
-import { GRAMMAR_TOPICS, QUIZ_SETS, STORE_ITEMS, ACHIEVEMENTS } from './constants';
+import Settings from './components/Settings';
+import AiChatbot from './components/AiChatbot';
+import Dashboard from './components/Dashboard';
+import Store from './components/Store';
+import Profile from './components/Profile';
+import { 
+    GRAMMAR_TOPICS_AR, QUIZ_SETS_AR, STORE_ITEMS, ACHIEVEMENTS,
+    GRAMMAR_TOPICS_FR, QUIZ_SETS_FR
+} from './constants';
 import type { QuizSet, QuizQuestion, GrammarTopic, UserProgress, StoreItem, Achievement } from './types';
 
 type View = 'dashboard' | 'lesson' | 'generator' | 'completer' | 'quiz' | 'store' | 'settings' | 'profile';
 type Sound = 'correct' | 'incorrect' | 'level-up' | 'purchase' | 'achievement';
+type Language = 'ar' | 'fr';
+type VisualEffect = 'rainbow' | 'grayscale' | 'correct-answer' | 'incorrect-answer' | null;
 
 const ICONS: Record<Exclude<View, 'lesson'>, React.ReactNode> = {
     dashboard: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg>,
@@ -18,8 +27,289 @@ const ICONS: Record<Exclude<View, 'lesson'>, React.ReactNode> = {
     quiz: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M11.3,2.268a2,2,0,0,0-2.6,0l-6,5.25A2,2,0,0,0,2,9.25v6.5a2,2,0,0,0,2,2h12a2,2,0,0,0,2-2v-6.5a2,2,0,0,0-0.7-1.732l-6-5.25ZM10,4.5l6,5.25v6.5H4v-6.5L10,4.5ZM9,11v4h2v-4H9Zm0-3h2v2H9V8Z" clipRule="evenodd" /></svg>,
     store: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l.237-.237.954-3.818.008-.032.01-.041L9.4 3H15a1 1 0 000-2H3zM6 16a2 2 0 100 4 2 2 0 000-4zm9-2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>,
     profile: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" /></svg>,
-    settings: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01-.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" /></svg>,
+    settings: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01-.947-2.287c1.561-.379-1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" /></svg>,
 };
+
+const translations = {
+    ar: {
+        lang: 'ar',
+        dashboard: 'الرئيسية',
+        generator: 'مولّد الأمثلة',
+        completer: 'أكمل الجملة',
+        quiz: 'الاختبارات',
+        store: 'المتجر',
+        profile: 'الملف الشخصي',
+        settings: 'الإعدادات',
+        title: 'موسوعة النحو المبسط',
+        dashboardTitle: 'اختر درسًا لتبدأ رحلتك',
+        dashboardProgress: 'التقدم',
+        dashboardLevels: 'مستويات',
+        quizTitle: 'اختبر فهمك',
+        checkAnswers: 'تحقق من الإجابات',
+        retryQuiz: 'أعد المحاولة',
+        quizCorrect: 'إجابات صحيحة! أحسنت!',
+        incorrectAnswerTitle: 'إجابة خاطئة',
+        masteryTitle: 'إتقان تام!',
+        masteryDescription: 'لقد أتقنت درس "{topicTitle}". عمل رائع!',
+        continueLearning: 'متابعة التعلم',
+        backToLessons: 'العودة للدروس',
+        lessonLevels: 'مستويات الدرس',
+        examplesTitle: 'أمثلة توضيحية',
+        explanation: 'التوضيح',
+        level: 'المستوى',
+        levelPassed: 'المستوى مكتمل! +{xp} XP 🎉',
+        allTopicsFilter: 'كل الدروس',
+        generatorTitle: 'مولّد الأمثلة الذكي',
+        generatorDescription: 'احصل على أمثلة جديدة لفهم القواعد بشكل أفضل.',
+        filterByLesson: 'فلترة حسب الدرس',
+        noExamples: 'لا توجد أمثلة لهذا الفلتر.',
+        correctAnswer: 'إجابة صحيحة!',
+        incorrectAnswer: 'إجابة خاطئة. الصحيحة هي:',
+        generateNewExample: 'توليد مثال جديد',
+        quizResult100: 'ممتاز!',
+        quizResult80: 'رائع!',
+        quizResult60: 'جيد جداً!',
+        quizResult40: 'يمكنك أفضل!',
+        quizResult0: 'استمر بالمحاولة!',
+        yourFinalScore: 'نتيجتك النهائية',
+        youEarnedXP: 'لقد كسبت {xp} XP',
+        backToMenu: 'العودة للقائمة',
+        retakeQuiz: 'إعادة الاختبار',
+        question: 'سؤال',
+        quizYourself: 'اختبر نفسك',
+        quizSelectionTitle: 'اختر اختبارًا',
+        quizSelectionBack: 'العودة لاختيار الاختبار',
+        quizQuestionCount: 'اختر عدد الأسئلة لبدء الاختبار.',
+        questionsLabel: 'أسئلة',
+        quizNotEnoughQuestions: 'لا توجد أسئلة كافية لهذا الموضوع حاليًا.',
+        completerTitle: 'أكمل الجملة',
+        completerDescription: 'اختر الكلمة المناسبة لإكمال الجملة بشكل صحيح.',
+        selectRequiredType: 'اختر النوع المطلوب',
+        requiredLabel: 'المطلوب:',
+        correctAnswerXP: 'إجابة صحيحة! +5 XP',
+        correctAnswerIs: 'الإجابة الصحيحة هي:',
+        newExercise: 'تمرين جديد',
+        noExercises: 'لا توجد تمارين لهذا الفلتر حاليًا.',
+        settingsDescription: 'تحكم في تفضيلاتك وبيانات التطبيق.',
+        appearance: 'المظهر',
+        lightMode: 'الوضع الفاتح',
+        resetTheme: 'إعادة تعيين الثيم',
+        dataManagement: 'إدارة البيانات',
+        dataWarning: 'تحذير: هذا الإجراء سيحذف كل تقدمك ومشترياتك بشكل دائم ولا يمكن التراجع عنه.',
+        deleteAllData: 'حذف كل البيانات',
+        resetModalTitle: 'هل أنت متأكد؟',
+        resetModalDescription: 'سيتم حذف <strong>كل</strong> بياناتك بشكل نهائي. هذا يشمل نقاط الخبرة، والمستويات المكتملة، والمشتريات، والإنجازات.',
+        resetModalChallenge: 'للتأكيد، حل المعادلة التالية:',
+        resetModalPlaceholder: 'أدخل قيمة x',
+        resetModalCancel: 'إلغاء',
+        resetModalConfirm: 'نعم، احذف كل شيء',
+        aiGreeting: 'أهلاً بك! أنا نحوي، مساعدك في النحو العربي. كيف يمكنني مساعدتك اليوم؟',
+        aiError: 'عذرًا، حدث خطأ أثناء الاتصال بالمساعد. يرجى المحاولة مرة أخرى.',
+        sendMessage: 'أرسل رسالة',
+        aiThinking: 'يفكر...',
+        aiGenerating: 'جاري التوليد...',
+        profileDescription: 'نظرة عامة على تقدمك وإنجازاتك.',
+        profileStats: 'إحصائيات التقدم',
+        profileXP: 'نقاط الخبرة (XP):',
+        profileLevels: 'المستويات المكتملة:',
+        profileTotalProgress: 'إجمالي التقدم',
+        profileAchievements: 'الإنجازات المحققة',
+        profileNoAchievements: 'لم تحقق أي إنجازات بعد. استمر في التعلم!',
+        storeTitle: 'متجر المكافآت',
+        storeDescription: 'استخدم نقاط الخبرة (XP) لشراء أوسمة وثيمات مميزة!',
+        storeBadges: 'الأوسمة',
+        storeThemes: 'الثيمات',
+        storePreview: 'استعراض',
+        storeThemeActive: 'الثيم النشط',
+        storeThemeActivate: 'تفعيل الثيم',
+        storePurchased: 'تم الشراء',
+        storePurchase: 'شراء',
+        badge_bronze_name: 'وسام نحوي برونزي',
+        badge_bronze_desc: 'يضاعف كل نقاط الخبرة المكتسبة بمقدار 1.15x',
+        badge_silver_name: 'وسام نحوي فضي',
+        badge_silver_desc: 'يضاعف كل نقاط الخبرة المكتسبة بمقدار 1.25x',
+        badge_gold_name: 'وسام نحوي ذهبي',
+        badge_gold_desc: 'يضاعف كل نقاط الخبرة المكتسبة بمقدار 1.40x',
+        badge_expert_name: 'شارة الخبير النحوي',
+        badge_expert_desc: 'أعلى تكريم، يضاعف نقاط الخبرة بمقدار 1.60x',
+        badge_book_name: 'شارة عاشق الكتب',
+        badge_book_desc: 'يضيف +0.05 إلى مضاعف نقاط الخبرة الحالي لديك.',
+        badge_star_name: 'نجمة التفوق',
+        badge_star_desc: 'يضيف +0.05 إلى مضاعف نقاط الخبرة الحالي لديك.',
+        theme_ocean_name: 'ثيم نسيم المحيط',
+        theme_ocean_desc: 'ثيم هادئ بألوان المحيط الزرقاء والتركوازية.',
+        theme_sunset_name: 'ثيم شفق الغروب',
+        theme_sunset_desc: 'ثيم دافئ بألوان الغروب البرتقالية والحمراء.',
+        theme_forest_name: 'ثيم غابة الزمرد',
+        theme_forest_desc: 'ثيم مستوحى من الطبيعة بألوان خضراء هادئة.',
+        ach_first_level_name: 'الخطوة الأولى',
+        ach_first_level_desc: 'أكملت مستواك الأول بنجاح!',
+        ach_first_topic_name: 'سيد درس',
+        ach_first_topic_desc: 'أتقنت جميع مستويات درس كامل.',
+        ach_perfect_quiz_name: 'العلامة الكاملة',
+        ach_perfect_quiz_desc: 'حصلت على 100% في اختبار (10 أسئلة أو أكثر).',
+        ach_first_purchase_name: 'المتسوق الأول',
+        ach_first_purchase_desc: 'اشتريت أول عنصر من المتجر.',
+        ach_xp_1000_name: 'خبير صاعد',
+        ach_xp_1000_desc: 'وصلت إلى 1000 نقطة خبرة!',
+        ach_polyglot_name: 'متعدد اللغات',
+        ach_polyglot_desc: 'بدأت رحلتك في تعلم لغة جديدة.',
+        ach_streak_3_name: 'متعلم ملتزم',
+        ach_streak_3_desc: 'سجلت الدخول لـ 3 أيام متتالية.',
+        ach_night_owl_name: 'بومة الليل',
+        ach_night_owl_desc: 'درست في وقت متأخر من الليل.',
+        ach_early_bird_name: 'الطائر المبكر',
+        ach_early_bird_desc: 'بدأت يومك بالتعلم مبكرًا.',
+        ach_shopaholic_name: 'مهووس بالتسوق',
+        ach_shopaholic_desc: 'اشتريت 3 عناصر من المتجر.',
+        ach_theme_collector_name: 'جامع الثيمات',
+        ach_theme_collector_desc: 'امتلكت كل الثيمات المتاحة.',
+        ach_master_ar_name: 'بروفيسور العربية',
+        ach_master_ar_desc: 'أتقنت جميع دروس النحو العربي.',
+        ach_master_fr_name: 'Professeur de Français',
+        ach_master_fr_desc: 'أتقنت جميع دروس النحو الفرنسي.',
+    },
+    fr: {
+        lang: 'fr',
+        dashboard: 'Accueil',
+        generator: 'Générateur',
+        completer: 'Compléter',
+        quiz: 'Quiz',
+        store: 'Boutique',
+        profile: 'Profil',
+        settings: 'Paramètres',
+        title: 'Encyclopédie Grammaticale',
+        dashboardTitle: 'Choisissez une leçon pour commencer',
+        dashboardProgress: 'Progrès',
+        dashboardLevels: 'niveaux',
+        quizTitle: 'Testez votre compréhension',
+        checkAnswers: 'Vérifier les réponses',
+        retryQuiz: 'Réessayer',
+        quizCorrect: 'Toutes les réponses sont correctes ! Bravo !',
+        incorrectAnswerTitle: 'Mauvaise réponse',
+        masteryTitle: 'Maîtrise Totale !',
+        masteryDescription: 'Vous avez maîtrisé la leçon "{topicTitle}". Excellent travail !',
+        continueLearning: 'Continuer à apprendre',
+        backToLessons: 'Retour aux leçons',
+        lessonLevels: 'Niveaux de la leçon',
+        examplesTitle: 'Exemples',
+        explanation: 'Explication',
+        level: 'Niveau',
+        levelPassed: 'Niveau terminé ! +{xp} XP 🎉',
+        allTopicsFilter: 'Toutes les leçons',
+        generatorTitle: 'Générateur d\'exemples IA',
+        generatorDescription: 'Obtenez de nouveaux exemples pour mieux comprendre les règles.',
+        filterByLesson: 'Filtrer par leçon',
+        noExamples: 'Aucun exemple pour ce filtre.',
+        correctAnswer: 'Bonne réponse !',
+        incorrectAnswer: 'Mauvaise réponse. La bonne était :',
+        generateNewExample: 'Générer un nouvel exemple',
+        quizResult100: 'Parfait !',
+        quizResult80: 'Excellent !',
+        quizResult60: 'Très bien !',
+        quizResult40: 'Vous pouvez mieux faire !',
+        quizResult0: 'Continuez d\'essayer !',
+        yourFinalScore: 'Votre score final',
+        youEarnedXP: 'Vous avez gagné {xp} XP',
+        backToMenu: 'Retour au menu',
+        retakeQuiz: 'Refaire le quiz',
+        question: 'Question',
+        quizYourself: 'Testez-vous',
+        quizSelectionTitle: 'Choisissez un Quiz',
+        quizSelectionBack: 'Retour à la sélection du quiz',
+        quizQuestionCount: 'Choisissez le nombre de questions pour commencer.',
+        questionsLabel: 'questions',
+        quizNotEnoughQuestions: 'Pas assez de questions pour ce sujet pour le moment.',
+        completerTitle: 'Complétez la phrase',
+        completerDescription: 'Choisissez le bon mot pour compléter la phrase correctement.',
+        selectRequiredType: 'Sélectionnez le type requis',
+        requiredLabel: 'Requis :',
+        correctAnswerXP: 'Bonne réponse ! +5 XP',
+        correctAnswerIs: 'La bonne réponse est :',
+        newExercise: 'Nouvel exercice',
+        noExercises: 'Aucun exercice pour ce filtre pour le moment.',
+        settingsDescription: 'Gérez vos préférences et les données de l\'application.',
+        appearance: 'Apparence',
+        lightMode: 'Mode Clair',
+        resetTheme: 'Réinitialiser le thème',
+        dataManagement: 'Gestion des données',
+        dataWarning: 'Attention : Cette action supprimera définitivement toutes vos données et ne peut être annulée.',
+        deleteAllData: 'Tout supprimer',
+        resetModalTitle: 'Êtes-vous sûr ?',
+        resetModalDescription: '<strong>Toutes</strong> vos données seront supprimées définitivement. Cela inclut vos points d\'expérience, les niveaux terminés, les achats et les succès.',
+        resetModalChallenge: 'Pour confirmer, résolvez l\'équation suivante :',
+        resetModalPlaceholder: 'Entrez la valeur de x',
+        resetModalCancel: 'Annuler',
+        resetModalConfirm: 'Oui, tout supprimer',
+        aiGreeting: 'Bonjour ! Je suis GrammaireGPT, votre tuteur de grammaire française. Comment puis-je vous aider aujourd\'hui ?',
+        aiError: 'Désolé, une erreur s\'est produite lors de la connexion à l\'assistant. Veuillez réessayer.',
+        sendMessage: 'Envoyer un message',
+        aiThinking: 'Réfléchit...',
+        aiGenerating: 'Génération en cours...',
+        profileDescription: 'Un aperçu de vos progrès et de vos réalisations.',
+        profileStats: 'Statistiques de progression',
+        profileXP: 'Points d\'expérience (XP) :',
+        profileLevels: 'Niveaux terminés :',
+        profileTotalProgress: 'Progression totale',
+        profileAchievements: 'Succès débloqués',
+        profileNoAchievements: 'Aucun succès débloqué pour le moment. Continuez à apprendre !',
+        storeTitle: 'Boutique de récompenses',
+        storeDescription: 'Utilisez vos points d\'expérience (XP) pour acheter des badges et des thèmes uniques !',
+        storeBadges: 'Badges',
+        storeThemes: 'Thèmes',
+        storePreview: 'Aperçu',
+        storeThemeActive: 'Thème Actif',
+        storeThemeActivate: 'Activer le Thème',
+        storePurchased: 'Acheté',
+        storePurchase: 'Acheter',
+        badge_bronze_name: 'Badge de Bronze Grammatical',
+        badge_bronze_desc: 'Multiplie tous les XP gagnés par 1.15x',
+        badge_silver_name: 'Badge d\'Argent Grammatical',
+        badge_silver_desc: 'Multiplie tous les XP gagnés par 1.25x',
+        badge_gold_name: 'Badge d\'Or Grammatical',
+        badge_gold_desc: 'Multiplie tous les XP gagnés par 1.40x',
+        badge_expert_name: 'Badge d\'Expert Grammairien',
+        badge_expert_desc: 'La plus haute distinction, multiplie les XP par 1.60x',
+        badge_book_name: 'Badge Amoureux des Livres',
+        badge_book_desc: 'Ajoute +0.05 à votre multiplicateur d\'XP actuel.',
+        badge_star_name: 'Étoile d\'Excellence',
+        badge_star_desc: 'Ajoute +0.05 à votre multiplicateur d\'XP actuel.',
+        theme_ocean_name: 'Thème Brise Océane',
+        theme_ocean_desc: 'Un thème apaisant avec des couleurs bleues et turquoises de l\'océan.',
+        theme_sunset_name: 'Thème Crépuscule Couchant',
+        theme_sunset_desc: 'Un thème chaleureux avec des couleurs orange et rouges du coucher de soleil.',
+        theme_forest_name: 'Thème Forêt d\'Émeraude',
+        theme_forest_desc: 'Un thème inspiré de la nature avec des couleurs vertes apaisantes.',
+        ach_first_level_name: 'Le Premier Pas',
+        ach_first_level_desc: 'Vous avez terminé votre premier niveau avec succès !',
+        ach_first_topic_name: 'Maître d\'une Leçon',
+        ach_first_topic_desc: 'Vous avez maîtrisé tous les niveaux d\'une leçon complète.',
+        ach_perfect_quiz_name: 'Score Parfait',
+        ach_perfect_quiz_desc: 'Vous avez obtenu 100% à un quiz (10 questions ou plus).',
+        ach_first_purchase_name: 'Premier Achat',
+        ach_first_purchase_desc: 'Vous avez acheté votre premier article dans la boutique.',
+        ach_xp_1000_name: 'Expert en Herbe',
+        ach_xp_1000_desc: 'Vous avez atteint 1000 points d\'expérience !',
+        ach_polyglot_name: 'Polyglotte',
+        ach_polyglot_desc: 'Vous avez commencé votre voyage dans une nouvelle langue.',
+        ach_streak_3_name: 'Apprenant Assidu',
+        ach_streak_3_desc: 'Connecté pendant 3 jours consécutifs.',
+        ach_night_owl_name: 'Oiseau de Nuit',
+        ach_night_owl_desc: 'Vous avez étudié tard dans la nuit.',
+        ach_early_bird_name: 'Lève-tôt',
+        ach_early_bird_desc: 'Vous avez commencé votre journée en apprenant tôt.',
+        ach_shopaholic_name: 'Accro au Shopping',
+        ach_shopaholic_desc: 'Vous avez acheté 3 articles dans la boutique.',
+        ach_theme_collector_name: 'Collectionneur de Thèmes',
+        ach_theme_collector_desc: 'Vous possédez tous les thèmes disponibles.',
+        ach_master_ar_name: 'Professeur d\'Arabe',
+        ach_master_ar_desc: 'Vous avez maîtrisé toutes les leçons de grammaire arabe.',
+        ach_master_fr_name: 'Professeur de Français',
+        ach_master_fr_desc: 'Vous avez maîtrisé toutes les leçons de grammaire française.',
+    }
+};
+
+export type Translations = typeof translations['ar'];
 
 const NavButton: React.FC<{
     isActive: boolean;
@@ -29,14 +319,15 @@ const NavButton: React.FC<{
 }> = ({ isActive, onClick, children, icon }) => (
     <button
         onClick={onClick}
-        className={`relative flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-fuchsia-500 ${isActive ? 'bg-purple-500/30 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-700/50'}`}
+        className={`relative flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--c-bg-surface)] focus-ring-brand ${isActive ? 'text-white' : 'text-slate-300 hover:text-white hover:bg-slate-700/50'}`}
+        style={isActive ? { backgroundColor: 'var(--c-brand)', color: 'white' } : {}}
     >
         {icon}
         {children}
     </button>
 );
 
-type Notification = { id: number; message: string; icon: string; };
+type Notification = { id: number; message: string; icon: string; lang: Language };
 
 const Toast: React.FC<{ notification: Notification; onDismiss: () => void }> = ({ notification, onDismiss }) => {
   useEffect(() => {
@@ -45,10 +336,10 @@ const Toast: React.FC<{ notification: Notification; onDismiss: () => void }> = (
   }, [onDismiss]);
 
   return (
-    <div className="fixed bottom-5 right-5 bg-slate-800 border border-purple-500/50 rounded-xl shadow-2xl shadow-purple-500/20 p-4 flex items-center gap-4 z-50 animation-fade-in-up">
-      <div className="w-10 h-10 text-purple-400" dangerouslySetInnerHTML={{ __html: notification.icon }} />
+    <div className={`fixed bottom-5 ${notification.lang === 'ar' ? 'right-5' : 'left-5'} bg-slate-800 border border-brand-light/50 rounded-xl shadow-2xl shadow-brand/20 p-4 flex items-center gap-4 z-50 animation-fade-in-up`}>
+      <div className="w-10 h-10 text-brand-light" dangerouslySetInnerHTML={{ __html: notification.icon }} />
       <div>
-        <p className="font-bold text-white">تهانينا!</p>
+        <p className="font-bold text-white">{notification.lang === 'ar' ? 'تهانينا!' : 'Félicitations !'}</p>
         <p className="text-slate-300">{notification.message}</p>
       </div>
     </div>
@@ -58,168 +349,267 @@ const Toast: React.FC<{ notification: Notification; onDismiss: () => void }> = (
 
 const App: React.FC = () => {
   const [activeView, setActiveView] = useState<View>('dashboard');
+  const [language, setLanguage] = useState<Language>('ar');
+  const [isLangSwitching, setIsLangSwitching] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState<GrammarTopic | null>(null);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [isHeaderExpanded, setIsHeaderExpanded] = useState(false);
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const [visualEffect, setVisualEffect] = useState<VisualEffect>(null);
+  const effectTimeoutRef = useRef<number | null>(null);
   
-  // Gamification State
   const [progress, setProgress] = useState<UserProgress>({
      xp: 0, 
      purchasedItems: [], 
      completedLevels: {}, 
      activeThemeId: 'default', 
      achievements: [], 
-     lastLoginDate: '' 
+     lastLoginDate: '',
+     loginStreak: 0
     });
-  const [xpGain, setXpGain] = useState<{ amount: number; base: number; multiplier: number; key: number } | null>(null);
+  const [xpGain, setXpGain] = useState<{ amount: number; key: number } | null>(null);
+  const [isXpAnimating, setIsXpAnimating] = useState(false);
 
-  // Timers State
-  const [timerSeconds, setTimerSeconds] = useState(0);
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
-  const [stopwatchSeconds, setStopwatchSeconds] = useState(0);
-  const [isStopwatchRunning, setIsStopwatchRunning] = useState(false);
+  // Quiz Flow State
+  const [selectedQuizSet, setSelectedQuizSet] = useState<QuizSet | null>(null);
+  const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[] | null>(null);
   
-  const timerIntervalRef = useRef<number | null>(null);
-  const stopwatchIntervalRef = useRef<number | null>(null);
+  // Focus Tools (Timer/Stopwatch) State - Lifted from Settings
+    const [timerSeconds, setTimerSeconds] = useState(25 * 60);
+    const [isTimerRunning, setIsTimerRunning] = useState(false);
+    const timerIntervalRef = useRef<number | null>(null);
+    const [stopwatchMs, setStopwatchMs] = useState(0);
+    const [isStopwatchRunning, setIsStopwatchRunning] = useState(false);
+    const stopwatchIntervalRef = useRef<number | null>(null);
+    const [laps, setLaps] = useState<number[]>([]);
+    
+    // Timer Logic
+    const handleTimerStartStop = useCallback(() => {
+        if (isTimerRunning) {
+            if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+            setIsTimerRunning(false);
+        } else {
+            setIsTimerRunning(true);
+            timerIntervalRef.current = window.setInterval(() => {
+                setTimerSeconds(prev => {
+                    if (prev <= 1) {
+                        if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+                        setIsTimerRunning(false);
+                        (document.getElementById('alarm-sound') as HTMLAudioElement)?.play();
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+        }
+    }, [isTimerRunning]);
+
+    const handleTimerReset = (newDuration: number) => {
+        if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+        setIsTimerRunning(false);
+        setTimerSeconds(newDuration * 60);
+    };
+
+    // Stopwatch Logic
+    const handleStopwatchStartStop = useCallback(() => {
+        if (isStopwatchRunning) {
+            if (stopwatchIntervalRef.current) clearInterval(stopwatchIntervalRef.current);
+        } else {
+            const startTime = Date.now() - stopwatchMs;
+            stopwatchIntervalRef.current = window.setInterval(() => {
+                setStopwatchMs(Date.now() - startTime);
+            }, 10);
+        }
+        setIsStopwatchRunning(!isStopwatchRunning);
+    }, [isStopwatchRunning, stopwatchMs]);
+
+    const handleStopwatchReset = useCallback(() => {
+        if (stopwatchIntervalRef.current) clearInterval(stopwatchIntervalRef.current);
+        setIsStopwatchRunning(false);
+        setStopwatchMs(0);
+        setLaps([]);
+    }, []);
+    
+    const handleLap = useCallback(() => {
+        if(isStopwatchRunning) setLaps(prev => [stopwatchMs, ...prev]);
+    }, [isStopwatchRunning, stopwatchMs]);
+    
+    useEffect(() => {
+        return () => { // Cleanup timers on component unmount
+            if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+            if (stopwatchIntervalRef.current) clearInterval(stopwatchIntervalRef.current);
+        };
+    }, []);
+  
+  const T = translations[language];
+  const GRAMMAR_TOPICS = language === 'ar' ? GRAMMAR_TOPICS_AR : GRAMMAR_TOPICS_FR;
+  const QUIZ_SETS = language === 'ar' ? QUIZ_SETS_AR : QUIZ_SETS_FR;
 
   const playSound = (sound: Sound) => {
     try {
         const soundMap = {
-            'correct': 'correct-sound',
-            'incorrect': 'incorrect-sound',
-            'level-up': 'level-up-sound',
-            'purchase': 'purchase-sound',
-            'achievement': 'level-up-sound', // Reuse for achievements
+            'correct': 'correct-sound', 'incorrect': 'incorrect-sound',
+            'level-up': 'level-up-sound', 'purchase': 'purchase-sound',
+            'achievement': 'level-up-sound',
         };
-        const audio = document.getElementById(soundMap[sound]) as HTMLAudioElement;
-        audio.currentTime = 0;
-        audio.play().catch(e => console.error("Sound play failed:", e));
-    } catch (e) {
-        console.error("Could not play sound:", e);
-    }
+        (document.getElementById(soundMap[sound]) as HTMLAudioElement)?.play().catch(e=>console.error(e));
+    } catch (e) { console.error(e); }
   };
 
-  const showNotification = useCallback((message: string, icon: string) => {
-    const newNotif = { id: Date.now(), message, icon };
-    setNotifications(prev => [...prev, newNotif]);
+  const showNotification = useCallback((message: string, icon: string, lang: Language) => {
+    setNotifications(prev => [...prev, { id: Date.now(), message, icon, lang }]);
   }, []);
 
   const dismissNotification = useCallback((id: number) => {
     setNotifications(prev => prev.filter(n => n.id !== id));
   }, []);
 
-  const applyTheme = useCallback((themeId: string, isPreview = false) => {
+  const triggerVisualEffect = useCallback((effect: VisualEffect, duration: number) => {
+    if (effectTimeoutRef.current) {
+      clearTimeout(effectTimeoutRef.current);
+    }
+    setVisualEffect(effect);
+    if (effect === 'incorrect-answer') {
+        document.body.classList.add('visual-effect-grayscale');
+    }
+    effectTimeoutRef.current = window.setTimeout(() => {
+      setVisualEffect(null);
+      document.body.classList.remove('visual-effect-grayscale');
+      effectTimeoutRef.current = null;
+    }, duration);
+  }, []);
+
+
+  const applyTheme = useCallback((themeId: string) => {
     const root = document.documentElement;
     const themeItem = STORE_ITEMS.find(item => item.id === themeId && item.type === 'theme');
     const themeColors = themeItem?.payload?.colors?.[theme];
-
     const colorProps = ['--c-brand', '--c-brand-light', '--c-accent', '--c-bg', '--c-bg-surface', '--c-bg-muted', '--c-border', '--c-text-primary', '--c-text-secondary'];
     
-    if (themeColors) {
-        for (const prop of colorProps) {
-            const key = prop as keyof typeof themeColors;
-            if (themeColors[key]) {
-                root.style.setProperty(prop, themeColors[key]);
-            } else {
-                root.style.removeProperty(prop);
-            }
-        }
-    } else { // Reverting to default theme
-        for (const prop of colorProps) {
+    colorProps.forEach(prop => {
+        const key = prop as keyof typeof themeColors;
+        if (themeColors && themeColors[key]) {
+            root.style.setProperty(prop, themeColors[key]);
+        } else {
             root.style.removeProperty(prop);
         }
-    }
+    });
   }, [theme]);
 
-  // Handle Light/Dark mode
   useEffect(() => {
     const savedTheme = localStorage.getItem('appTheme') as 'light' | 'dark' | null;
-    if (savedTheme) {
-        setTheme(savedTheme);
-    }
+    if (savedTheme) setTheme(savedTheme);
   }, []);
 
   useEffect(() => {
-    document.body.classList.toggle('light-theme', theme === 'light');
     document.documentElement.classList.toggle('light-theme', theme === 'light');
     localStorage.setItem('appTheme', theme);
     applyTheme(progress.activeThemeId);
   }, [theme, progress.activeThemeId, applyTheme]);
   
-  // Theme application on progress change
   useEffect(() => {
+    document.documentElement.classList.toggle('lang-fr', language === 'fr');
+    document.documentElement.lang = language;
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    // Re-apply theme to ensure CSS variables are updated for the new language class
     applyTheme(progress.activeThemeId);
-  }, [progress.activeThemeId, applyTheme]);
+  }, [language, progress.activeThemeId, applyTheme]);
   
+  useEffect(() => {
+    document.body.classList.remove('visual-effect-grayscale');
+    if (visualEffect === 'grayscale' || visualEffect === 'incorrect-answer') {
+      document.body.classList.add('visual-effect-grayscale');
+    }
+    if (visualEffect === 'rainbow' || visualEffect === 'grayscale') {
+      const timer = setTimeout(() => setVisualEffect(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [visualEffect]);
+
+  const handleLanguageChange = (newLang: Language) => {
+      if(newLang === language) return;
+      setIsLangSwitching(true);
+      checkAndAwardAchievements({ action: 'switch_language' });
+      setTimeout(() => {
+          setLanguage(newLang);
+          setIsLangSwitching(false);
+      }, 300);
+  }
+
   const checkAndAwardAchievements = useCallback((payload?: any) => {
     setProgress(prev => {
         let newProgress = { ...prev };
         let awardedXp = 0;
-        let newAchievements = false;
+        let awardedAny = false;
 
         for (const achievement of ACHIEVEMENTS) {
             if (!newProgress.achievements.includes(achievement.id) && achievement.condition(newProgress, payload)) {
                 newProgress.achievements = [...newProgress.achievements, achievement.id];
                 awardedXp += achievement.xpReward;
-                showNotification(`أحرزت إنجاز "${achievement.name}"! +${achievement.xpReward} XP`, achievement.icon);
+                const T_for_notif = translations[language];
+                const ach_name_key = `ach_${achievement.id.replace('ach_','')}_name` as keyof Translations;
+                const translated_name = T_for_notif[ach_name_key] || achievement.name;
+                showNotification(`${language === 'ar' ? 'أحرزت إنجاز' : 'Succès débloqué'}: "${translated_name}"! +${achievement.xpReward} XP`, achievement.icon, language);
                 playSound('achievement');
-                newAchievements = true;
+                awardedAny = true;
             }
         }
-        if (newAchievements) {
+        if (awardedAny) {
            return { ...newProgress, xp: newProgress.xp + awardedXp };
         }
         return prev;
     });
-  }, [showNotification]);
+  }, [showNotification, language]);
 
-
-  // Load progress from localStorage on mount & check daily bonus
   useEffect(() => {
     try {
       const savedProgress = localStorage.getItem('nahwProgress');
-      const today = new Date().toISOString().split('T')[0];
-      let currentProgress: UserProgress = savedProgress 
-        ? JSON.parse(savedProgress) 
-        : { xp: 0, purchasedItems: [], completedLevels: {}, activeThemeId: 'default', achievements: [], lastLoginDate: '' };
+      const today = new Date();
+      const todayStr = today.toISOString().split('T')[0];
 
-      if (currentProgress.lastLoginDate !== today) {
-        currentProgress.xp += 15;
-        currentProgress.lastLoginDate = today;
-        showNotification("مكافأة الدخول اليومي! +15 XP", "🎁");
+      let currentProgress: UserProgress = savedProgress ? JSON.parse(savedProgress) : { xp: 0, purchasedItems: [], completedLevels: {}, activeThemeId: 'default', achievements: [], lastLoginDate: '', loginStreak: 0 };
+      
+      const lastLogin = new Date(currentProgress.lastLoginDate);
+      const diffDays = Math.floor((today.getTime() - lastLogin.getTime()) / (1000 * 3600 * 24));
+      
+      if (currentProgress.lastLoginDate !== todayStr) {
+        if (diffDays === 1) {
+          currentProgress.loginStreak = (currentProgress.loginStreak || 0) + 1;
+        } else {
+          currentProgress.loginStreak = 1;
+        }
+        
+        currentProgress.xp += 15 + (currentProgress.loginStreak * 5); // Daily bonus + streak bonus
+        showNotification(`${language === 'ar' ? 'مكافأة الدخول اليومي' : 'Bonus de connexion quotidien'}! +${15 + (currentProgress.loginStreak * 5)} XP`, "🎁", language);
+        currentProgress.lastLoginDate = todayStr;
       }
+
       setProgress(currentProgress);
+      checkAndAwardAchievements({ action: 'login' });
     } catch (error) {
       console.error("Failed to load progress:", error);
     }
-  }, [showNotification]);
+  }, [showNotification, checkAndAwardAchievements, language]);
 
-  // Save progress to localStorage whenever it changes
   useEffect(() => {
     try {
       localStorage.setItem('nahwProgress', JSON.stringify(progress));
-      checkAndAwardAchievements(); // Check for XP-based achievements
-    } catch (error) {
-      console.error("Failed to save progress:", error);
-    }
+      checkAndAwardAchievements();
+    } catch (error) { console.error("Failed to save progress:", error); }
   }, [progress, checkAndAwardAchievements]);
   
   const xpMultiplier = useMemo(() => {
     const mainBadges = progress.purchasedItems
         .map(id => STORE_ITEMS.find(item => item.id === id && item.type === 'badge' && item.payload?.multiplier && item.payload.multiplier > 1))
         .filter(Boolean) as StoreItem[];
-    
     const additiveBadges = progress.purchasedItems
         .map(id => STORE_ITEMS.find(item => item.id === id && item.type === 'badge' && item.payload?.multiplier && item.payload.multiplier < 1))
         .filter(Boolean) as StoreItem[];
 
     let highestMultiplier = 1;
-    if (mainBadges.length > 0) {
-        highestMultiplier = Math.max(...mainBadges.map(b => b.payload!.multiplier!));
-    }
-
+    if (mainBadges.length > 0) highestMultiplier = Math.max(...mainBadges.map(b => b.payload!.multiplier!));
     const additiveBonus = additiveBadges.reduce((sum, b) => sum + b.payload!.multiplier!, 0);
 
     return highestMultiplier + additiveBonus;
@@ -227,45 +617,21 @@ const App: React.FC = () => {
 
   const addXP = useCallback((amount: number) => {
     const finalAmount = Math.round(amount * xpMultiplier);
-    setProgress(prev => ({ ...prev, xp: prev.xp + finalAmount }));
-    setXpGain({
-        amount: finalAmount,
-        base: amount,
-        multiplier: xpMultiplier,
-        key: Date.now()
-    });
-    if (xpMultiplier > 1 && amount > 0) {
-        showNotification(`+${finalAmount} XP (${amount} × ${xpMultiplier.toFixed(2)})`, '✨');
-    }
-  }, [xpMultiplier, showNotification]);
-  
-  const modifyXP = useCallback((amount: number) => {
-    setProgress(prev => ({...prev, xp: Math.max(0, prev.xp + amount)}));
-    const action = amount > 0 ? 'إضافة' : 'خصم';
-    const absAmount = Math.abs(amount);
-    showNotification(`تم ${action} ${absAmount} XP بنجاح!`, "🤫");
-  }, [showNotification]);
-  
-  const resetXP = useCallback(() => {
-    setProgress(prev => ({...prev, xp: 0}));
-    showNotification(`تمت إعادة تعيين نقاط الخبرة!`, "🤫");
-  }, [showNotification]);
-  
-  const handleResetAllData = useCallback(() => {
-    try {
-        localStorage.removeItem('nahwProgress');
-        localStorage.removeItem('appTheme'); // Also clear theme setting
-        window.location.reload();
-    } catch (error) {
-        console.error("Failed to reset data:", error);
-        showNotification("فشل مسح البيانات. يرجى المحاولة مرة أخرى.", "⚠️");
-    }
-  }, [showNotification]);
+    setProgress(prev => ({ ...prev, xp: Math.max(0, prev.xp + finalAmount) }));
+    setXpGain({ amount: finalAmount, key: Date.now() });
 
-
+    if (amount > 0) {
+        setIsXpAnimating(true);
+        setTimeout(() => setIsXpAnimating(false), 500);
+        if (xpMultiplier > 1) {
+            showNotification(`+${finalAmount} XP (${amount} × ${xpMultiplier.toFixed(2)})`, '✨', language);
+        }
+    }
+  }, [xpMultiplier, showNotification, language]);
+  
   const handleCompleteLevel = useCallback((topicId: string, levelId: number) => {
       setProgress(prev => {
-          const topic = GRAMMAR_TOPICS.find(t => t.id === topicId);
+          const topic = GRAMMAR_TOPICS_AR.concat(GRAMMAR_TOPICS_FR).find(t => t.id === topicId);
           if (!topic) return prev;
           const level = topic.levels.find(l => l.id === levelId);
           if (!level) return prev;
@@ -273,130 +639,115 @@ const App: React.FC = () => {
           const currentCompleted = prev.completedLevels[topicId] || 0;
           if (currentCompleted < levelId) {
              playSound('level-up');
-             const finalXp = Math.round(level.xpReward * xpMultiplier);
+             addXP(level.xpReward);
              const newCompleted = { ...prev.completedLevels, [topicId]: levelId };
+             const updatedProgress = { ...prev, completedLevels: newCompleted };
              
-             setXpGain({
-                 amount: finalXp,
-                 base: level.xpReward,
-                 multiplier: xpMultiplier,
-                 key: Date.now()
-             });
-             if (xpMultiplier > 1) {
-                showNotification(`+${finalXp} XP (${level.xpReward} × ${xpMultiplier.toFixed(2)})`, '✨');
-             }
              setTimeout(() => checkAndAwardAchievements(), 0);
-
-             return { ...prev, xp: prev.xp + finalXp, completedLevels: newCompleted };
+             return updatedProgress;
           }
           return prev; 
       });
-  }, [xpMultiplier, showNotification, checkAndAwardAchievements]);
+  }, [addXP, checkAndAwardAchievements]);
   
   const handlePurchaseItem = useCallback((item: StoreItem) => {
     setProgress(prev => {
         if (prev.xp >= item.cost && !prev.purchasedItems.includes(item.id)) {
             playSound('purchase');
-            const updatedProgress = {
-                ...prev,
-                xp: prev.xp - item.cost,
-                purchasedItems: [...prev.purchasedItems, item.id],
-            };
-            setTimeout(() => checkAndAwardAchievements(), 0);
+            const updatedProgress = { ...prev, xp: prev.xp - item.cost, purchasedItems: [...prev.purchasedItems, item.id] };
+            setTimeout(() => checkAndAwardAchievements({action: 'purchase'}), 0);
             return updatedProgress;
         }
         return prev;
     });
   }, [checkAndAwardAchievements]);
   
-  const handleActivateTheme = useCallback((themeId: string) => {
-      setProgress(prev => ({ ...prev, activeThemeId: themeId }));
-  }, []);
-
-  const handleResetTheme = useCallback(() => {
-    setProgress(prev => ({ ...prev, activeThemeId: 'default' }));
-    showNotification("تمت إعادة تعيين الثيم إلى الوضع الافتراضي.", "🎨");
-  }, [showNotification]);
+  const handleActivateTheme = useCallback((themeId: string) => setProgress(prev => ({ ...prev, activeThemeId: themeId })), []);
+  const handleResetTheme = useCallback(() => setProgress(prev => ({ ...prev, activeThemeId: 'default' })), []);
 
   const handleQuizComplete = useCallback((result: { score: number, total: number }) => {
-    const earnedXp = Math.round((result.score / result.total) * 50); // Max 50 XP
-    addXP(earnedXp);
-    checkAndAwardAchievements(result);
+    addXP(Math.round((result.score / result.total) * 50));
+    checkAndAwardAchievements({...result, action: 'quiz_complete'});
   }, [addXP, checkAndAwardAchievements]);
   
-    // Timer Logic
-    useEffect(() => {
-        if (isTimerRunning) {
-            timerIntervalRef.current = window.setInterval(() => {
-                setTimerSeconds(prev => {
-                    if (prev <= 1) {
-                        clearInterval(timerIntervalRef.current!);
-                        setIsTimerRunning(false);
-                        const alarmSound = document.getElementById('alarm-sound') as HTMLAudioElement;
-                        if (alarmSound) {
-                           alarmSound.play().catch(e => console.error("Audio play failed:", e));
-                        }
-                        return 0;
-                    }
-                    return prev - 1;
-                });
-            }, 1000);
-        } else if (timerIntervalRef.current) {
-            clearInterval(timerIntervalRef.current);
-        }
-        return () => {
-            if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-        };
-    }, [isTimerRunning]);
+  const handleResetAllData = useCallback(() => {
+    try {
+        localStorage.clear();
+        window.location.reload();
+    } catch (error) { console.error("Failed to reset data:", error); }
+  }, []);
 
-    // Stopwatch Logic
-    useEffect(() => {
-        if (isStopwatchRunning) {
-            stopwatchIntervalRef.current = window.setInterval(() => {
-                setStopwatchSeconds(prev => prev + 1);
-            }, 1000);
-        } else if (stopwatchIntervalRef.current) {
-            clearInterval(stopwatchIntervalRef.current);
-        }
-        return () => {
-            if (stopwatchIntervalRef.current) clearInterval(stopwatchIntervalRef.current);
-        };
-    }, [isStopwatchRunning]);
+  const handleApplyCheatCode = useCallback((code: string): boolean => {
+      const positiveXpCodes: { [key: string]: number } = {
+        'ADD_XP_500': 500, '1234': 100, '4321': 100, 'THANKSPETER': 100, 'PETER': 100,
+        'GERGES': 100, 'BESTDEVEZGG': 100, '67AURAFAX': 100, '69420': 100
+      };
+      const negativeXpCodes: { [key: string]: number } = {
+        '676767': -150, '696969': -150, 'SCP67': -150, 'NGA': -150, 'ILIKETOLOSEXP': -150
+      };
+      
+      if (positiveXpCodes[code]) {
+          addXP(positiveXpCodes[code]);
+          showNotification(`+${positiveXpCodes[code]} XP (Cheat)`, '⚡', language);
+          if (code === '69420') {
+              setVisualEffect('rainbow');
+          }
+          return true;
+      }
+      
+      if (negativeXpCodes[code]) {
+          addXP(negativeXpCodes[code]);
+          showNotification(`${negativeXpCodes[code]} XP (Cheat)`, '💀', language);
+          setVisualEffect('grayscale');
+          return true;
+      }
 
-    const formatTime = (totalSeconds: number) => {
-        const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
-        const seconds = (totalSeconds % 60).toString().padStart(2, '0');
-        return `${minutes}:${seconds}`;
-    };
-    
-    const formatStopwatchTime = (totalSeconds: number) => {
-        const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
-        const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
-        const seconds = (totalSeconds % 60).toString().padStart(2, '0');
-        return `${hours}:${minutes}:${seconds}`;
-    };
-
-  // Quiz State
-  const [selectedQuizSet, setSelectedQuizSet] = useState<QuizSet | null>(null);
-  const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[] | null>(null);
+      switch(code) {
+          case 'PG1':
+              setProgress(prev => {
+                  const allCompleted = { ...prev.completedLevels };
+                  const allTopics = [...GRAMMAR_TOPICS_AR, ...GRAMMAR_TOPICS_FR];
+                  allTopics.forEach(topic => {
+                      allCompleted[topic.id] = topic.levels.length;
+                  });
+                  return { 
+                      ...prev, 
+                      xp: 99999,
+                      completedLevels: allCompleted,
+                      purchasedItems: STORE_ITEMS.map(i => i.id),
+                      achievements: ACHIEVEMENTS.map(a => a.id)
+                   };
+              });
+              showNotification('Unlocked Everything! (Cheat)', '👑', language);
+              setTimeout(() => checkAndAwardAchievements(), 0);
+              return true;
+          case 'COMPLETE_ALL':
+               setProgress(prev => {
+                  const allCompleted = { ...prev.completedLevels };
+                  const allTopics = [...GRAMMAR_TOPICS_AR, ...GRAMMAR_TOPICS_FR];
+                  allTopics.forEach(topic => {
+                      allCompleted[topic.id] = topic.levels.length;
+                  });
+                  return { ...prev, completedLevels: allCompleted };
+              });
+               showNotification('All lessons completed! (Cheat)', '🎓', language);
+               return true;
+          default:
+              return false;
+      }
+  }, [addXP, showNotification, language, checkAndAwardAchievements]);
 
   const handleViewChange = (newView: View) => {
     if (newView === activeView || isAnimatingOut) return;
     setIsAnimatingOut(true);
     setTimeout(() => {
       setActiveView(newView);
-      setSelectedTopic(null); // Reset topic when changing main view
+      setSelectedTopic(null);
       setSelectedQuizSet(null);
       setQuizQuestions(null);
       setIsAnimatingOut(false);
     }, 300);
   };
-  
-  const handleQuizStart = (questionCount: number) => {
-    if (!selectedQuizSet) return;
-    const shuffled = [...selectedQuizSet.questions].sort(() => 0.5 - Math.random());
-    setQuizQuestions(shuffled.slice(0, questionCount));
-  }
   
   const handleSelectTopic = (topic: GrammarTopic) => {
       setIsAnimatingOut(true);
@@ -407,77 +758,97 @@ const App: React.FC = () => {
       }, 300)
   }
 
+  // Quiz Flow Handlers
+  const handleSelectQuizSet = (quizSet: QuizSet | null) => {
+      setSelectedQuizSet(quizSet);
+      setQuizQuestions(null); 
+  };
+  const handleStartQuiz = (count: number) => {
+      if (selectedQuizSet) {
+          const shuffled = [...selectedQuizSet.questions].sort(() => 0.5 - Math.random());
+          setQuizQuestions(shuffled.slice(0, count));
+      }
+  };
+  const handleBackFromQuiz = () => {
+      setQuizQuestions(null);
+  };
+
   const renderContent = () => {
     switch (activeView) {
-      case 'dashboard':
-        return <Dashboard onSelectTopic={handleSelectTopic} progress={progress} />;
+      case 'dashboard': return <Dashboard onSelectTopic={handleSelectTopic} progress={progress} topics={GRAMMAR_TOPICS} T={T} />;
       case 'lesson':
-        return selectedTopic && (
-          <GrammarSection 
-            topic={selectedTopic}
-            onBack={() => handleViewChange('dashboard')}
-            completedLevels={progress.completedLevels[selectedTopic.id] || 0}
-            onCompleteLevel={handleCompleteLevel}
-          />
-        );
-      case 'generator':
-        return <ExampleGenerator addXP={addXP} />;
-      case 'completer':
-        return <CompleteSentence addXP={addXP} />;
-      case 'quiz':
-        return <QuizFlow 
-            selectedQuizSet={selectedQuizSet}
-            quizQuestions={quizQuestions}
-            onSelectQuizSet={setSelectedQuizSet}
-            onStartQuiz={handleQuizStart}
-            onBack={() => { setQuizQuestions(null); setSelectedQuizSet(null); }}
-            onQuizComplete={handleQuizComplete}
-            playSound={playSound}
-        />;
-      case 'store':
-        return <Store progress={progress} onPurchase={handlePurchaseItem} onActivateTheme={handleActivateTheme} onPreviewTheme={applyTheme} />;
-      case 'profile':
-        return <Profile progress={progress} topics={GRAMMAR_TOPICS} />;
+        return selectedTopic && <GrammarSection topic={selectedTopic} onBack={() => handleViewChange('dashboard')} completedLevels={progress.completedLevels[selectedTopic.id] || 0} onCompleteLevel={handleCompleteLevel} triggerVisualEffect={triggerVisualEffect} T={T} />;
+      case 'generator': return <ExampleGenerator addXP={addXP} grammarTopics={GRAMMAR_TOPICS} language={language} triggerVisualEffect={triggerVisualEffect} T={T} />;
+      case 'completer': return <CompleteSentence addXP={addXP} grammarTopics={GRAMMAR_TOPICS} language={language} triggerVisualEffect={triggerVisualEffect} T={T} />;
+      case 'quiz': return <QuizFlow 
+                            quizSets={QUIZ_SETS} 
+                            onQuizComplete={(result) => {
+                                handleQuizComplete(result);
+                                handleSelectQuizSet(null);
+                            }} 
+                            playSound={playSound} 
+                            triggerVisualEffect={triggerVisualEffect}
+                            T={T}
+                            selectedQuizSet={selectedQuizSet}
+                            quizQuestions={quizQuestions}
+                            onSelectQuizSet={handleSelectQuizSet}
+                            onStartQuiz={handleStartQuiz}
+                            onBack={handleBackFromQuiz}
+                         />;
+      case 'store': return <Store progress={progress} onPurchase={handlePurchaseItem} onActivateTheme={handleActivateTheme} onPreviewTheme={(id, isPreview) => applyTheme(isPreview ? id : progress.activeThemeId)} T={T} />;
+      case 'profile': return <Profile progress={progress} topics={GRAMMAR_TOPICS_AR.concat(GRAMMAR_TOPICS_FR)} T={T} />;
       case 'settings':
         return <Settings 
-            theme={theme} 
-            onSetTheme={setTheme} 
-            onModifyXP={modifyXP}
-            onResetXP={resetXP}
-            timerSeconds={timerSeconds}
-            isTimerRunning={isTimerRunning}
-            onSetIsTimerRunning={setIsTimerRunning}
-            onSetTimerSeconds={setTimerSeconds}
-            formatTime={formatTime}
-            stopwatchSeconds={stopwatchSeconds}
-            isStopwatchRunning={isStopwatchRunning}
-            onSetIsStopwatchRunning={setIsStopwatchRunning}
-            onSetStopwatchSeconds={setStopwatchSeconds}
-            formatStopwatchTime={formatStopwatchTime}
+            theme={theme} onSetTheme={setTheme} 
             onResetTheme={handleResetTheme}
             activeThemeId={progress.activeThemeId}
             onResetAllData={handleResetAllData}
+            onApplyCheatCode={handleApplyCheatCode}
+            T={T}
+            // Pass timer state and handlers
+            timerSeconds={timerSeconds}
+            isTimerRunning={isTimerRunning}
+            onTimerStartStop={handleTimerStartStop}
+            onTimerReset={handleTimerReset}
+            // Pass stopwatch state and handlers
+            stopwatchMs={stopwatchMs}
+            isStopwatchRunning={isStopwatchRunning}
+            laps={laps}
+            onStopwatchStartStop={handleStopwatchStartStop}
+            onStopwatchReset={handleStopwatchReset}
+            onLap={handleLap}
          />;
-      default:
-        return null;
+      default: return null;
     }
   };
+  
+  const xpBarPercentage = (progress.xp % 1000) / 10;
 
   return (
     <div className="min-h-screen bg-transparent text-gray-200">
-      <ParticleBackground />
+      <ParticleBackground language={language} theme={theme} />
+      {visualEffect === 'rainbow' && <div className="visual-effect-rainbow"></div>}
+      {visualEffect === 'correct-answer' && <div className="visual-effect-correct-flash"></div>}
+      {visualEffect === 'incorrect-answer' && (
+        <div className="visual-effect-rain">
+          {Array.from({ length: 150 }).map((_, i) => (
+            <div key={i} className="raindrop" style={{ left: `${Math.random() * 100}vw`, animationDuration: `${Math.random() * 0.5 + 0.3}s`, animationDelay: `${Math.random() * 5}s` }} />
+          ))}
+        </div>
+      )}
       {notifications.map(n => 
         <Toast key={n.id} notification={n} onDismiss={() => dismissNotification(n.id)} />
       )}
+      {isChatbotOpen && <AiChatbot language={language} onClose={() => setIsChatbotOpen(false)} T={T} />}
       <header className="app-header p-4">
         <div className="container mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center">
             <div className="w-full flex justify-between items-center">
                 <div className="flex items-center space-x-3 space-x-reverse">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-purple-400" viewBox="0 0 20 20" fill="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-[var(--c-brand)]" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10.392C2.057 15.71 3.245 16 4.5 16c1.255 0 2.443-.29 3.5-.804V4.804zM14.5 4c-1.255 0-2.443.29-3.5.804v10.392c1.057.514 2.245.804 3.5.804 1.255 0 2.443-.29 3.5-.804V4.804C16.943 4.29 15.755 4 14.5 4z" />
                     </svg>
-                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400 tracking-wide">
-                    موسوعة النحو المبسط
+                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gradient-brand tracking-wide">
+                        {T.title}
                     </h1>
                 </div>
                 <button 
@@ -485,30 +856,28 @@ const App: React.FC = () => {
                     className="md:hidden p-2 rounded-md text-slate-300 hover:text-white hover:bg-slate-700/50"
                     aria-label="Toggle navigation"
                 >
-                    {isHeaderExpanded ? 
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg> :
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" /></svg>
-                    }
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
                 </button>
             </div>
           
           <div className={`header-nav-mobile md:!max-h-none md:!opacity-100 md:!overflow-visible md:flex md:items-center md:gap-2 ${isHeaderExpanded ? 'expanded' : ''}`}>
             <div className="flex flex-col sm:flex-row items-center gap-2 mt-4 md:mt-0">
                 <div className="flex items-center gap-2">
-                    {isTimerRunning && timerSeconds > 0 && (
-                        <div className="bg-slate-800/80 border border-slate-700/50 rounded-lg px-3 py-2 font-mono text-base font-bold text-yellow-300">
-                            <span>⏰</span> {formatTime(timerSeconds)}
-                        </div>
-                    )}
-                    {isStopwatchRunning && (
-                        <div className="bg-slate-800/80 border border-slate-700/50 rounded-lg px-3 py-2 font-mono text-base font-bold text-cyan-300">
-                            <span>⏱️</span> {formatStopwatchTime(stopwatchSeconds)}
-                        </div>
-                    )}
+                    <button
+                        onClick={() => handleLanguageChange(language === 'ar' ? 'fr' : 'ar')}
+                        className="bg-slate-800/80 border border-slate-700/50 rounded-lg px-3 py-2.5 font-bold text-lg flex items-center gap-2 text-white hover:bg-slate-700 transition-colors"
+                        aria-label={`Switch to ${language === 'ar' ? 'French' : 'Arabic'}`}
+                    >
+                        {language === 'ar' ? 'FR' : 'AR'}
+                    </button>
                     <div className="relative">
                         <div className="bg-slate-800/80 border border-slate-700/50 rounded-lg px-4 py-2 font-bold text-lg flex items-center gap-2">
-                            <span className="text-yellow-400">XP:</span> {progress.xp}
+                            <span className="text-yellow-400">XP:</span> 
+                            <span className={isXpAnimating ? 'xp-counter-animated' : ''}>{progress.xp}</span>
                             {xpMultiplier > 1 && <span className="text-xs bg-fuchsia-500/30 text-fuchsia-300 px-2 py-0.5 rounded-full font-bold">x{xpMultiplier.toFixed(2)}</span>}
+                        </div>
+                        <div className="xp-bar-wrapper">
+                            <div className="xp-bar-inner" style={{ width: `${xpBarPercentage}%` }}></div>
                         </div>
                          {xpGain && (
                             <div key={xpGain.key} className="xp-gain-popup text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-400">
@@ -520,7 +889,7 @@ const App: React.FC = () => {
                 <nav className="bg-slate-800/60 border border-slate-700/50 rounded-xl p-1.5 flex flex-wrap justify-center gap-1 mt-2 sm:mt-0">
                     {(['dashboard', 'generator', 'completer', 'quiz', 'store', 'profile', 'settings'] as Exclude<View, 'lesson'>[]).map((view) => (
                         <NavButton key={view} isActive={activeView === view} onClick={() => handleViewChange(view)} icon={ICONS[view]}>
-                            {view === 'dashboard' ? 'الرئيسية' : view === 'generator' ? 'مولّد الأمثلة' : view === 'completer' ? 'أكمل الجملة' : view === 'quiz' ? 'الاختبار' : view === 'store' ? 'المتجر' : view === 'profile' ? 'الملف الشخصي' : 'الإعدادات'}
+                            {T[view]}
                         </NavButton>
                     ))}
                 </nav>
@@ -529,270 +898,20 @@ const App: React.FC = () => {
         </div>
       </header>
       
-      <main className={`container mx-auto max-w-6xl p-4 md:p-8 ${isAnimatingOut ? 'animation-fade-out' : 'animation-fade-in'}`}>
+      <main className={`container mx-auto max-w-6xl p-4 md:p-8 transition-all duration-300 ${isAnimatingOut ? 'animation-fade-out' : 'animation-fade-in'} ${isLangSwitching ? 'animation-lang-switch-out' : 'animation-lang-switch-in'}`}>
         {renderContent()}
       </main>
 
-      <footer className="text-center p-8 mt-12">
-        <p className="text-slate-400">صنع بحب في مصر ❤️ <span className="font-bold text-lg text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-fuchsia-400">بيتر جرجس</span></p>
-      </footer>
+       <button
+            onClick={() => setIsChatbotOpen(true)}
+            className="fixed bottom-6 right-6 z-30 w-16 h-16 rounded-full bg-gradient-brand text-white shadow-2xl shadow-brand/40 flex items-center justify-center transform hover:scale-110 transition-transform duration-300 interactive-press"
+            aria-label="Open AI Chatbot"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V8.25a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 8.25v7.5a2.25 2.25 0 002.25 2.25z" /></svg>
+        </button>
+
     </div>
   );
 };
 
-const Dashboard = React.memo<{onSelectTopic: (topic: GrammarTopic) => void; progress: UserProgress}>(({ onSelectTopic, progress }) => (
-    <div className="animation-pop-in">
-        <h2 className="text-4xl font-bold text-center mb-10 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">
-            اختر درسًا لتبدأ رحلتك
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {GRAMMAR_TOPICS.map((topic) => {
-                const completed = progress.completedLevels[topic.id] || 0;
-                const total = topic.levels.length;
-                const progressPercentage = (completed / total) * 100;
-
-                return (
-                    <div
-                        key={topic.id}
-                        className="topic-card"
-                        onClick={() => onSelectTopic(topic)}
-                    >
-                        <div className="p-6 h-full flex flex-col">
-                            <div className="flex items-center mb-4">
-                               <div className="w-12 h-12 ml-4 text-purple-400" dangerouslySetInnerHTML={{ __html: topic.icon }} />
-                               <h3 className="text-2xl font-bold text-white">{topic.title}</h3>
-                            </div>
-                            <p className="text-gray-400 flex-grow mb-6">{topic.description}</p>
-                            <div>
-                                <div className="flex justify-between items-center mb-1 text-sm text-slate-300">
-                                    <span>التقدم</span>
-                                    <span>{completed}/{total} مستويات</span>
-                                </div>
-                                <div className="progress-bar-bg">
-                                    <div className="progress-bar-fg" style={{ width: `${progressPercentage}%` }}></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )
-            })}
-        </div>
-    </div>
-));
-
-const QuizFlow: React.FC<{
-    selectedQuizSet: QuizSet | null,
-    quizQuestions: QuizQuestion[] | null,
-    onSelectQuizSet: (qs: QuizSet) => void,
-    onStartQuiz: (count: number) => void,
-    onBack: () => void,
-    onQuizComplete: (result: { score: number, total: number }) => void,
-    playSound: (sound: Sound) => void;
-}> = ({ selectedQuizSet, quizQuestions, onSelectQuizSet, onStartQuiz, onBack, onQuizComplete, playSound }) => {
-    if (quizQuestions) {
-      return <Quiz questions={quizQuestions} onBack={onBack} onQuizComplete={onQuizComplete} playSound={playSound} />;
-    }
-    if (selectedQuizSet) {
-         const availableCounts = [5, 10, 15].filter(count => selectedQuizSet.questions.length >= count);
-         return (
-             <div className="animation-pop-in bg-slate-900/70 border border-slate-700/50 rounded-2xl shadow-2xl shadow-purple-500/10 p-8 text-center backdrop-blur-sm">
-                <button onClick={() => onSelectQuizSet(null)} className="text-slate-300 hover:text-white mb-6 text-lg">
-                    &rarr; العودة لاختيار الاختبار
-                </button>
-                <h2 className="text-3xl font-bold text-center mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">
-                    {selectedQuizSet.title}
-                </h2>
-                 <p className="text-gray-400 mb-8 text-lg">اختر عدد الأسئلة لبدء الاختبار.</p>
-                 <div className="flex justify-center gap-4 flex-wrap">
-                     {availableCounts.length > 0 ? availableCounts.map(count => (
-                         <button 
-                            key={count}
-                            onClick={() => onStartQuiz(count)}
-                            className="px-8 py-4 font-bold text-white text-xl rounded-lg bg-slate-800 border border-purple-500/30 hover:bg-gradient-to-r hover:from-purple-600 hover:to-fuchsia-600 hover:shadow-[0_0_20px_rgba(217,70,239,0.5)] transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-500 shadow-lg"
-                         >
-                             {count} أسئلة
-                         </button>
-                     )) : <p className="text-gray-500">لا توجد أسئلة كافية لهذا الموضوع حاليًا.</p>}
-                 </div>
-             </div>
-         )
-    }
-    return (
-      <div className="animation-pop-in">
-        <h2 className="text-4xl font-bold text-center mb-10 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">
-          اختر اختبارًا
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {QUIZ_SETS.map((quizSet) => (
-            <div 
-              key={quizSet.id} 
-              className="bg-slate-900/70 border border-slate-700/50 rounded-2xl shadow-xl transition-all duration-300 transform hover:scale-[1.03] cursor-pointer hover:border-fuchsia-500/50 hover:shadow-2xl hover:shadow-fuchsia-500/20 backdrop-blur-sm"
-              onClick={() => onSelectQuizSet(quizSet)}
-            >
-              <div className="p-6 h-full flex flex-col">
-                <h3 className="text-2xl font-bold text-white mb-2">{quizSet.title}</h3>
-                <p className="text-gray-400 flex-grow">{quizSet.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-}
-
-const Store: React.FC<{
-    progress: UserProgress, 
-    onPurchase: (item: StoreItem) => void,
-    onActivateTheme: (themeId: string) => void,
-    onPreviewTheme: (themeId: string, isPreview: boolean) => void,
-}> = ({ progress, onPurchase, onActivateTheme, onPreviewTheme }) => {
-    const [activeTab, setActiveTab] = useState<'badges' | 'themes'>('badges');
-    
-    const storeSections = useMemo(() => ({
-        badges: STORE_ITEMS.filter(i => i.type === 'badge'),
-        themes: STORE_ITEMS.filter(i => i.type === 'theme'),
-    }), []);
-
-    return (
-    <div className="animation-pop-in">
-        <div className="text-center mb-10">
-            <h2 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">
-                متجر المكافآت
-            </h2>
-            <p className="text-lg text-slate-300 mt-2">استخدم نقاط الخبرة (XP) لشراء أوسمة وثيمات مميزة!</p>
-        </div>
-        
-        <div className="flex justify-center mb-8 border-b-2 border-slate-700/50">
-            {(Object.keys(storeSections) as Array<keyof typeof storeSections>).map(tab => (
-                 <button key={tab} onClick={() => setActiveTab(tab)} className={`px-6 py-3 font-bold text-lg transition-colors ${activeTab === tab ? 'text-purple-400 border-b-2 border-purple-400' : 'text-slate-400 hover:text-white'}`}>
-                    {tab === 'badges' ? 'الأوسمة' : 'الثيمات'}
-                </button>
-            ))}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {storeSections[activeTab].map(item => {
-                const isPurchased = progress.purchasedItems.includes(item.id);
-                const canAfford = progress.xp >= item.cost;
-                const isActiveTheme = item.type === 'theme' && progress.activeThemeId === item.id;
-
-                return (
-                    <div key={item.id} className={`bg-slate-900/70 border border-slate-700/50 rounded-2xl p-6 flex flex-col text-center items-center transition-opacity ${isPurchased && !isActiveTheme ? 'opacity-70' : ''}`}>
-                        <div className="w-20 h-20 mb-4 text-purple-400" dangerouslySetInnerHTML={{ __html: item.icon }} />
-                        <h4 className="text-xl font-bold text-white mb-2">{item.name}</h4>
-                        <p className="text-slate-400 text-sm mb-4 flex-grow">{item.description}</p>
-                        
-                        {item.type === 'theme' && (
-                          <div className="flex justify-center items-center gap-2 mb-4">
-                            {Object.values(item.payload?.colors?.dark || {}).slice(0, 3).map((value, index) => (
-                                <div key={index} className="w-6 h-6 rounded-full border-2 border-slate-500" style={{ backgroundColor: value }}></div>
-                            ))}
-                            <button
-                                onMouseEnter={() => onPreviewTheme(item.id, true)}
-                                onMouseLeave={() => onPreviewTheme(progress.activeThemeId, false)}
-                                className="px-3 py-1 text-xs font-bold text-purple-300 bg-purple-500/20 rounded-full hover:bg-purple-500/40"
-                            >
-                                استعراض
-                            </button>
-                          </div>
-                        )}
-                        
-                        {isPurchased && item.type === 'theme' ? (
-                             <button
-                                onClick={() => onActivateTheme(item.id)}
-                                disabled={isActiveTheme}
-                                className="w-full px-4 py-2 font-bold rounded-lg transition-all duration-300 disabled:cursor-not-allowed
-                                ${isActiveTheme ? 'bg-green-500/80 text-white' : 'bg-fuchsia-600 hover:bg-fuchsia-500 text-white'}
-                                "
-                            >
-                                {isActiveTheme ? 'الثيم النشط' : 'تفعيل الثيم'}
-                            </button>
-                        ) : (
-                            <button
-                                onClick={() => onPurchase(item)}
-                                disabled={isPurchased || !canAfford}
-                                className="w-full px-4 py-2 font-bold rounded-lg transition-all duration-300 disabled:cursor-not-allowed
-                                ${isPurchased ? 'bg-green-500/80 text-white' : ''}
-                                ${!isPurchased && canAfford ? 'bg-purple-600 hover:bg-purple-500 text-white' : ''}
-                                ${!isPurchased && !canAfford ? 'bg-slate-700 text-slate-400' : ''}
-                                "
-                            >
-                                {isPurchased ? 'تم الشراء' : `شراء (${item.cost} XP)`}
-                            </button>
-                        )}
-                    </div>
-                )
-            })}
-        </div>
-    </div>
-    );
-}
-
-// FIX: Define the Profile component to resolve 'Cannot find name Profile' error.
-const Profile: React.FC<{ progress: UserProgress, topics: GrammarTopic[] }> = ({ progress, topics }) => {
-    const totalLevels = useMemo(() => topics.reduce((sum, topic) => sum + topic.levels.length, 0), [topics]);
-    const completedLevelsCount = useMemo(() => Object.values(progress.completedLevels).reduce((sum: number, count: number) => sum + count, 0), [progress.completedLevels]);
-    const completionPercentage = totalLevels > 0 ? (completedLevelsCount / totalLevels) * 100 : 0;
-    
-    const unlockedAchievements = useMemo(() => ACHIEVEMENTS.filter(ach => progress.achievements.includes(ach.id)), [progress.achievements]);
-
-    return (
-        <div className="animation-pop-in space-y-8">
-            <div className="text-center">
-                <h2 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">
-                    الملف الشخصي
-                </h2>
-                <p className="text-lg text-slate-400 mt-2">نظرة عامة على تقدمك وإنجازاتك.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Progress Card */}
-                <div className="bg-slate-900/70 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-sm">
-                    <h3 className="text-2xl font-bold text-white mb-4">إحصائيات التقدم</h3>
-                    <div className="space-y-4">
-                        <div className="flex justify-between items-center bg-slate-800/60 p-3 rounded-lg">
-                            <span className="font-bold">✨ نقاط الخبرة (XP):</span>
-                            <span className="font-bold text-2xl text-yellow-300">{progress.xp}</span>
-                        </div>
-                         <div className="flex justify-between items-center bg-slate-800/60 p-3 rounded-lg">
-                            <span className="font-bold">📚 المستويات المكتملة:</span>
-                            <span className="font-bold text-xl text-purple-300">{completedLevelsCount} / {totalLevels}</span>
-                        </div>
-                        <div>
-                            <div className="flex justify-between items-center mb-1 text-sm text-slate-300">
-                                <span>إجمالي التقدم</span>
-                                <span>{completionPercentage.toFixed(1)}%</span>
-                            </div>
-                            <div className="progress-bar-bg">
-                                <div className="progress-bar-fg" style={{ width: `${completionPercentage}%` }}></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Achievements Card */}
-                <div className="bg-slate-900/70 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-sm">
-                    <h3 className="text-2xl font-bold text-white mb-4">الإنجازات المحققة ({unlockedAchievements.length} / {ACHIEVEMENTS.length})</h3>
-                    {unlockedAchievements.length > 0 ? (
-                        <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
-                            {unlockedAchievements.map(ach => (
-                                <div key={ach.id} className="flex items-center gap-4 bg-slate-800/60 p-3 rounded-lg">
-                                    <div className="w-10 h-10 text-yellow-400 shrink-0" dangerouslySetInnerHTML={{ __html: ach.icon }} />
-                                    <div>
-                                        <p className="font-bold text-white">{ach.name}</p>
-                                        <p className="text-sm text-slate-400">{ach.description}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <p className="text-slate-400 text-center py-8">لم تحقق أي إنجازات بعد. استمر في التعلم!</p>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
-};
-
-// FIX: Add default export for App component to be used in index.tsx
 export default App;

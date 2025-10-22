@@ -1,30 +1,71 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+// FIX: Import `useRef` from 'react' to resolve the "Cannot find name 'useRef'" error.
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import type { GrammarTopic, LessonLevel, QuizQuestion } from '../types';
+import type { Translations } from '../App';
 
 interface GrammarSectionProps {
   topic: GrammarTopic;
   onBack: () => void;
   completedLevels: number;
   onCompleteLevel: (topicId: string, levelId: number) => void;
+  triggerVisualEffect: (effect: 'correct-answer' | 'incorrect-answer', duration: number) => void;
+  T: Translations;
 }
 
-const SectionIcon: React.FC<{ icon: React.ReactNode }> = ({ icon }) => (
-  <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center ml-3 text-purple-400 shrink-0">
-    {icon}
-  </div>
-);
+const MasteryModal: React.FC<{ topic: GrammarTopic; onBack: () => void; T: Translations }> = ({ topic, onBack, T }) => {
+    useEffect(() => {
+        const confettiCount = 100;
+        const confettiContainer = document.body;
+        for (let i = 0; i < confettiCount; i++) {
+            const confetti = document.createElement('div');
+            const size = Math.random() * 8 + 4;
+            confetti.style.width = `${size}px`;
+            confetti.style.height = `${size}px`;
+            confetti.style.position = 'fixed';
+            confetti.style.left = `${Math.random() * 100}vw`;
+            confetti.style.top = `${-20}px`;
+            const randomColor = `hsl(${Math.random() * 360}, 90%, 60%)`;
+            confetti.style.backgroundColor = randomColor;
+            confetti.style.opacity = '0.9';
+            confetti.style.zIndex = '100';
+            confetti.style.pointerEvents = 'none';
+            confetti.style.animation = `fall ${Math.random() * 3 + 4}s linear ${Math.random() * 1}s infinite`;
+            confetti.innerHTML = `<style>@keyframes fall { to { transform: translateY(${window.innerHeight + 20}px) rotate(${Math.random() * 720}deg); opacity: 0; } }</style>`;
+            confettiContainer.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 7000);
+        }
+    }, []);
 
-type QuizState = 'idle' | 'in_progress' | 'passed' | 'failed';
+    return (
+        <div className="mastery-modal-backdrop">
+            <div className="mastery-modal-content">
+                <div className="icon-container breathing-glow" style={{'animationDuration': '4s'} as React.CSSProperties} dangerouslySetInnerHTML={{ __html: topic.icon }} />
+                <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-400 mb-2">
+                    {T.masteryTitle}
+                </h2>
+                <p className="text-lg text-slate-300 mb-6">{T.masteryDescription.replace('{topicTitle}', topic.title)}</p>
+                <button
+                    onClick={onBack}
+                    className="w-full md:w-auto btn btn-primary text-xl interactive-press"
+                >
+                    {T.continueLearning}
+                </button>
+            </div>
+        </div>
+    );
+};
 
 const LevelQuiz: React.FC<{ 
     questions: QuizQuestion[], 
     onQuizPass: () => void,
     onRetry: () => void,
-}> = ({ questions, onQuizPass, onRetry }) => {
+    triggerVisualEffect: (effect: 'correct-answer' | 'incorrect-answer', duration: number) => void,
+    T: Translations,
+    showTranslations: boolean;
+}> = ({ questions, onQuizPass, onRetry, triggerVisualEffect, T, showTranslations }) => {
     const [answers, setAnswers] = useState<{[key: number]: string}>({});
     const [showResults, setShowResults] = useState(false);
 
-    // Reset state when questions change
     useEffect(() => {
         setAnswers({});
         setShowResults(false);
@@ -38,270 +79,234 @@ const LevelQuiz: React.FC<{
         setShowResults(true);
         const allCorrect = questions.every((q, i) => answers[i] === q.correctAnswer);
         if (allCorrect) {
-            setTimeout(onQuizPass, 2000);
+            triggerVisualEffect('correct-answer', 250);
+            onQuizPass();
+        } else {
+            triggerVisualEffect('incorrect-answer', 5000);
         }
     };
-
-    const isAllCorrect = questions.every((q, i) => answers[i] === q.correctAnswer);
+    
+    const isPassed = useMemo(() => {
+        if (!showResults) return false;
+        return questions.every((q, i) => answers[i] === q.correctAnswer);
+    }, [showResults, answers, questions]);
 
     return (
-        <div className="mt-8 p-6 bg-slate-800/50 border border-purple-400/30 rounded-lg animation-fade-in-up">
-            <h3 className="text-2xl font-bold text-center mb-6">📝 اختبار قصير للتأكيد</h3>
+        <div className="mt-8 border-t-2 border-[var(--c-border)] pt-6">
+            <h4 className="text-xl font-bold mb-4 flex items-center gap-2" style={{color: 'var(--c-brand-light)'}}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                {T.quizTitle}
+            </h4>
             <div className="space-y-6">
-                {questions.map((q, index) => (
-                    <div key={q.question}>
-                        <p className="font-bold text-lg mb-3 text-white">{index + 1}. {q.question}</p>
-                        <div className="flex flex-col sm:flex-row gap-2">
+                {questions.map((q, qIndex) => (
+                    <div key={qIndex}>
+                        <p className="font-semibold mb-2">{qIndex + 1}. {q.question}</p>
+                        {showTranslations && q.question_ar && <p className="text-sm text-slate-400 mb-2 font-tajawal rtl pr-2 border-r-2 border-slate-600">{q.question_ar}</p>}
+                        <div className="grid grid-cols-1 gap-2">
                             {q.options.map(opt => {
-                                const isSelected = answers[index] === opt;
-                                let buttonClass = 'bg-slate-700/80 hover:bg-slate-600/80';
+                                const isSelected = answers[qIndex] === opt;
+                                let buttonClass = 'bg-[var(--c-bg-muted)] hover:bg-[var(--c-border)]';
                                 if (showResults) {
                                     if (opt === q.correctAnswer) {
                                         buttonClass = 'bg-green-500/80';
-                                    } else if (isSelected && opt !== q.correctAnswer) {
+                                    } else if (isSelected) {
                                         buttonClass = 'bg-red-500/80';
-                                    } else {
-                                        buttonClass = 'bg-slate-800/60 opacity-60';
                                     }
-                                } else if (isSelected) {
-                                    buttonClass = 'bg-purple-600';
                                 }
                                 return (
                                     <button 
                                         key={opt}
-                                        onClick={() => !showResults && handleAnswer(index, opt)}
-                                        disabled={showResults}
-                                        className={`w-full text-center p-3 rounded-lg font-semibold transition-all duration-200 ${buttonClass}`}
+                                        onClick={() => !showResults && handleAnswer(qIndex, opt)}
+                                        className={`p-3 rounded-lg text-left transition-all interactive-press ${buttonClass} ${isSelected && !showResults ? 'ring-2 ring-brand' : ''}`}
                                     >
                                         {opt}
                                     </button>
                                 );
                             })}
                         </div>
+                        {showResults && answers[qIndex] !== q.correctAnswer && (
+                           <div className="text-sm mt-2 p-2 rounded bg-yellow-900/30 text-yellow-300">
+                                <p dangerouslySetInnerHTML={{__html: `${T.incorrectAnswerTitle}: <strong>${q.correctAnswer}</strong>.`}}></p>
+                                <p>{q.explanation}</p>
+                                {showTranslations && q.explanation_ar && <p className="mt-1 font-tajawal rtl">{q.explanation_ar}</p>}
+                           </div>
+                        )}
+                         {showResults && answers[qIndex] === q.correctAnswer && (
+                             <div className="text-sm mt-2 p-2 rounded bg-green-900/30 text-green-300">
+                                <p>{T.correctAnswer} {q.explanation}</p>
+                                {showTranslations && q.explanation_ar && <p className="mt-1 font-tajawal rtl">{q.explanation_ar}</p>}
+                             </div>
+                         )}
                     </div>
                 ))}
             </div>
-            
-            {!showResults && (
-                 <button 
-                    onClick={checkAnswers}
-                    disabled={Object.keys(answers).length !== questions.length}
-                    className="w-full mt-6 px-8 py-3 font-bold text-white text-lg rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 transition-all duration-300 disabled:bg-slate-600 disabled:cursor-not-allowed"
-                  >
-                    تحقق من الإجابات
+            {!showResults && Object.keys(answers).length === questions.length && (
+                <button onClick={checkAnswers} className="mt-6 w-full btn btn-primary interactive-press">
+                    {T.checkAnswers}
                 </button>
             )}
-
-            {showResults && !isAllCorrect && (
-                <button 
-                    onClick={onRetry}
-                    className="w-full mt-6 px-8 py-3 font-bold text-white text-lg rounded-lg bg-purple-600 hover:bg-purple-500 transition-all duration-300"
-                  >
-                    حاول بأسئلة جديدة 🔄
-                </button>
-            )}
-
             {showResults && (
-                <div className="mt-6 text-center font-bold text-xl p-4 rounded-lg" style={{backgroundColor: isAllCorrect ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)', color: isAllCorrect ? '#34d399' : '#f87171'}}>
-                    {isAllCorrect ? 'رائع! إجابات صحيحة. ✅' : 'إحدى الإجابات خاطئة، حاول مجددًا!'}
-                </div>
+                isPassed ? (
+                    <p className="mt-6 p-4 text-center font-bold text-green-400 bg-green-900/30 rounded-lg">{T.quizCorrect}</p>
+                ) : (
+                    <div className="mt-6 flex gap-4">
+                        <button onClick={() => { setAnswers({}); setShowResults(false); onRetry(); }} className="w-full btn bg-slate-600 hover:bg-slate-500 text-white interactive-press">
+                            {T.retryQuiz}
+                        </button>
+                    </div>
+                )
             )}
         </div>
     );
 };
 
+const GrammarSection: React.FC<GrammarSectionProps> = ({ topic, onBack, completedLevels, onCompleteLevel, triggerVisualEffect, T }) => {
+    const [activeLevelId, setActiveLevelId] = useState<number>(completedLevels < topic.levels.length ? completedLevels + 1 : topic.levels.length);
+    const [showTranslations, setShowTranslations] = useState(false);
 
-const GrammarSection: React.FC<GrammarSectionProps> = ({ topic, onBack, completedLevels, onCompleteLevel }) => {
-  const [selectedLevelIndex, setSelectedLevelIndex] = useState(completedLevels < topic.levels.length ? completedLevels : 0);
-  const [quizState, setQuizState] = useState<QuizState>('idle');
-  const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
-  const [isTopicMastered, setIsTopicMastered] = useState(false);
-
-  const currentLevel = topic.levels[selectedLevelIndex];
-  const progressPercentage = (completedLevels / topic.levels.length) * 100;
-  
-  const generateLevelQuiz = useCallback(() => {
-    if (!currentLevel.quiz || currentLevel.quiz.length < 2) {
-        setQuizQuestions([]);
-        return;
-    };
-    
-    // Shuffle and pick 2 unique questions
-    const shuffled = [...currentLevel.quiz].sort(() => 0.5 - Math.random());
-    setQuizQuestions(shuffled.slice(0, 2));
-  }, [currentLevel.quiz]);
-  
-  // Reset quiz state and generate questions if level changes
-  useEffect(() => {
-      setQuizState('idle');
-      generateLevelQuiz();
-  }, [selectedLevelIndex, generateLevelQuiz]);
-
-  const handleCompletePress = () => {
-      if (currentLevel.quiz && currentLevel.quiz.length > 0) {
-          generateLevelQuiz(); // Generate initial set of questions
-          setQuizState('in_progress');
-      } else {
-          // If no quiz, complete directly
-          onCompleteLevel(topic.id, currentLevel.id);
-          if(selectedLevelIndex + 1 < topic.levels.length) {
-             setSelectedLevelIndex(prev => prev + 1);
-          } else {
-             setIsTopicMastered(true);
-          }
-      }
-  };
-  
-  const handleQuizPass = () => {
-      setQuizState('passed');
-      setTimeout(() => {
-        onCompleteLevel(topic.id, currentLevel.id);
-        if(selectedLevelIndex + 1 < topic.levels.length) {
-            setSelectedLevelIndex(prev => prev + 1);
-        } else {
-            // It's the last level
-            setIsTopicMastered(true);
+    const handleSelectLevel = (levelId: number) => {
+        if (levelId <= completedLevels + 1) {
+            setActiveLevelId(levelId);
         }
-        setQuizState('idle');
-      }, 1500);
-  };
-  
-  const handleQuizRetry = () => {
-      // Logic to generate NEW questions
-      generateLevelQuiz();
-  };
+    };
 
-  const isLevelCompletable = selectedLevelIndex === completedLevels && completedLevels < topic.levels.length;
+    const handleCompleteQuiz = (level: LessonLevel) => {
+        onCompleteLevel(topic.id, level.id);
+        if (level.id < topic.levels.length) {
+            setActiveLevelId(level.id + 1);
+        }
+    };
 
-  return (
-    <div className="animation-pop-in">
-        {isTopicMastered && (
-            <div className="mastery-modal-backdrop">
-                <div className="mastery-modal-content">
-                    <div className="icon-container" dangerouslySetInnerHTML={{ __html: topic.icon }} />
-                    <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-300 mb-2">
-                        لقد أتقنت الدرس!
-                    </h2>
-                    <p className="text-slate-300 mb-6">
-                        أحسنت! لقد أكملت جميع مستويات درس "{topic.title}". أنت الآن خبير في هذا الموضوع!
-                    </p>
-                    <button 
-                        onClick={() => setIsTopicMastered(false)}
-                        className="px-8 py-3 font-bold text-white text-lg rounded-lg bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:shadow-[0_0_20px_rgba(217,70,239,0.5)] transition-all duration-300"
-                    >
-                        متابعة التعلم
-                    </button>
+    const isMasteredOnce = useRef(false);
+
+    const isMastered = useMemo(() => {
+        const mastered = completedLevels === topic.levels.length;
+        if(mastered) {
+          isMasteredOnce.current = true;
+        }
+        return mastered;
+    }, [completedLevels, topic.levels.length]);
+    
+    // This effect handles the one-time display of the mastery modal.
+    const [showMasteryModal, setShowMasteryModal] = useState(false);
+    useEffect(() => {
+        if (isMastered && !isMasteredOnce.current) {
+            setShowMasteryModal(true);
+        }
+    }, [isMastered]);
+
+    if (showMasteryModal) {
+        return <MasteryModal topic={topic} onBack={() => {setShowMasteryModal(false); onBack();}} T={T} />;
+    }
+
+    const activeLevel = topic.levels.find(l => l.id === activeLevelId);
+
+    return (
+        <div className="animation-pop-in">
+            <button onClick={onBack} className="flex items-center gap-2 text-[var(--c-brand)] hover:text-[var(--c-brand-light)] font-bold mb-6 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${T.lang === 'fr' ? 'transform scale-x-[-1]' : ''}`} viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                {T.backToLessons}
+            </button>
+             <div className="level-content-area shadow-xl shadow-brand/10 p-6 md:p-8">
+                <div className="flex items-center mb-6">
+                    <div className="w-16 h-16 text-[var(--c-brand)]" dangerouslySetInnerHTML={{ __html: topic.icon }} />
+                    <h2 className={`text-4xl font-bold ${T.lang === 'ar' ? 'mr-4' : 'ml-4'}`}>{topic.title}</h2>
                 </div>
-            </div>
-        )}
 
-        <button onClick={onBack} className="flex items-center gap-2 text-purple-400 hover:text-purple-300 font-bold mb-6 transition-colors">
-             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-            العودة إلى قائمة الدروس
-        </button>
-
-        <header className="mb-8">
-            <div className="flex items-center mb-4">
-                <div className="w-16 h-16 mr-4 text-purple-400 shrink-0" dangerouslySetInnerHTML={{ __html: topic.icon }} />
-                <div>
-                    <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">
-                        {topic.title}
-                    </h1>
-                    <p className="text-slate-400 text-lg">{topic.description}</p>
+                <div className="mb-8">
+                    <h3 className="text-2xl font-bold mb-4" style={{color: 'var(--c-brand-light)'}}>{T.lessonLevels}</h3>
+                    <div className="flex flex-wrap gap-3">
+                        {topic.levels.map((level, index) => {
+                            const isCompleted = level.id <= completedLevels;
+                            const isActive = level.id === activeLevelId;
+                            const isLocked = level.id > completedLevels + 1;
+                            return (
+                                <button
+                                    key={level.id}
+                                    onClick={() => handleSelectLevel(level.id)}
+                                    disabled={isLocked}
+                                    className={`px-4 py-2 rounded-lg font-bold transition-all border-2 animation-slide-in-staggered
+                                        ${isLocked ? 'bg-slate-800/50 border-slate-700 text-slate-500 cursor-not-allowed' : ''}
+                                        ${!isLocked && isActive ? 'text-white' : ''}
+                                        ${!isLocked && !isActive ? (isCompleted ? 'bg-green-500/20 border-green-500/50 text-green-300 hover:bg-green-500/30' : 'bg-slate-700/50 border-slate-600 text-slate-300 hover:bg-slate-700') : ''}
+                                    `}
+                                    style={{
+                                        animationDelay: `${index * 50}ms`,
+                                        ...( !isLocked && isActive ? { backgroundColor: 'var(--c-brand)', borderColor: 'var(--c-brand-light)' } : {})
+                                    } as React.CSSProperties}
+                                >
+                                    {isLocked ? '🔒' : (isCompleted ? '✓' : '●')} {T.lang === 'fr' && level.title_ar ? level.title.split(':')[0] : (level.title.split(':')[0] || T.level)}
+                                </button>
+                            );
+                        })}
+                    </div>
                 </div>
-            </div>
-            <div className="progress-bar-bg">
-                <div className="progress-bar-fg" style={{ width: `${progressPercentage}%` }}></div>
-            </div>
-        </header>
 
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Levels Sidebar */}
-        <aside className="md:w-1/3">
-            <h3 className="text-xl font-bold mb-4 text-white">مستويات الدرس:</h3>
-            <div className="space-y-2">
-                {topic.levels.map((level, index) => {
-                    const isCompleted = index < completedLevels;
-                    const isCurrent = index === completedLevels;
-                    const isLocked = index > completedLevels;
-                    const isSelected = index === selectedLevelIndex;
-
-                    return (
-                        <button 
-                            key={level.id}
-                            onClick={() => !isLocked && setSelectedLevelIndex(index)}
-                            disabled={isLocked}
-                            className={`w-full text-right p-4 rounded-lg border-2 transition-all duration-200 flex items-center justify-between
-                                ${isLocked ? 'bg-slate-800/50 border-transparent text-slate-500 cursor-not-allowed' : ''}
-                                ${!isLocked && isSelected ? 'bg-purple-500/20 border-purple-500' : ''}
-                                ${!isLocked && !isSelected ? 'bg-slate-800/80 border-transparent hover:border-purple-500/50' : ''}
-                            `}
-                        >
-                            <div className="flex items-center">
-                                {isCompleted ? <span className="text-green-400 ml-3 text-xl">✓</span> : isCurrent ? <span className="text-yellow-400 ml-3 text-xl">▶</span> : <span className="text-slate-600 ml-3 text-xl">🔒</span>}
-                                <div>
-                                    <p className="font-bold">{level.title}</p>
-                                    <p className="text-xs text-slate-400">+{level.xpReward} نقطة خبرة</p>
+                {activeLevel && (
+                    <div key={activeLevel.id} className="animation-fade-in">
+                        <div className="flex justify-between items-center flex-wrap gap-4">
+                            <h3 className="text-3xl font-bold text-white mb-4">{activeLevel.title}</h3>
+                             {T.lang === 'fr' && (
+                                <div className="flex items-center gap-2 mb-4">
+                                    <span className="text-sm font-bold text-slate-300 font-tajawal">{ T.lang === 'fr' ? 'إظهار الترجمة' : ''}</span>
+                                    <button
+                                        onClick={() => setShowTranslations(!showTranslations)}
+                                        className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors ${showTranslations ? 'bg-[var(--c-brand)]' : 'bg-slate-700'}`}
+                                    >
+                                        <span className={`${showTranslations ? 'translate-x-6' : 'translate-x-1'} inline-block w-4 h-4 transform bg-white rounded-full transition-transform`} />
+                                    </button>
                                 </div>
+                            )}
+                        </div>
+                        {showTranslations && activeLevel.title_ar && <h3 className="text-xl font-bold text-slate-400 mb-4 rtl font-tajawal">{activeLevel.title_ar}</h3>}
+
+                        <div className="prose prose-invert max-w-none prose-p:text-slate-300 prose-strong:text-[var(--c-brand-light)] prose-code:text-amber-300 prose-code:bg-slate-800/70 prose-code:p-1 prose-code:rounded-md">
+                            {activeLevel.content.map((p, i) => (
+                                <div key={i}>
+                                    <p dangerouslySetInnerHTML={{ __html: p }}></p>
+                                    {showTranslations && activeLevel.content_ar?.[i] && <div className="translation-content rtl" dangerouslySetInnerHTML={{ __html: activeLevel.content_ar[i] }}></div>}
+                                </div>
+                            ))}
+                        </div>
+                        
+                        <div className="mt-6">
+                            <h4 className="text-xl font-bold mb-3 flex items-center gap-2" style={{color: 'var(--c-brand-light)'}}>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2V7a2 2 0 012-2h4M5 8h1.5M5 11h1.5M5 14h1.5" /></svg>
+                                {T.examplesTitle}
+                            </h4>
+                            <div className="space-y-4">
+                                {activeLevel.examples.map((ex, i) => (
+                                    <div key={i} className="bg-slate-800/60 p-4 rounded-lg border-l-4 border-brand">
+                                        <p className="font-mono text-lg text-white mb-2">{ex.sentence}</p>
+                                        {showTranslations && ex.sentence_ar && <p className="font-tajawal text-md text-slate-300 mb-2 rtl">{ex.sentence_ar}</p>}
+                                        <p className="text-slate-400"><strong className="text-brand-light">{T.explanation}:</strong> {ex.explanation}</p>
+                                        {showTranslations && ex.explanation_ar && <p className="text-slate-400 mt-1 rtl font-tajawal">{ex.explanation_ar}</p>}
+                                    </div>
+                                ))}
                             </div>
-                        </button>
-                    )
-                })}
-            </div>
-        </aside>
+                        </div>
 
-        {/* Level Content */}
-        <main className="flex-1 level-content-area p-6 md:p-8">
-            <div className="flex items-center mb-6 pb-4 border-b-2 border-slate-700/50">
-                <SectionIcon icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>} />
-                <h2 className="text-3xl font-bold text-white">{currentLevel.title}</h2>
-            </div>
-            
-            <div className="text-lg text-gray-300 leading-loose mb-8 space-y-5 prose prose-invert max-w-none">
-                {currentLevel.content.map((paragraph, index) => (
-                    <div key={index} dangerouslySetInnerHTML={{ __html: paragraph }} />
-                ))}
-            </div>
+                        {activeLevel.quiz && activeLevel.quiz.length > 0 && activeLevelId === completedLevels + 1 && (
+                            <LevelQuiz 
+                                questions={activeLevel.quiz}
+                                onQuizPass={() => handleCompleteQuiz(activeLevel)}
+                                onRetry={() => {}}
+                                triggerVisualEffect={triggerVisualEffect}
+                                T={T}
+                                showTranslations={showTranslations}
+                            />
+                        )}
 
-            {currentLevel.examples.length > 0 && (
-            <div className="mb-8">
-                <div className="flex items-center mb-4">
-                    <SectionIcon icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 5.25a7.5 7.5 0 001.5-1.5m-1.5 1.5a7.5 7.5 0 01-1.5-1.5m3-3l3-3m0 0l-3-3m3 3H3" /></svg>} />
-                    <h3 className="text-2xl font-semibold text-white">أمثلة توضيحية:</h3>
-                </div>
-                <ul className="space-y-4">
-                {currentLevel.examples.map((example, index) => (
-                    <li key={index} className="bg-slate-800/60 p-4 rounded-lg border-l-4 border-fuchsia-500/50">
-                        <p className="font-semibold text-xl text-gray-100 mb-2" dir="rtl">{`" ${example.sentence} "`}</p>
-                        <p className="text-md text-gray-400"><span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-fuchsia-400 ml-1">الشرح:</span> {example.explanation}</p>
-                    </li>
-                ))}
-                </ul>
+                        {activeLevelId <= completedLevels && (
+                             <div className="mt-8 p-4 text-center font-bold text-green-400 bg-green-900/30 rounded-lg border border-green-500/50">
+                                {T.levelPassed.replace('{xp}', activeLevel.xpReward.toString())}
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
-            )}
-
-            {isLevelCompletable && quizState === 'idle' && (
-                 <button 
-                    onClick={handleCompletePress}
-                    className="w-full mt-4 px-8 py-4 font-bold text-white text-xl rounded-lg bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:shadow-[0_0_20px_rgba(217,70,239,0.5)] transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-500 shadow-lg"
-                  >
-                    أكملت المستوى، اختبر فهمك!
-                </button>
-            )}
-            
-            {isLevelCompletable && quizState === 'in_progress' && quizQuestions.length > 0 && (
-                <LevelQuiz questions={quizQuestions} onQuizPass={handleQuizPass} onRetry={handleQuizRetry} />
-            )}
-
-            {isLevelCompletable && quizState === 'passed' && (
-                <div className="w-full mt-4 px-8 py-4 font-bold text-white text-xl rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 text-center animation-pop-in">
-                    أحسنت! +{currentLevel.xpReward} XP ✨ جاري الانتقال...
-                </div>
-            )}
-        </main>
-      </div>
-    </div>
-  );
+        </div>
+    );
 };
 
 export default GrammarSection;

@@ -1,6 +1,6 @@
-import type { GrammarTopic, QuizSet, SimpleExample, QuizQuestion, FillInTheBlankExercise, StoreItem, Achievement } from './types';
+import type { GrammarTopic, QuizSet, QuizQuestion, StoreItem, Achievement, SimpleExample, FillInTheBlankExercise } from './types';
 
-export const GRAMMAR_TOPICS: GrammarTopic[] = [
+export const GRAMMAR_TOPICS_AR: GrammarTopic[] = [
   {
     id: 'mafool_mutlaq',
     title: 'المفعول المطلق',
@@ -11,7 +11,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
         id: 1,
         title: 'المستوى الأول: التعريف والغرض الأساسي',
         content: [
-          '<strong>التعريف:</strong> المفعول المطلق هو <strong>مصدرٌ منصوبٌ</strong>، يُذكر بعد فعل من نفس لفظه. يُسمى "مطلق" لأنه غير مقيد بحرف جر كبقية المفاعيل. وظيفته ليست أساسية في الجملة (يُسمى فضلة)، بل يأتي لأغراض بلاغية.',
+          '<strong>التعريف:</strong> המفعول المطلق هو <strong>مصدرٌ منصوبٌ</strong>، يُذكر بعد فعل من نفس لفظه. يُسمى "مطلق" لأنه غير مقيد بحرف جر كبقية المفاعيل. وظيفته ليست أساسية في الجملة (يُسمى فضلة)، بل يأتي لأغراض بلاغية.',
           '<strong>الغرض الأول (الأشهر): التوكيد.</strong> عندما تريد أن تؤكد أن الفعل قد حدث بالفعل وبدون أي شك، تستخدم المفعول المطلق. في هذه الحالة، لا يأتي بعده أي شيء يصفه أو يحدده.',
           'الفعل والمصدر يكونان من نفس الجذر. مثال: <code>فَهِمَ</code> -> <code>فَهْمًا</code>, <code>لَعِبَ</code> -> <code>لَعِبًا</code>.',
         ],
@@ -206,7 +206,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
         ],
         xpReward: 50,
         quiz: [
-            { question: "إذا لم يكن المصدر قلبيًا، فما إعرابه الغالب؟", options: ['مفعول لأجله منصوب', 'اسم مجرور بحرف جر', 'حال منصوب'], correctAnswer: 'اسم مجرور بحرف جر', explanation: 'إذا فقد شرط القلبية، يجر بحرف جر يفيد التعليل.', topic: 'المفعول لأجله' },
+            { question: "إذا لم يكن المصدر قلبيًا، فما إعرابه الغالب؟", options: ['مفعول لأجله منصوب', 'اسم مجرور بحرف جر', 'حال منصوب'], correctAnswer: 'اسم مجرور بحرف جر', explanation: 'إذا فقد شرط القلبية, يجر بحرف جر يفيد التعليل.', topic: 'المفعول لأجله' },
             { question: "لماذا جُرّت كلمة 'للدفاع' في 'استعددت للدفاع عن الوطن'؟", options: ['لأنها ليست مصدرًا', 'لأنها ليست سببًا', "لأن 'الدفاع' ليس مصدرًا قلبيًا"], correctAnswer: "لأن 'الدفاع' ليس مصدرًا قلبيًا", explanation: 'الدفاع فعل من أفعال الجوارح.', topic: 'المفعول لأجله' },
             { question: "أكمل الجملة بشكل صحيح: 'كافأته ...'؟", options: ['لأمانته', 'أمانته', 'أمانةً'], correctAnswer: 'لأمانته', explanation: 'الأمانة ليست مصدرًا قلبيًا بل صفة، لذا تُجر.', topic: 'المفعول لأجله'},
             { question: "ما حرف الجر الذي يفيد التعليل غالبًا مع المصدر المعلِّل؟", options: ['إلى', 'اللام', 'عن'], correctAnswer: 'اللام', explanation: 'اللام هي أشهر حروف الجر التي تستخدم للتعليل.', topic: 'المفعول لأجله'}
@@ -392,7 +392,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
             '<strong>مفتاح الحل:</strong> للحكم على الفعل، يجب دائمًا رده إلى صيغة الماضي المفرد المذكر (مع الضمير "هو"). حروف المضارعة (أ، ن، ي، ت في كلمة "أنيت")، وتاء التأنيث، والضمائر المتصلة لا تعتبر من حروف الزيادة.'
         ],
         examples: [
-            { sentence: 'شَرِبَ المريضُ الدواءَ.', explanation: 'الفعل "شَرِبَ" مجرد ثلاثي، كل حروفه أصلية.' },
+            { sentence: 'شَرِبَ المريضُ الدواءَ.', explanation: 'الفعل "شَرِبَ" مجرد ثلاثي، כל حروفه أصلية.' },
             { sentence: 'يكتبُ الطالب الدرس.', explanation: 'الفعل "يكتبُ"، ماضيه "كَتَبَ". الياء في أوله حرف مضارعة وليست من حروف الزيادة، فالفعل مجرد.' },
             { sentence: 'أَغْلَقَ الرجلُ البابَ.', explanation: 'الفعل "أَغْلَقَ"، أصله "غَلَقَ". إذن هو فعل مزيد بالهمزة.' }
         ],
@@ -657,7 +657,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
         quiz: [
             { question: "كيف يصاغ اسم الفاعل من الفعل غير الثلاثي؟", options: ['على وزن فاعل', 'بميم مضمومة وكسر ما قبل الآخر', 'بميم مفتوحة وكسر ما قبل الآخر'], correctAnswer: 'بميم مضمومة وكسر ما قبل الآخر', explanation: 'هذه هي القاعدة العامة لصياغته من الأفعال فوق الثلاثية.', topic: 'اسم الفاعل واسم المفعول' },
             { question: "ما اسم الفاعل من الفعل 'انطلق'؟", options: ['ناطق', 'مُنطَلَق', 'مُنطلِق'], correctAnswer: 'مُنطلِق', explanation: 'يأتي من مضارعه "ينطلق"، ثم نقلب الياء ميماً مضمومة ونكسر ما قبل الآخر.', topic: 'اسم الفاعل واسم المفعول' },
-            { question: "كلمة 'متعلِّم' هي اسم فاعل، فما فعلها؟", options: ['عَلِمَ', 'عَلَّمَ', 'تَعَلَّمَ'], correctAnswer: 'تَعَلَّمَ', explanation: 'لأنها تبدأ بميم مضمومة ومكسور ما قبل آخرها، ففعلها خماسي.', topic: 'اسم الفاعل واسم المفعول'},
+            { question: "'متعلِّم' هي اسم فاعل، فما فعلها؟", options: ['عَلِمَ', 'عَلَّمَ', 'تَعَلَّمَ'], correctAnswer: 'تَعَلَّمَ', explanation: 'لأنها تبدأ بميم مضمومة ومكسور ما قبل آخرها، ففعلها خماسي.', topic: 'اسم الفاعل واسم المفعول'},
             { question: "ما الفرق بين 'مُعلِّم' و 'مُتعلِّم'؟", options: ['لا فرق', 'الأولى من عَلَّمَ والثانية من تَعَلَّمَ', 'الأولى من عَلِمَ والثانية من عَلَّمَ'], correctAnswer: 'الأولى من عَلَّمَ والثانية من تَعَلَّمَ', explanation: 'كلاهما اسم فاعل من فعل غير ثلاثي، لكن الفعلين مختلفان.', topic: 'اسم الفاعل واسم المفعول'}
         ]
       },
@@ -861,6 +861,798 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
   }
 ];
 
+export const GRAMMAR_TOPICS_FR: GrammarTopic[] = [
+    {
+        id: 'les_articles',
+        title: 'Les Articles',
+        icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>',
+        description: 'Apprenez à utiliser les articles définis (le, la, les) et indéfinis (un, une, des).',
+        levels: [
+            {
+                id: 1,
+                title: 'Niveau 1: Articles Indéfinis (un, une, des)',
+                title_ar: 'المستوى الأول: أدوات النكرة (un, une, des)',
+                content: [
+                    '<strong>Définition :</strong> Les articles indéfinis introduisent un nom qui n\'est pas spécifié. On ne sait pas exactement de qui ou de quoi on parle.',
+                    'Il y a trois articles indéfinis :',
+                    '<strong><code>un</code></strong> : pour un nom masculin singulier.',
+                    '<strong><code>une</code></strong> : pour un nom féminin singulier.',
+                    '<strong><code>des</code></strong> : pour un nom pluriel (masculin ou féminin).'
+                ],
+                content_ar: [
+                    '<strong>التعريف:</strong> أدوات النكرة تُستخدم قبل الاسم غير المحدد. يعني إحنا مش عارفين بنتكلم عن مين أو إيه بالظبط.',
+                    'فيه ثلاث أدوات نكرة:',
+                    '<strong><code>un</code></strong>: للاسم المذكر المفرد.',
+                    '<strong><code>une</code></strong>: للاسم المؤنث المفرد.',
+                    '<strong><code>des</code></strong>: للاسم الجمع (مذكر أو مؤنث).'
+                ],
+                examples: [
+                    { sentence: 'J\'ai acheté un livre.', explanation: '`un` est utilisé car "livre" est un nom masculin singulier. On ne précise pas quel livre.', sentence_ar: 'أنا اشتريت كتاب.', explanation_ar: 'استخدمنا `un` عشان كلمة "livre" (كتاب) مذكر مفرد. إحنا مش بنحدد أي كتاب بالظبط.' },
+                    { sentence: 'Elle mange une pomme.', explanation: '`une` est utilisé car "pomme" est un nom féminin singulier.', sentence_ar: 'هي تأكل تفاحة.', explanation_ar: 'استخدمنا `une` عشان كلمة "pomme" (تفاحة) مؤنث مفرد.' },
+                    { sentence: 'Il y a des enfants dans le parc.', explanation: '`des` est utilisé car "enfants" est un nom pluriel.', sentence_ar: 'يوجد أطفال في الحديقة.', explanation_ar: 'استخدمنا `des` عشان كلمة "enfants" (أطفال) جمع.' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Quel article indéfini utilise-t-on pour "chat" (masculin singulier) ?', options: ['un', 'une', 'des'], correctAnswer: 'un', explanation: '"un" est pour le masculin singulier.', topic: 'Les Articles', question_ar: 'أي أداة نكرة تستخدم مع كلمة "chat" (قط - مذكر مفرد)؟', explanation_ar: 'أداة "un" للمذكر المفرد.' },
+                    { question: 'Complétez la phrase : "Je vois ___ voiture." (féminin singulier)', options: ['un', 'une', 'des'], correctAnswer: 'une', explanation: '"voiture" est un nom féminin, donc on utilise "une".', topic: 'Les Articles', question_ar: 'أكمل الجملة: "Je vois ___ voiture" (سيارة - مؤنث مفرد)', explanation_ar: 'كلمة "voiture" مؤنثة، لذلك نستخدم "une".' },
+                    { question: 'Complétez la phrase : J\'ai ___ amis. (pluriel)', options: ['un', 'une', 'des'], correctAnswer: 'des', explanation: '"amis" est un nom pluriel, donc on utilise "des".', topic: 'Les Articles', question_ar: 'أكمل الجملة: J\'ai ___ amis (أصدقاء - جمع)', explanation_ar: 'كلمة "amis" جمع، لذلك نستخدم "des".'}
+                ]
+            },
+            {
+                id: 2,
+                title: 'Niveau 2: Articles Définis (le, la, l\', les)',
+                title_ar: 'المستوى الثاني: أدوات المعرفة (le, la, l\', les)',
+                content: [
+                    '<strong>Définition :</strong> Les articles définis introduisent un nom spécifique, déjà connu ou identifié.',
+                    'Il y a quatre formes pour l\'article défini :',
+                    '<strong><code>le</code></strong> : pour un nom masculin singulier.',
+                    '<strong><code>la</code></strong> : pour un nom féminin singulier.',
+                    '<strong><code>l\'</code></strong> : pour un nom singulier (masculin ou féminin) qui commence par une voyelle ou un "h" muet.',
+                    '<strong><code>les</code></strong> : pour un nom pluriel (masculin ou féminin).'
+                ],
+                content_ar: [
+                    '<strong>التعريف:</strong> أدوات المعرفة تُستخدم قبل الاسم المحدد، اللي إحنا عارفينه أو بنتكلم عنه بشكل خاص.',
+                    'فيه أربع أشكال لأداة المعرفة:',
+                    '<strong><code>le</code></strong>: للاسم المذكر المفرد.',
+                    '<strong><code>la</code></strong>: للاسم المؤنث المفرد.',
+                    '<strong><code>l\'</code></strong>: للاسم المفرد (مذكر أو مؤنث) اللي بيبدأ بحرف متحرك أو حرف "h" صامت.',
+                    '<strong><code>les</code></strong>: للاسم الجمع (مذكر أو مؤنث).'
+                ],
+                examples: [
+                    { sentence: 'J\'aime le chocolat.', explanation: '`le` est utilisé car "chocolat" est masculin singulier. On parle du chocolat en général.', sentence_ar: 'أنا أحب الشوكولاتة.', explanation_ar: 'استخدمنا `le` لأن "chocolat" مذكر مفرد. إحنا بنتكلم عن الشوكولاتة بشكل عام.' },
+                    { sentence: 'La tour Eiffel est à Paris.', explanation: '`la` est utilisé car "tour" est féminin singulier. C\'est une tour spécifique.', sentence_ar: 'برج إيفل في باريس.', explanation_ar: 'استخدمنا `la` لأن "tour" مؤنث مفرد. وهو برج محدد ومعروف.' },
+                    { sentence: 'L\'avion décolle à 8h.', explanation: '`l\'` est utilisé car "avion" commence par une voyelle.', sentence_ar: 'الطائرة تقلع الساعة 8.', explanation_ar: 'استخدمنا `l\'` لأن كلمة "avion" تبدأ بحرف متحرك.' },
+                    { sentence: 'Les vacances sont en août.', explanation: '`les` est utilisé car "vacances" est un nom pluriel.', sentence_ar: 'الأجازات في شهر أغسطس.', explanation_ar: 'استخدمنا `les` لأن كلمة "vacances" جمع.' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Quel article défini utilise-t-on pour "soleil" (masculin singulier) ?', options: ['le', 'la', 'les'], correctAnswer: 'le', explanation: '"soleil" est un nom masculin singulier.', topic: 'Les Articles', question_ar: 'أي أداة معرفة تستخدم مع كلمة "soleil" (شمس - مذكر مفرد)؟', explanation_ar: 'كلمة "soleil" مذكر مفرد.' },
+                    { question: 'Complétez la phrase : "J\'écoute ___ musique." (féminin singulier)', options: ['le', 'la', 'l\''], correctAnswer: 'la', explanation: '"musique" est un nom féminin.', topic: 'Les Articles', question_ar: 'أكمل الجملة: "J\'écoute ___ musique" (موسيقى - مؤنث مفرد)', explanation_ar: 'كلمة "musique" مؤنثة.' },
+                    { question: 'Pourquoi utilise-t-on "l\'" dans "l\'hôtel" ?', options: ['Parce que "hôtel" est féminin', 'Parce que "hôtel" commence par un "h" muet', 'Parce que "hôtel" est pluriel'], correctAnswer: 'Parce que "hôtel" commence par un "h" muet', explanation: 'Devant une voyelle ou un "h" muet, "le" et "la" deviennent "l\'".', topic: 'Les Articles', question_ar: 'لماذا نستخدم "l\'" في "l\'hôtel" (فندق)؟', explanation_ar: 'لأن الكلمة اللي بتبدأ بحرف متحرك أو "h" صامتة، أداة "le" أو "la" بتتحول لـ "l\'".' }
+                ]
+            },
+             {
+                id: 3,
+                title: 'Niveau 3: Articles Partitifs (du, de la, de l\')',
+                title_ar: 'المستوى الثالث: أدوات التجزئة (du, de la, de l\')',
+                content: [
+                    '<strong>Définition :</strong> Les articles partitifs introduisent une quantité indéfinie d\'une chose qu\'on ne peut pas compter (nourriture, boisson, sentiments...).',
+                    '<strong><code>du</code></strong> : pour un nom masculin singulier. (de + le)',
+                    '<strong><code>de la</code></strong> : pour un nom féminin singulier.',
+                    '<strong><code>de l\'</code></strong> : pour un nom singulier qui commence par une voyelle ou un "h" muet.',
+                    'Ils signifient souvent "une certaine quantité de".'
+                ],
+                content_ar: [
+                    '<strong>التعريف:</strong> أدوات التجزئة بنستخدمها لما نتكلم عن كمية غير محددة من حاجة مش بنقدر نعدها (زي الأكل، الشرب، المشاعر...).',
+                    '<strong><code>du</code></strong>: للاسم المذكر المفرد (هي أصلًا de + le).',
+                    '<strong><code>de la</code></strong>: للاسم المؤنث المفرد.',
+                    '<strong><code>de l\'</code></strong>: للاسم المفرد اللي بيبدأ بحرف متحرك أو "h" صامتة.',
+                    'معناها غالبًا بيكون "شويه من".'
+                ],
+                examples: [
+                    { sentence: 'Je bois du café le matin.', explanation: 'On ne peut pas compter le café, on en boit une certaine quantité.', sentence_ar: 'أنا أشرب قهوة في الصباح.', explanation_ar: 'إحنا مش بنعد القهوة، بنشرب منها كمية معينة.' },
+                    { sentence: 'Elle veut de la confiture.', explanation: '"confiture" est féminin.', sentence_ar: 'هي تريد مربى.', explanation_ar: 'كلمة "confiture" (مربى) مؤنثة.' },
+                    { sentence: 'Il faut de l\'eau pour vivre.', explanation: '"eau" commence par une voyelle.', sentence_ar: 'نحتاج ماء لنعيش.', explanation_ar: 'كلمة "eau" (ماء) تبدأ بحرف متحرك.' },
+                    { sentence: 'Je mange du poulet.', explanation: '"poulet" is masculine.', sentence_ar: 'أنا آكل دجاج.', explanation_ar: 'كلمة "poulet" (دجاج) مذكر.' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Quel article partitif utilise-t-on avec "pain" (masculin) ?', options: ['du', 'de la', 'de l\''], correctAnswer: 'du', explanation: '"Pain" est masculin, on utilise "du".', topic: 'Les Articles', question_ar: 'أي أداة تجزئة تستخدم مع "pain" (خبز - مذكر)؟', explanation_ar: 'كلمة "Pain" مذكر، فنستخدم "du".' },
+                    { question: 'Complétez : "Il y a ___ neige sur la montagne."', options: ['du', 'de la', 'des'], correctAnswer: 'de la', explanation: '"Neige" est féminin, on utilise "de la".', topic: 'Les Articles', question_ar: 'أكمل: "Il y a ___ neige sur la montagne" (ثلج على الجبل)', explanation_ar: 'كلمة "Neige" (ثلج) مؤنثة، فنستخدم "de la".' },
+                    { question: 'Il faut avoir ___ patience. (féminin)', options: ['de la', 'du', 'des'], correctAnswer: 'de la', explanation: '"Patience" est un nom féminin non comptable.', topic: 'Les Articles', question_ar: 'أكمل: Il faut avoir ___ patience (الصبر - مؤنث)', explanation_ar: '"Patience" اسم مؤنث لا يُعد.' }
+                ]
+            },
+            {
+                id: 4,
+                title: 'Niveau 4: La Négation avec les Articles',
+                title_ar: 'المستوى الرابع: النفي مع الأدوات',
+                content: [
+                    '<strong>Règle importante :</strong> Dans une phrase négative, les articles indéfinis (un, une, des) et les articles partitifs (du, de la, de l\') deviennent presque toujours <strong><code>de</code></strong> (ou <strong><code>d\'</code></strong> devant une voyelle).',
+                    'Cette règle ne s\'applique PAS avec le verbe <strong>être</strong>.',
+                ],
+                content_ar: [
+                    '<strong>قاعدة مهمة:</strong> في الجملة المنفية، أدوات النكرة (un, une, des) وأدوات التجزئة (du, de la, de l\') بتتحول دايمًا تقريبًا لـ <strong><code>de</code></strong> (أو <strong><code>d\'</code></strong> لو الكلمة اللي بعدها بتبدأ بحرف متحرك).',
+                    'القاعدة دي مش بتطبق مع فعل <strong>être</strong> (يكون).'
+                ],
+                examples: [
+                    { sentence: 'J\'ai un chien. -> Je n\'ai pas de chien.', explanation: '`un` devient `de` à la forme négative.', sentence_ar: 'عندي كلب. -> معنديش كلب.', explanation_ar: 'الأداة `un` تحولت إلى `de` في النفي.' },
+                    { sentence: 'Elle mange de la soupe. -> Elle ne mange pas de soupe.', explanation: '`de la` devient `de`.', sentence_ar: 'هي تأكل شوربة. -> هي لا تأكل شوربة.', explanation_ar: 'الأداة `de la` تحولت إلى `de`.' },
+                    { sentence: 'C\'est un livre. -> Ce n\'est pas un livre.', explanation: 'Exception ! Avec le verbe "être", l\'article ne change pas.', sentence_ar: 'هذا كتاب. -> هذا ليس كتابًا.', explanation_ar: 'استثناء! مع فعل "être"، الأداة مش بتتغير.' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Quelle est la forme négative de "Je veux des frites" ?', options: ['Je ne veux pas des frites', 'Je ne veux pas de frites', 'Je ne veux pas les frites'], correctAnswer: 'Je ne veux pas de frites', explanation: 'À la forme négative, "des" devient "de".', topic: 'Les Articles', question_ar: 'ما هو النفي لجملة "Je veux des frites" (أريد بطاطس مقلية)؟', explanation_ar: 'في النفي، "des" تتحول إلى "de".' },
+                    { question: 'Complétez : "C\'est une pomme." -> "Ce n\'est pas ___ pomme."', options: ['de', 'une', 'la'], correctAnswer: 'une', explanation: 'Avec le verbe "être", l\'article indéfini ne change pas à la forme négative.', topic: 'Les Articles', question_ar: 'أكمل: "C\'est une pomme." -> "Ce n\'est pas ___ pomme."', explanation_ar: 'مع فعل "être"، أداة النكرة مش بتتغير في النفي.' },
+                    { question: 'Quelle est la forme négative de "Il boit de l\'eau" ?', options: ["Il ne boit pas d'eau", "Il ne boit pas de l'eau", "Il ne boit pas l'eau"], correctAnswer: "Il ne boit pas d'eau", explanation: 'Dans une phrase négative, "de l\'" devient "d\'".', topic: 'Les Articles', question_ar: 'ما هو النفي لجملة "Il boit de l\'eau" (هو يشرب ماء)؟', explanation_ar: 'في النفي، "de l\'" تتحول إلى "d\'".' }
+                ]
+            },
+            {
+                id: 5,
+                title: 'Niveau 5: Articles Contractés (au, aux, du, des)',
+                title_ar: 'المستوى الخامس: الأدوات المُدمجة (au, aux, du, des)',
+                content: [
+                    '<strong>Définition :</strong> Certains articles définis se contractent (fusionnent) avec les prépositions <strong>à</strong> et <strong>de</strong>.',
+                    '<strong>Avec la préposition "à" :</strong>',
+                    '<code>à + le</code> = <strong><code>au</code></strong>',
+                    '<code>à + les</code> = <strong><code>aux</code></strong>',
+                    '(<code>à + la</code> et <code>à + l\'</code> ne changent pas)',
+                    '<strong>Avec la préposition "de" :</strong>',
+                    '<code>de + le</code> = <strong><code>du</code></strong>',
+                    '<code>de + les</code> = <strong><code>des</code></strong>',
+                    '(<code>de + la</code> et <code>de + l\'</code> ne changent pas)'
+                ],
+                content_ar: [
+                    '<strong>التعريف:</strong> بعض أدوات المعرفة بتندمج مع حروف الجر <strong>à</strong> (إلى/في) و <strong>de</strong> (من/عن).',
+                    '<strong>مع حرف الجر "à":</strong>',
+                    '<code>à + le</code> = <strong><code>au</code></strong>',
+                    '<code>à + les</code> = <strong><code>aux</code></strong>',
+                    '(<code>à + la</code> و <code>à + l\'</code> مش بيتغيروا)',
+                    '<strong>مع حرف الجر "de":</strong>',
+                    '<code>de + le</code> = <strong><code>du</code></strong>',
+                    '<code>de + les</code> = <strong><code>des</code></strong>',
+                    '(<code>de + la</code> و <code>de + l\'</code> مش بيتغيروا)'
+                ],
+                examples: [
+                    { sentence: 'Je vais au marché. (au = à + le)', explanation: 'On ne dit pas "Je vais à le marché".', sentence_ar: 'أنا أذهب إلى السوق.', explanation_ar: 'مش بنقول "Je vais à le marché".' },
+                    { sentence: 'Il parle aux enfants. (aux = à + les)', explanation: 'On ne dit pas "Il parle à les enfants".', sentence_ar: 'هو يتحدث إلى الأطفال.', explanation_ar: 'مش بنقول "Il parle à les enfants".' },
+                    { sentence: 'C\'est le livre du professeur. (du = de + le)', explanation: 'On ne dit pas "le livre de le professeur".', sentence_ar: 'هذا كتاب الأستاذ.', explanation_ar: 'مش بنقول "le livre de le professeur".' },
+                    { sentence: 'Le début des vacances. (des = de + les)', explanation: 'On ne dit pas "le début de les vacances".', sentence_ar: 'بداية الأجازات.', explanation_ar: 'مش بنقول "le début de les vacances".' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Que signifie "au" ?', options: ['à + la', 'à + le', 'à + les'], correctAnswer: 'à + le', explanation: '"au" est la contraction de "à" et "le".', topic: 'Les Articles', question_ar: 'ماذا تعني "au"؟', explanation_ar: 'كلمة "au" هي دمج لـ "à" و "le".' },
+                    { question: 'Complétez la phrase : "Je viens ___ États-Unis."', options: ['de les', 'du', 'des'], correctAnswer: 'des', explanation: '"États-Unis" est pluriel, donc "de + les" devient "des".', topic: 'Les Articles', question_ar: 'أكمل الجملة: "Je viens ___ États-Unis" (أنا من الولايات المتحدة)', explanation_ar: 'كلمة "États-Unis" جمع، لذلك "de + les" تندمج وتصبح "des".' },
+                    { question: 'Complétez la phrase : Il revient ___ parc. (masculin)', options: ['du', 'de le', 'de la'], correctAnswer: 'du', explanation: '"parc" est masculin, donc "de + le" devient "du".', topic: 'Les Articles', question_ar: 'أكمل الجملة: Il revient ___ parc (هو عائد من الحديقة - مذكر)', explanation_ar: 'كلمة "parc" مذكر، لذلك "de + le" تندمج وتصبح "du".' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'verbe_etre',
+        title: 'Le Verbe Être',
+        icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>',
+        description: 'Maîtrisez la conjugaison et l\'utilisation du verbe "être".',
+        levels: [
+            {
+                id: 1,
+                title: 'Niveau 1: Conjugaison au Présent',
+                title_ar: 'المستوى الأول: التصريف في زمن المضارع',
+                content: [
+                    'Le verbe <strong>être</strong> est l\'un des verbes les plus importants en français. Il est irrégulier. Voici sa conjugaison au présent de l\'indicatif :',
+                    '<code>je <strong>suis</strong></code>',
+                    '<code>tu <strong>es</strong></code>',
+                    '<code>il/elle/on <strong>est</strong></code>',
+                    '<code>nous <strong>sommes</strong></code>',
+                    '<code>vous <strong>êtes</strong></code>',
+                    '<code>ils/elles <strong>sont</strong></code>',
+                ],
+                content_ar: [
+                    'فعل <strong>être</strong> (يكون) من أهم الأفعال في اللغة الفرنسية. وهو فعل شاذ (تصريفه غير منتظم). ده تصريفه في زمن المضارع:',
+                    '<code>je <strong>suis</strong></code> (أنا أكون)',
+                    '<code>tu <strong>es</strong></code> (أنت تكون)',
+                    '<code>il/elle/on <strong>est</strong></code> (هو/هي/نحن نكون)',
+                    '<code>nous <strong>sommes</strong></code> (نحن نكون)',
+                    '<code>vous <strong>êtes</strong></code> (أنتم تكونون)',
+                    '<code>ils/elles <strong>sont</strong></code> (هم/هن يكونون)',
+                ],
+                examples: [
+                    { sentence: 'Je suis heureux.', explanation: 'Première personne du singulier.', sentence_ar: 'أنا سعيد.', explanation_ar: 'ضمير المتكلم المفرد.' },
+                    { sentence: 'Vous êtes en retard.', explanation: 'Deuxième personne du pluriel.', sentence_ar: 'أنتم متأخرون.', explanation_ar: 'ضمير المخاطب الجمع.' },
+                    { sentence: 'Ils sont étudiants.', explanation: 'Troisième personne du pluriel.', sentence_ar: 'هم طلاب.', explanation_ar: 'ضمير الغائب الجمع.' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Quelle est la forme correcte pour "nous" ?', options: ['sommes', 'êtes', 'sont'], correctAnswer: 'sommes', explanation: 'La conjugaison est "nous sommes".', topic: 'Le Verbe Être', question_ar: 'ما هو التصريف الصحيح لضمير "nous" (نحن)؟', explanation_ar: 'التصريف هو "nous sommes".' },
+                    { question: 'Complétez : "Tu ___ très intelligent."', options: ['es', 'est', 'suis'], correctAnswer: 'es', explanation: 'La conjugaison est "tu es".', topic: 'Le Verbe Être', question_ar: 'أكمل: "Tu ___ très intelligent" (أنت ذكي جدًا)', explanation_ar: 'التصريف هو "tu es".' },
+                    { question: 'Complétez : "Marie et Sophie ___ amies."', options: ['sont', 'est', 'sommes'], correctAnswer: 'sont', explanation: '"Marie et Sophie" équivaut à "elles" (pluriel).', topic: 'Le Verbe Être', question_ar: 'أكمل: "Marie et Sophie ___ amies" (ماري وصوفي صديقات)', explanation_ar: '"ماري وصوفي" = "هن" (elles)، والتصريف هو "sont".' }
+                ]
+            },
+            {
+                id: 2,
+                title: 'Niveau 2: Utilisation de "Être"',
+                title_ar: 'المستوى الثاني: استخدامات "Être"',
+                content: [
+                    'On utilise le verbe <strong>être</strong> pour plusieurs choses :',
+                    '<strong>1. Décrire une personne ou une chose (avec un adjectif) :</strong> Il est grand. La maison est belle.',
+                    '<strong>2. Indiquer la profession :</strong> Elle est médecin. Je suis professeur.',
+                    '<strong>3. Indiquer la nationalité :</strong> Nous sommes français. Tu es canadien.',
+                    '<strong>4. Indiquer l\'heure ou la date :</strong> Il est trois heures. Nous sommes le 10 mai.',
+                ],
+                content_ar: [
+                    'بنستخدم فعل <strong>être</strong> في حاجات كتير:',
+                    '<strong>1. لوصف شخص أو شيء (مع صفة):</strong> Il est grand (هو طويل). La maison est belle (البيت جميل).',
+                    '<strong>2. للحديث عن المهنة:</strong> Elle est médecin (هي طبيبة). Je suis professeur (أنا مدرس).',
+                    '<strong>3. للحديث عن الجنسية:</strong> Nous sommes français (نحن فرنسيون). Tu es canadien (أنت كندي).',
+                    '<strong>4. للحديث عن الوقت أو التاريخ:</strong> Il est trois heures (الساعة ثلاثة). Nous sommes le 10 mai (نحن في 10 مايو).',
+                ],
+                examples: [
+                    { sentence: 'Le ciel est bleu.', explanation: 'Description (avec un adjectif de couleur).', sentence_ar: 'السماء زرقاء.', explanation_ar: 'وصف (باستخدام صفة لون).' },
+                    { sentence: 'Mon père est ingénieur.', explanation: 'Profession.', sentence_ar: 'والدي مهندس.', explanation_ar: 'مهنة.' },
+                    { sentence: 'Marta et Sofia sont espagnoles.', explanation: 'Nationalité.', sentence_ar: 'مارتا وصوفيا إسبانيات.', explanation_ar: 'جنسية.' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Dans "Elle est avocate", quel est l\'usage du verbe "être" ?', options: ['Description', 'Profession', 'Nationalité'], correctAnswer: 'Profession', explanation: '"Avocate" est une profession.', topic: 'Le Verbe Être', question_ar: 'في جملة "Elle est avocate" (هي محامية)، ما هو استخدام فعل "être"؟', explanation_ar: '"محامية" هي مهنة.' },
+                    { question: 'Choisissez la phrase correcte :', options: ['Je suis de France.', 'Je suis français.', 'J\'ai français.'], correctAnswer: 'Je suis français.', explanation: 'On utilise "être" pour la nationalité.', topic: 'Le Verbe Être', question_ar: 'اختر الجملة الصحيحة:', explanation_ar: 'بنستخدم "être" مع الجنسية.' },
+                ]
+            },
+            {
+                id: 3,
+                title: 'Niveau 3: Passé Composé avec "Être"',
+                title_ar: 'المستوى الثالث: الماضي المركب مع "Être"',
+                content: [
+                    'Le verbe <strong>être</strong> est utilisé comme auxiliaire pour former le passé composé de certains verbes, principalement les verbes de mouvement et les verbes pronominaux.',
+                    'La structure est : <code>sujet + être (conjugué au présent) + participe passé</code>.',
+                    '<strong>Attention :</strong> Le participe passé doit s\'accorder en genre (masculin/féminin) et en nombre (singulier/pluriel) avec le sujet.',
+                    'Exemples de verbes : aller, venir, arriver, partir, entrer, sortir, monter, descendre, naître, mourir, tomber, rester...'
+                ],
+                content_ar: [
+                    'فعل <strong>être</strong> بيُستخدم كفعل مساعد لتكوين زمن الماضي المركب مع أفعال معينة، أغلبها أفعال الحركة والأفعال الضميرية.',
+                    'التكوين هو: <code>الفاعل + فعل être (متصرف في المضارع) + اسم المفعول</code>.',
+                    '<strong>ملحوظة مهمة:</strong> اسم المفعول لازم يتبع الفاعل في النوع (مذكر/مؤنث) والعدد (مفرد/جمع).',
+                    'أمثلة للأفعال دي: يذهب، يأتي، يصل، يرحل، يدخل، يخرج، يصعد، ينزل، يولد، يموت، يقع، يبقى...'
+                ],
+                examples: [
+                    { sentence: 'Elle est allée au cinéma.', explanation: 'Accord du participe passé "allé" avec le sujet féminin "Elle" -> allée.', sentence_ar: 'هي ذهبت إلى السينما.', explanation_ar: 'اسم المفعول "allé" أخد تبعية الفاعل المؤنث "Elle" فبقى "allée".' },
+                    { sentence: 'Nous sommes arrivés en avance.', explanation: 'Accord du participe passé "arrivé" avec le sujet pluriel "Nous" -> arrivés.', sentence_ar: 'نحن وصلنا مبكرًا.', explanation_ar: 'اسم المفعول "arrivé" أخد تبعية الفاعل الجمع "Nous" فبقى "arrivés".' },
+                    { sentence: 'Ils sont nés en 1990.', explanation: 'Accord de "né" avec le sujet masculin pluriel "Ils" -> nés.', sentence_ar: 'هم وُلدوا في 1990.', explanation_ar: 'اسم المفعول "né" أخد تبعية الفاعل المذكر الجمع "Ils" فبقى "nés".' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Comment forme-t-on le passé composé avec "être" ?', options: ['être + infinitif', 'être + participe passé', 'avoir + participe passé'], correctAnswer: 'être + participe passé', explanation: 'Le passé composé avec être se forme avec l\'auxiliaire être au présent et le participe passé du verbe.', topic: 'Le Verbe Être', question_ar: 'كيف نكون زمن الماضي المركب مع فعل "être"؟', explanation_ar: 'الماضي المركب مع "être" بيتكون من الفعل المساعد "être" في المضارع + اسم المفعول للفعل الأساسي.' },
+                    { question: 'Complétez : "Les filles sont ___ à la plage."', options: ['allé', 'allés', 'allées'], correctAnswer: 'allées', explanation: 'Le participe passé "allé" doit s\'accorder avec "Les filles" (féminin pluriel).', topic: 'Le Verbe Être', question_ar: 'أكمل: "Les filles sont ___ à la plage" (البنات ... إلى الشاطئ)', explanation_ar: 'اسم المفعول "allé" لازم يتبع الفاعل "Les filles" (مؤنث جمع).' }
+                ]
+            },
+            {
+                id: 4,
+                title: 'Niveau 4: "Être" pour la localisation et l\'état',
+                title_ar: 'المستوى الرابع: "Être" للمكان والحالة',
+                content: [
+                    'En plus de la description, <strong>être</strong> est crucial pour indiquer où se trouve quelqu\'un ou quelque chose.',
+                    '<strong>Localisation :</strong> <code>Il est à la maison.</code>, <code>Nous sommes en France.</code>',
+                    'On l\'utilise aussi pour exprimer un état ou une condition temporaire.',
+                    '<strong>État :</strong> <code>Je suis fatigué.</code>, <code>Elle est malade.</code>, <code>Vous êtes en colère.</code>'
+                ],
+                content_ar: [
+                    'بالإضافة للوصف، فعل <strong>être</strong> أساسي عشان نقول حد أو حاجة موجودة فين.',
+                    '<strong>المكان:</strong> <code>Il est à la maison.</code> (هو في البيت)، <code>Nous sommes en France.</code> (نحن في فرنسا).',
+                    'بنستخدمه كمان عشان نعبر عن حالة أو ظرف مؤقت.',
+                    '<strong>الحالة:</strong> <code>Je suis fatigué.</code> (أنا تعبان)، <code>Elle est malade.</code> (هي مريضة)، <code>Vous êtes en colère.</code> (أنتم غاضبون).'
+                ],
+                examples: [
+                    { sentence: 'Le livre est sur la table.', explanation: 'Indique l\'emplacement du livre.', sentence_ar: 'الكتاب على الترابيزة.', explanation_ar: 'بتوضح مكان الكتاب.' },
+                    { sentence: 'Pourquoi es-tu triste ?', explanation: 'Demande sur un état émotionnel.', sentence_ar: 'لماذا أنت حزين؟', explanation_ar: 'سؤال عن حالة شعورية.' },
+                    { sentence: 'Mes clés sont dans ma poche.', explanation: 'Localisation des clés.', sentence_ar: 'مفاتيحي في جيبي.', explanation_ar: 'مكان المفاتيح.' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Quelle phrase indique une localisation ?', options: ['Il est gentil.', 'Il est en vacances.', 'Il est ingénieur.'], correctAnswer: 'Il est en vacances.', explanation: '"En vacances" indique un lieu/une situation géographique.', topic: 'Le Verbe Être', question_ar: 'أي جملة تدل على مكان؟', explanation_ar: '"في أجازة" تدل على مكان/موقف جغرافي.' },
+                    { question: 'Le verbe "être" est utilisé pour exprimer un état...', options: ['permanent uniquement', 'temporaire ou permanent', 'jamais'], correctAnswer: 'temporaire ou permanent', explanation: 'Il peut décrire un trait de caractère (permanent) ou une humeur (temporaire).', topic: 'Le Verbe Être', question_ar: 'فعل "être" يُستخدم للتعبير عن حالة...', explanation_ar: 'ممكن يوصف صفة دائمة (طبع) أو حالة مؤقتة (مزاج).' }
+                ]
+            },
+            {
+                id: 5,
+                title: 'Niveau 5: Expressions courantes avec "Être"',
+                title_ar: 'المستوى الخامس: تعبيرات شائعة مع "Être"',
+                content: [
+                    'Le verbe <strong>être</strong> fait partie de nombreuses expressions idiomatiques en français.',
+                    '<strong><code>être en train de</code> + infinitif :</strong> Exprime une action en cours. (Équivalent de -ing en anglais)',
+                    '<strong><code>être d\'accord</code> :</strong> To agree.',
+                    '<strong><code>être sur le point de</code> + infinitif :</strong> To be about to do something.',
+                    '<strong><code>C\'est</code> :</strong> Utilisé pour présenter ou identifier. (C\'est mon ami.)'
+                ],
+                content_ar: [
+                    'فعل <strong>être</strong> جزء من تعبيرات اصطلاحية كتير في الفرنساوي.',
+                    '<strong><code>être en train de</code> + المصدر:</strong> بتعبر عن فعل بيحصل دلوقتي. (زي ing في الإنجليزي).',
+                    '<strong><code>être d\'accord</code> :</strong> يوافق.',
+                    '<strong><code>être sur le point de</code> + المصدر:</strong> على وشك أن يفعل شيئًا.',
+                    '<strong><code>C\'est</code> :</strong> بنستخدمها عشان نقدم أو نعرّف حاجة. (C\'est mon ami. - هذا صديقي).'
+                ],
+                examples: [
+                    { sentence: 'Ne me dérange pas, je suis en train de travailler.', explanation: 'Signifie "I am working right now".', sentence_ar: 'لا تزعجني، أنا أعمل الآن.', explanation_ar: 'معناها "أنا أعمل في هذه اللحظة".' },
+                    { sentence: 'Nous sommes d\'accord avec toi.', explanation: 'Signifie "We agree with you".', sentence_ar: 'نحن نتفق معك.', explanation_ar: 'معناها "إحنا موافقينك الرأي".' },
+                    { sentence: 'Dépêche-toi, le film est sur le point de commencer !', explanation: 'Signifie "The movie is about to start".', sentence_ar: 'اسرع، الفيلم على وشك أن يبدأ!', explanation_ar: 'معناها "الفيلم هيبدأ حالًا".' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Que signifie "être en train de lire" ?', options: ['Avoir lu', 'Lire maintenant', 'Devoir lire'], correctAnswer: 'Lire maintenant', explanation: '"Être en train de" indique une action qui se déroule au moment où l\'on parle.', topic: 'Le Verbe Être', question_ar: 'ماذا يعني "être en train de lire"؟', explanation_ar: 'تعبير "être en train de" بيدل على فعل بيحصل في نفس لحظة الكلام.' },
+                    { question: 'Complétez : "C\'___ une bonne idée !"', options: ['es', 'est', 'ai'], correctAnswer: 'est', explanation: 'L\'expression est "C\'est" (C(e) + est).', topic: 'Le Verbe Être', question_ar: 'أكمل: "C\'___ une bonne idée !" (إنها فكرة جيدة!)', explanation_ar: 'التعبير هو "C\'est" وهو اختصار لـ "Ce est".' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'verbe_avoir',
+        title: 'Le Verbe Avoir',
+        icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a8.25 8.25 0 01-16.5 0v-8.25a8.25 8.25 0 0116.5 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.875A3.375 3.375 0 0115.375 1.5h.008A3.375 3.375 0 0118.75 4.875v3.726a3.375 3.375 0 01-3.375 3.375h-.008A3.375 3.375 0 0112 8.601v-3.726zM12 4.875c-2.071 0-4.115 1.68-4.115 3.726" /></svg>',
+        description: 'Apprenez la conjugaison et l\'utilisation du verbe "avoir".',
+        levels: [
+            {
+                id: 1,
+                title: 'Niveau 1: Conjugaison au Présent',
+                title_ar: 'المستوى الأول: التصريف في زمن المضارع',
+                content: [
+                    'Le verbe <strong>avoir</strong> est l\'autre verbe auxiliaire essentiel en français, utilisé pour la possession et pour former des temps composés. Il est aussi irrégulier. Voici sa conjugaison au présent :',
+                    '<code>j\'<strong>ai</strong></code>',
+                    '<code>tu <strong>as</strong></code>',
+                    '<code>il/elle/on <strong>a</strong></code>',
+                    '<code>nous <strong>avons</strong></code>',
+                    '<code>vous <strong>avez</strong></code>',
+                    '<code>ils/elles <strong>ont</strong></code>',
+                ],
+                content_ar: [
+                    'فعل <strong>avoir</strong> (يملك/عنده) هو الفعل المساعد الأساسي التاني في الفرنساوي، بنستخدمه للملكية ولتكوين الأزمنة المركبة. وهو كمان فعل شاذ. ده تصريفه في المضارع:',
+                    '<code>j\'<strong>ai</strong></code> (أنا عندي)',
+                    '<code>tu <strong>as</strong></code> (أنت عندك)',
+                    '<code>il/elle/on <strong>a</strong></code> (هو/هي/نحن عندنا)',
+                    '<code>nous <strong>avons</strong></code> (نحن عندنا)',
+                    '<code>vous <strong>avez</strong></code> (أنتم عندكم)',
+                    '<code>ils/elles <strong>ont</strong></code> (هم/هن عندهم)',
+                ],
+                examples: [
+                    { sentence: 'J\'ai un chat.', explanation: 'Possession (première personne du singulier).', sentence_ar: 'أنا عندي قطة.', explanation_ar: 'ملكية (ضمير المتكلم المفرد).' },
+                    { sentence: 'Elle a une belle voiture.', explanation: 'Possession (troisième personne du singulier).', sentence_ar: 'هي عندها سيارة جميلة.', explanation_ar: 'ملكية (ضمير الغائب المفرد).' },
+                    { sentence: 'Nous avons des amis.', explanation: 'Relation (première personne du pluriel).', sentence_ar: 'نحن لدينا أصدقاء.', explanation_ar: 'علاقة (ضمير المتكلم الجمع).' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Quelle est la forme correcte pour "vous" ?', options: ['avons', 'avez', 'ont'], correctAnswer: 'avez', explanation: 'La conjugaison est "vous avez".', topic: 'Le Verbe Avoir', question_ar: 'ما هو التصريف الصحيح لضمير "vous" (أنتم)؟', explanation_ar: 'التصريف هو "vous avez".' },
+                    { question: 'Complétez : "Ils ___ beaucoup de livres."', options: ['as', 'a', 'ont'], correctAnswer: 'ont', explanation: 'La conjugaison est "ils ont".', topic: 'Le Verbe Avoir', question_ar: 'أكمل: "Ils ___ beaucoup de livres" (هم عندهم كتب كثيرة)', explanation_ar: 'التصريف هو "ils ont".' },
+                ]
+            },
+            {
+                id: 2,
+                title: 'Niveau 2: Passé Composé avec "Avoir"',
+                title_ar: 'المستوى الثاني: الماضي المركب مع "Avoir"',
+                content: [
+                    'Le verbe <strong>avoir</strong> est l\'auxiliaire le plus courant pour former le passé composé.',
+                    'La structure est : <code>sujet + avoir (conjugué au présent) + participe passé</code>.',
+                    'Contrairement à "être", le participe passé utilisé avec "avoir" ne s\'accorde généralement PAS avec le sujet.',
+                    'Il s\'accorde uniquement avec le complément d\'objet direct (COD) si celui-ci est placé AVANT le verbe. C\'est une règle plus avancée.'
+                ],
+                content_ar: [
+                    'فعل <strong>avoir</strong> هو الفعل المساعد الأكثر استخدامًا لتكوين الماضي المركب.',
+                    'التكوين هو: <code>الفاعل + فعل avoir (متصرف في المضارع) + اسم المفعول</code>.',
+                    'على عكس "être"، اسم المفعول اللي بييجي مع "avoir" غالبًا مش بيتبع الفاعل.',
+                    'بيحصل تبعية فقط مع المفعول به المباشر لو المفعول ده جه قبل الفعل. ودي قاعدة متقدمة شوية.'
+                ],
+                examples: [
+                    { sentence: 'J\'ai mangé une pomme.', explanation: '"mangé" est le participe passé de "manger". Il ne change pas.', sentence_ar: 'أنا أكلت تفاحة.', explanation_ar: '"mangé" هو اسم المفعول من "manger". مش بيتغير.' },
+                    { sentence: 'Nous avons fini nos devoirs.', explanation: 'Le participe passé "fini" reste invariable.', sentence_ar: 'نحن أنهينا واجباتنا.', explanation_ar: 'اسم المفعول "fini" بيفضل زي ما هو.' },
+                    { sentence: 'Elle a vu un film.', explanation: 'Le participe passé "vu" reste invariable.', sentence_ar: 'هي شاهدت فيلمًا.', explanation_ar: 'اسم المفعول "vu" بيفضل زي ما هو.' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Quel auxiliaire est le plus utilisé pour le passé composé ?', options: ['être', 'avoir', 'aller'], correctAnswer: 'avoir', explanation: 'La majorité des verbes français utilisent "avoir" comme auxiliaire.', topic: 'Le Verbe Avoir', question_ar: 'أي فعل مساعد هو الأكثر استخدامًا في الماضي المركب؟', explanation_ar: 'غالبية الأفعال الفرنسية بتستخدم "avoir" كفعل مساعد.' },
+                    { question: 'Complétez : "Tu as ___ le match ?" (voir)', options: ['vu', 'vue', 'vus'], correctAnswer: 'vu', explanation: 'Le participe passé "vu" avec l\'auxiliaire "avoir" ne s\'accorde pas avec le sujet "tu".', topic: 'Le Verbe Avoir', question_ar: 'أكمل: "Tu as ___ le match ?" (هل شاهدت المباراة؟)', explanation_ar: 'اسم المفعول "vu" مع الفعل المساعد "avoir" مش بيتبع الفاعل "tu".' }
+                ]
+            },
+            {
+                id: 3,
+                title: 'Niveau 3: "Avoir" pour l\'âge et les sensations',
+                title_ar: 'المستوى الثالث: "Avoir" للعمر والأحاسيس',
+                content: [
+                    'En français, on utilise <strong>avoir</strong> pour exprimer l\'âge, contrairement à l\'anglais qui utilise "to be".',
+                    '<strong>Âge :</strong> <code>Quel âge as-tu ? J\'ai 20 ans.</code>',
+                    'On l\'utilise aussi pour de nombreuses sensations physiques et émotions.',
+                    '<strong>Sensations :</strong> <code>avoir faim</code> (to be hungry), <code>avoir soif</code> (to be thirsty), <code>avoir chaud</code> (to be hot), <code>avoir froid</code> (to be cold), <code>avoir sommeil</code> (to be sleepy), <code>avoir peur</code> (to be scared).'
+                ],
+                content_ar: [
+                    'في الفرنساوي، بنستخدم <strong>avoir</strong> عشان نعبر عن العمر، على عكس الإنجليزي اللي بيستخدم "to be".',
+                    '<strong>العمر:</strong> <code>Quel âge as-tu ?</code> (كم عمرك؟) <code>J\'ai 20 ans.</code> (أنا عندي 20 سنة).',
+                    'بنستخدمه كمان مع أحاسيس جسدية ومشاعر كتير.',
+                    '<strong>الأحاسيس:</strong> <code>avoir faim</code> (جعان), <code>avoir soif</code> (عطشان), <code>avoir chaud</code> (حران), <code>avoir froid</code> (بردان), <code>avoir sommeil</code> (نعسان), <code>avoir peur</code> (خايف).'
+                ],
+                examples: [
+                    { sentence: 'Mon petit frère a 5 ans.', explanation: 'Utilisation de "avoir" pour l\'âge.', sentence_ar: 'أخي الصغير عنده 5 سنوات.', explanation_ar: 'استخدام "avoir" للعمر.' },
+                    { sentence: 'J\'ai très faim !', explanation: 'On ne dit pas "Je suis faim", mais "J\'ai faim".', sentence_ar: 'أنا جعان جدًا!', explanation_ar: 'مش بنقول "Je suis faim"، بنقول "J\'ai faim".' },
+                    { sentence: 'Les enfants ont peur du noir.', explanation: 'Utilisation de "avoir" pour exprimer la peur.', sentence_ar: 'الأطفال يخافون من الظلام.', explanation_ar: 'استخدام "avoir" للتعبير عن الخوف.' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Comment dit-on "I am 30 years old" en français ?', options: ['Je suis 30 ans.', 'J\'ai 30 ans.', 'Je être 30 ans.'], correctAnswer: 'J\'ai 30 ans.', explanation: 'On utilise toujours "avoir" pour dire son âge.', topic: 'Le Verbe Avoir', question_ar: 'كيف تقول "أنا عمري 30 سنة" بالفرنسية؟', explanation_ar: 'دايمًا بنستخدم "avoir" عشان نقول عمرنا.' },
+                    { question: 'Complétez : "En hiver, nous ___ froid."', options: ['sommes', 'avons', 'faisons'], correctAnswer: 'avons', explanation: 'Pour la sensation de froid, on utilise l\'expression "avoir froid".', topic: 'Le Verbe Avoir', question_ar: 'أكمل: "En hiver, nous ___ froid" (في الشتاء، نحن نشعر بالبرد)', explanation_ar: 'للإحساس بالبرد، بنستخدم تعبير "avoir froid".' }
+                ]
+            },
+            {
+                id: 4,
+                title: 'Niveau 4: "Avoir mal à"',
+                title_ar: 'المستوى الرابع: "Avoir mal à" (عندي ألم في)',
+                content: [
+                    'Pour dire qu\'une partie du corps fait mal, on utilise la structure <strong><code>avoir mal à + [partie du corps]</code></strong>.',
+                    'La préposition "à" se contracte avec l\'article qui suit :',
+                    '<code>avoir mal <strong>au</strong></code> (+ nom masculin singulier)',
+                    '<code>avoir mal <strong>à la</strong></code> (+ nom féminin singulier)',
+                    '<code>avoir mal <strong>à l\'</strong></code> (+ nom singulier avec voyelle)',
+                    '<code>avoir mal <strong>aux</strong></code> (+ nom pluriel)'
+                ],
+                content_ar: [
+                    'عشان نقول إن فيه جزء من جسمنا بيوجعنا، بنستخدم تركيبة <strong><code>avoir mal à + [الجزء من الجسم]</code></strong>.',
+                    'حرف الجر "à" بيندمج مع أداة المعرفة اللي بعده:',
+                    '<code>avoir mal <strong>au</strong></code> (+ اسم مذكر مفرد)',
+                    '<code>avoir mal <strong>à la</strong></code> (+ اسم مؤنث مفرد)',
+                    '<code>avoir mal <strong>à l\'</strong></code> (+ اسم مفرد بيبدأ بحرف متحرك)',
+                    '<code>avoir mal <strong>aux</strong></code> (+ اسم جمع)'
+                ],
+                examples: [
+                    { sentence: 'J\'ai mal à la tête.', explanation: '"tête" est féminin singulier, donc on utilise "à la".', sentence_ar: 'عندي صداع (ألم في الرأس).', explanation_ar: 'كلمة "tête" (رأس) مؤنث مفرد، عشان كده بنستخدم "à la".' },
+                    { sentence: 'Il a mal au dos.', explanation: '"dos" est masculin singulier, donc "à le" devient "au".', sentence_ar: 'ظهره يؤلمه.', explanation_ar: 'كلمة "dos" (ظهر) مذكر مفرد، فـ "à le" بتندمج وتبقى "au".' },
+                    { sentence: 'Elle a mal aux dents.', explanation: '"dents" est pluriel, donc "à les" devient "aux".', sentence_ar: 'أسنانها تؤلمها.', explanation_ar: 'كلمة "dents" (أسنان) جمع، فـ "à les" بتندمج وتبقى "aux".' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Comment dit-on "My stomach hurts" ?', options: ['J\'ai mal à l\'estomac.', 'Je suis mal à l\'estomac.', 'Mon estomac est mal.'], correctAnswer: 'J\'ai mal à l\'estomac.', explanation: '"Estomac" commence par une voyelle, on utilise "à l\'".', topic: 'Le Verbe Avoir', question_ar: 'كيف تقول "بطني تؤلمني"؟', explanation_ar: 'كلمة "Estomac" (معدة) بتبدأ بحرف متحرك، فبنستخدم "à l\'".' },
+                    { question: 'Complétez : "Tu as mal ___ genou." (masculin)', options: ['à le', 'au', 'aux'], correctAnswer: 'au', explanation: 'La contraction de "à + le" est "au".', topic: 'Le Verbe Avoir', question_ar: 'أكمل: "Tu as mal ___ genou" (ركبتك تؤلمك - مذكر)', explanation_ar: 'دمج "à + le" هو "au".' }
+                ]
+            },
+            {
+                id: 5,
+                title: 'Niveau 5: Autres expressions avec "Avoir"',
+                title_ar: 'المستوى الخامس: تعبيرات أخرى مع "Avoir"',
+                content: [
+                    '<strong>Avoir</strong> est présent dans de nombreuses autres expressions utiles.',
+                    '<strong><code>avoir besoin de</code> :</strong> to need',
+                    '<strong><code>avoir envie de</code> :</strong> to want, to feel like',
+                    '<strong><code>avoir l\'air</code> :</strong> to seem, to look',
+                    '<strong><code>avoir raison/tort</code> :</strong> to be right/wrong',
+                    '<strong><code>il y a</code> :</strong> there is / there are'
+                ],
+                content_ar: [
+                    'فعل <strong>Avoir</strong> موجود في تعبيرات تانية كتير مفيدة.',
+                    '<strong><code>avoir besoin de</code> :</strong> يحتاج إلى',
+                    '<strong><code>avoir envie de</code> :</strong> يرغب في / نفسه في',
+                    '<strong><code>avoir l\'air</code> :</strong> يبدو',
+                    '<strong><code>avoir raison/tort</code> :</strong> على حق / على خطأ',
+                    '<strong><code>il y a</code> :</strong> يوجد',
+                ],
+                examples: [
+                    { sentence: 'J\'ai besoin d\'un stylo.', explanation: 'Signifie "I need a pen".', sentence_ar: 'أنا أحتاج قلمًا.', explanation_ar: 'معناها "I need a pen".' },
+                    { sentence: 'Nous avons envie d\'aller à la plage.', explanation: 'Signifie "We feel like going to the beach".', sentence_ar: 'نحن نرغب في الذهاب إلى الشاطئ.', explanation_ar: 'معناها "نفسنا نروح الشاطئ".' },
+                    { sentence: 'Tu as l\'air fatigué.', explanation: 'Signifie "You look tired".', sentence_ar: 'أنت تبدو متعبًا.', explanation_ar: 'معناها "شكلك تعبان".' },
+                    { sentence: 'Il y a un problème.', explanation: 'Signifie "There is a problem".', sentence_ar: 'يوجد مشكلة.', explanation_ar: 'معناها "There is a problem".' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Que signifie "avoir envie de" ?', options: ['Avoir besoin', 'Vouloir / Avoir le désir', 'Avoir peur'], correctAnswer: 'Vouloir / Avoir le désir', explanation: 'C\'est une expression pour un désir ou une envie.', topic: 'Le Verbe Avoir', question_ar: 'ماذا يعني "avoir envie de"؟', explanation_ar: 'ده تعبير عن الرغبة أو النفس في حاجة.' },
+                    { question: 'Complétez : "Tu as ___ ! Ce n\'est pas la bonne réponse."', options: ['raison', 'tort', 'peur'], correctAnswer: 'tort', explanation: 'L\'expression pour "to be wrong" est "avoir tort".', topic: 'Le Verbe Avoir', question_ar: 'أكمل: "Tu as ___ ! Ce n\'est pas la bonne réponse" (أنت ...! هذه ليست الإجابة الصحيحة)', explanation_ar: 'تعبير "على خطأ" هو "avoir tort".' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'verbe_aller',
+        title: 'Le Verbe Aller',
+        icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
+        description: 'Découvrez le verbe "aller" pour parler de mouvement et du futur proche.',
+        levels: [
+            {
+                id: 1,
+                title: 'Niveau 1: Conjugaison au Présent',
+                title_ar: 'المستوى الأول: التصريف في زمن المضارع',
+                content: [
+                    'Le verbe <strong>aller</strong> est très courant et très irrégulier. Il est utilisé pour indiquer un mouvement. Voici sa conjugaison au présent :',
+                    '<code>je <strong>vais</strong></code>',
+                    '<code>tu <strong>vas</strong></code>',
+                    '<code>il/elle/on <strong>va</strong></code>',
+                    '<code>nous <strong>allons</strong></code>',
+                    '<code>vous <strong>allez</strong></code>',
+                    '<code>ils/elles <strong>vont</strong></code>',
+                ],
+                content_ar: [
+                    'فعل <strong>aller</strong> (يذهب) منتشر جدًا وشاذ جدًا. بنستخدمه عشان نتكلم عن الحركة. ده تصريفه في المضارع:',
+                    '<code>je <strong>vais</strong></code> (أنا أذهب)',
+                    '<code>tu <strong>vas</strong></code> (أنت تذهب)',
+                    '<code>il/elle/on <strong>va</strong></code> (هو/هي/نحن نذهب)',
+                    '<code>nous <strong>allons</strong></code> (نحن نذهب)',
+                    '<code>vous <strong>allez</strong></code> (أنتم تذهبون)',
+                    '<code>ils/elles <strong>vont</strong></code> (هم/هن يذهبون)',
+                ],
+                examples: [
+                    { sentence: 'Je vais à l\'école.', explanation: 'Indique un mouvement vers un lieu.', sentence_ar: 'أنا أذهب إلى المدرسة.', explanation_ar: 'يدل على حركة تجاه مكان.' },
+                    { sentence: 'Où vas-tu ?', explanation: 'Question sur la destination.', sentence_ar: 'إلى أين تذهب؟', explanation_ar: 'سؤال عن الوجهة.' },
+                    { sentence: 'Ils vont au cinéma ce soir.', explanation: 'Mouvement vers un lieu à un moment précis.', sentence_ar: 'هم ذاهبون إلى السينما الليلة.', explanation_ar: 'حركة لمكان في وقت محدد.' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Quelle est la forme correcte pour "nous" ?', options: ['vont', 'allez', 'allons'], correctAnswer: 'allons', explanation: 'La conjugaison est "nous allons".', topic: 'Le Verbe Aller', question_ar: 'ما هو التصريف الصحيح لضمير "nous" (نحن)؟', explanation_ar: 'التصريف هو "nous allons".' },
+                    { question: 'Complétez : "Elle ___ à la piscine."', options: ['vais', 'vas', 'va'], correctAnswer: 'va', explanation: 'La conjugaison est "elle va".', topic: 'Le Verbe Aller', question_ar: 'أكمل: "Elle ___ à la piscine" (هي ... إلى حمام السباحة)', explanation_ar: 'التصريف هو "elle va".' },
+                ]
+            },
+            {
+                id: 2,
+                title: 'Niveau 2: Le Futur Proche',
+                title_ar: 'المستوى الثاني: المستقبل القريب',
+                content: [
+                    'Une utilisation très importante du verbe <strong>aller</strong> est la formation du <strong>futur proche</strong>. C\'est une façon simple et très courante de parler de l\'avenir immédiat.',
+                    'La structure est : <code>sujet + aller (conjugué au présent) + verbe à l\'infinitif</code>.',
+                    'Cela se traduit souvent par "going to" en anglais.'
+                ],
+                content_ar: [
+                    'استخدام مهم جدًا لفعل <strong>aller</strong> هو تكوين زمن <strong>المستقبل القريب</strong>. دي طريقة سهلة ومنتشرة جدًا عشان نتكلم عن المستقبل اللي هيحصل كمان شوية.',
+                    'التكوين هو: <code>الفاعل + فعل aller (متصرف في المضارع) + الفعل في المصدر</code>.',
+                    'غالبًا بيترجم لـ "سوف" أو "هـ" بالعامية.'
+                ],
+                examples: [
+                    { sentence: 'Je vais manger une pizza.', explanation: 'Signifie "I am going to eat a pizza". L\'action va se produire très bientôt.', sentence_ar: 'أنا سآكل بيتزا.', explanation_ar: 'معناها "أنا هاكل بيتزا". الفعل هيحصل قريب جدًا.' },
+                    { sentence: 'Nous allons regarder un film.', explanation: 'Signifie "We are going to watch a movie".', sentence_ar: 'نحن سوف نشاهد فيلمًا.', explanation_ar: 'معناها "إحنا هنتفرج على فيلم".' },
+                    { sentence: 'Il va pleuvoir.', explanation: 'Signifie "It is going to rain".', sentence_ar: 'الدنيا هتمطر.', explanation_ar: 'معناها "It is going to rain".' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Comment forme-t-on le futur proche ?', options: ['aller + participe passé', 'aller + infinitif', 'être + infinitif'], correctAnswer: 'aller + infinitif', explanation: 'On utilise le verbe "aller" conjugué au présent suivi d\'un verbe à l\'infinitif.', topic: 'Le Verbe Aller', question_ar: 'كيف نكون زمن المستقبل القريب؟', explanation_ar: 'بنستخدم فعل "aller" متصرف في المضارع وبعده الفعل في المصدر.' },
+                    { question: 'Que signifie la phrase "Vous allez partir" ?', options: ['You are leaving (now)', 'You are going to leave', 'You have left'], correctAnswer: 'You are going to leave', explanation: 'C\'est le futur proche, indiquant une action future immédiate.', topic: 'Le Verbe Aller', question_ar: 'ماذا تعني جملة "Vous allez partir"؟', explanation_ar: 'ده المستقبل القريب، بيدل على فعل هيحصل في المستقبل القريب.' }
+                ]
+            },
+            {
+                id: 3,
+                title: 'Niveau 3: "Aller" pour la santé',
+                title_ar: 'المستوى الثالث: "Aller" للسؤال عن الصحة',
+                content: [
+                    'Le verbe <strong>aller</strong> est utilisé pour demander et parler de la santé et du bien-être.',
+                    'La question la plus célèbre est <code>Comment allez-vous ?</code> (formel) ou <code>Comment vas-tu ?</code> (informel).',
+                    'Pour répondre, on utilise aussi le verbe aller : <code>Je vais bien, merci.</code>, <code>Ça va.</code>'
+                ],
+                content_ar: [
+                    'فعل <strong>aller</strong> بنستخدمه عشان نسأل ونتكلم عن الصحة والحال.',
+                    'أشهر سؤال هو <code>Comment allez-vous ?</code> (كيف حال حضرتك؟ - رسمي) أو <code>Comment vas-tu ?</code> (عامل إيه؟ - غير رسمي).',
+                    'وعشان نجاوب، بنستخدم برضه نفس الفعل: <code>Je vais bien, merci.</code> (أنا بخير، شكرًا)، <code>Ça va.</code> (تمام/كويس).'
+                ],
+                examples: [
+                    { sentence: 'Comment ça va ? - Ça va bien.', explanation: 'La façon la plus courante et informelle de se saluer.', sentence_ar: 'عامل إيه؟ - أنا كويس.', explanation_ar: 'دي أكتر طريقة منتشرة وغير رسمية عشان تسأل عن الحال.' },
+                    { sentence: 'Mes parents vont très bien.', explanation: 'Pour parler de la santé de quelqu\'un d\'autre.', sentence_ar: 'والداي بخير جدًا.', explanation_ar: 'عشان تتكلم عن صحة حد تاني.' },
+                    { sentence: 'Je ne vais pas très bien aujourd\'hui.', explanation: 'Pour indiquer qu\'on ne se sent pas bien.', sentence_ar: 'أنا مش كويس أوي النهاردة.', explanation_ar: 'عشان تقول إنك مش حاسس إنك بخير.' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Comment demander à un ami "How are you?"', options: ['Comment allez-vous ?', 'Comment vas-tu ?', 'Comment est-tu ?'], correctAnswer: 'Comment vas-tu ?', explanation: '"Comment vas-tu ?" est la forme informelle (pour un ami).', topic: 'Le Verbe Aller', question_ar: 'إزاي تسأل صاحبك "عامل إيه"؟', explanation_ar: '"Comment vas-tu ?" هي الطريقة غير الرسمية (للأصحاب).' },
+                    { question: 'Quelle est une bonne réponse à "Comment ça va ?"', options: ['Je suis bien.', 'J\'ai bien.', 'Je vais bien.'], correctAnswer: 'Je vais bien.', explanation: 'On répond à une question avec "aller" par une phrase avec "aller".', topic: 'Le Verbe Aller', question_ar: 'إيه الرد المناسب على "Comment ça va ؟"', explanation_ar: 'لما حد يسأل بـ "aller"، بنرد برضه بـ "aller".' }
+                ]
+            },
+            {
+                id: 4,
+                title: 'Niveau 4: L\'Impératif du verbe "Aller"',
+                title_ar: 'المستوى الرابع: صيغة الأمر من فعل "Aller"',
+                content: [
+                    'L\'impératif est utilisé pour donner un ordre, un conseil ou une instruction. Le verbe <strong>aller</strong> a des formes impératives irrégulières.',
+                    '<code><strong>Va !</strong></code> (pour "tu")',
+                    '<code><strong>Allons !</strong></code> (pour "nous")',
+                    '<code><strong>Allez !</strong></code> (pour "vous")',
+                    'Note : Quand "Va" est suivi de "y", on ajoute un "s" pour la liaison : <code>Vas-y !</code> (Go ahead!)'
+                ],
+                content_ar: [
+                    'صيغة الأمر بنستخدمها عشان ندي أمر أو نصيحة أو تعليمات. فعل <strong>aller</strong> صيغة الأمر بتاعته شاذة.',
+                    '<code><strong>Va !</strong></code> (لـ "أنت")',
+                    '<code><strong>Allons !</strong></code> (لـ "نحن")',
+                    '<code><strong>Allez !</strong></code> (لـ "أنتم")',
+                    'ملحوظة: لما "Va" ييجي بعدها "y"، بنضيف "s" عشان النطق: <code>Vas-y !</code> (يلا بينا! / تفضل!)'
+                ],
+                examples: [
+                    { sentence: 'Va à l\'école !', explanation: 'Ordre donné à une personne (tu).', sentence_ar: 'اذهب إلى المدرسة!', explanation_ar: 'أمر لشخص واحد (أنت).' },
+                    { sentence: 'Allons au restaurant ce soir.', explanation: 'Suggestion pour un groupe (nous).', sentence_ar: 'يلا نروح مطعم الليلة.', explanation_ar: 'اقتراح لمجموعة (نحن).' },
+                    { sentence: 'Allez tout droit, puis tournez à gauche.', explanation: 'Instruction donnée à une ou plusieurs personnes (vous).', sentence_ar: 'اذهبوا على طول، ثم انعطفوا يسارًا.', explanation_ar: 'تعليمات لشخص أو أكتر (أنتم).' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Quelle est la forme impérative de "aller" pour "tu" ?', options: ['Vas', 'Va', 'Vais'], correctAnswer: 'Va', explanation: 'L\'impératif pour "tu" est "Va", sauf devant "y".', topic: 'Le Verbe Aller', question_ar: 'ما هي صيغة الأمر من "aller" لضمير "tu" (أنت)؟', explanation_ar: 'صيغة الأمر لـ "tu" هي "Va"، إلا لو جه بعدها "y".' },
+                    { question: 'Comment dit-on "Let\'s go!" en français ?', options: ['Allez !', 'Allons-y !', 'Vas-y !'], correctAnswer: 'Allons-y !', explanation: '"Allons" est pour "nous", et on ajoute "-y" pour "let\'s go".', topic: 'Le Verbe Aller', question_ar: 'إزاي نقول "يلا بينا!" بالفرنساوي؟', explanation_ar: '"Allons" لـ "نحن"، وبنضيف "-y" عشان تبقى بمعنى "يلا بينا".' }
+                ]
+            },
+            {
+                id: 5,
+                title: 'Niveau 5: "Aller" avec les vêtements et les couleurs',
+                title_ar: 'المستوى الخامس: "Aller" مع الملابس والألوان',
+                content: [
+                    'On peut utiliser le verbe <strong>aller</strong> pour dire qu\'un vêtement va bien à quelqu\'un ou que des couleurs vont bien ensemble.',
+                    'La structure est : <code>[vêtement/couleur] + aller bien/mal à + [personne]</code>',
+                    'On peut aussi dire : <code>[couleur 1] + et + [couleur 2] + vont bien ensemble.</code>'
+                ],
+                content_ar: [
+                    'ممكن نستخدم فعل <strong>aller</strong> عشان نقول إن لبس معين لايق على حد، أو إن ألوان معينة لايقة على بعض.',
+                    'التركيبة هي: <code>[اللبس/اللون] + aller bien/mal à + [الشخص]</code>',
+                    'ممكن كمان نقول: <code>[اللون 1] + و + [اللون 2] + vont bien ensemble.</code> (لايقين على بعض).'
+                ],
+                examples: [
+                    { sentence: 'Cette robe te va très bien.', explanation: 'Signifie que la robe est jolie sur toi.', sentence_ar: 'هذا الفستان يليق بكِ جدًا.', explanation_ar: 'معناها إن الفستان ده شكله حلو عليكي.' },
+                    { sentence: 'Le bleu et le gris vont bien ensemble.', explanation: 'Signifie que ces deux couleurs sont harmonieuses.', sentence_ar: 'الأزرق والرمادي يليقان ببعضهما.', explanation_ar: 'معناها إن اللونين دول متناسقين مع بعض.' },
+                    { sentence: 'Ce chapeau ne lui va pas du tout.', explanation: 'Signifie que le chapeau n\'est pas beau sur lui/elle.', sentence_ar: 'هذه القبعة لا تليق به/بها على الإطلاق.', explanation_ar: 'معناها إن القبعة دي شكلها مش حلو عليه/عليها.' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Que signifie "Ce pantalon te va bien" ?', options: ['Tu vas acheter ce pantalon.', 'Ce pantalon te va à la bonne taille.', 'Ce pantalon est joli sur toi.'], correctAnswer: 'Ce pantalon est joli sur toi.', explanation: 'C\'est une expression sur le style et l\'apparence.', topic: 'Le Verbe Aller', question_ar: 'ماذا يعني "Ce pantalon te va bien"؟', explanation_ar: 'ده تعبير عن الشكل والمظهر وإن الحاجة دي لايقة عليك.' },
+                    { question: 'Complétez : "Je pense que le jaune et le vert ne ___ pas bien ensemble."', options: ['sont', 'vont', 'ont'], correctAnswer: 'vont', explanation: 'On utilise le verbe "aller" pour parler de l\'harmonie des couleurs.', topic: 'Le Verbe Aller', question_ar: 'أكمل: "Je pense que le jaune et le vert ne ___ pas bien ensemble" (أعتقد أن الأصفر والأخضر ... مع بعض).', explanation_ar: 'بنستخدم فعل "aller" عشان نتكلم عن تناسق الألوان.' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'verbe_venir',
+        title: 'Le Verbe Venir',
+        icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
+        description: 'Apprenez à utiliser "venir" pour l\'origine et le passé récent.',
+        levels: [
+            {
+                id: 1,
+                title: 'Niveau 1: Conjugaison au Présent',
+                title_ar: 'المستوى الأول: التصريف في زمن المضارع',
+                content: [
+                    'Le verbe <strong>venir</strong> est aussi un verbe irrégulier important. Il signifie un mouvement vers la personne qui parle ou le lieu où elle se trouve. Voici sa conjugaison au présent :',
+                    '<code>je <strong>viens</strong></code>',
+                    '<code>tu <strong>viens</strong></code>',
+                    '<code>il/elle/on <strong>vient</strong></code>',
+                    '<code>nous <strong>venons</strong></code>',
+                    '<code>vous <strong>venez</strong></code>',
+                    '<code>ils/elles <strong>viennent</strong></code>',
+                ],
+                content_ar: [
+                    'فعل <strong>venir</strong> (يأتي) هو كمان فعل شاذ ومهم. معناه حركة في اتجاه الشخص اللي بيتكلم أو المكان اللي هو فيه. ده تصريفه في المضارع:',
+                    '<code>je <strong>viens</strong></code> (أنا آتي)',
+                    '<code>tu <strong>viens</strong></code> (أنت تأتي)',
+                    '<code>il/elle/on <strong>vient</strong></code> (هو/هي/نحن نأتي)',
+                    '<code>nous <strong>venons</strong></code> (نحن نأتي)',
+                    '<code>vous <strong>venez</strong></code> (أنتم تأتون)',
+                    '<code>ils/elles <strong>viennent</strong></code> (هم/هن يأتون)',
+                ],
+                examples: [
+                    { sentence: 'Je viens de Paris.', explanation: 'Indique l\'origine.', sentence_ar: 'أنا من باريس.', explanation_ar: 'يدل على الأصل أو المكان اللي جيت منه.' },
+                    { sentence: 'Tu viens à ma fête ?', explanation: 'Invitation à venir vers moi.', sentence_ar: 'هل ستأتي إلى حفلتي؟', explanation_ar: 'دعوة عشان تيجي ناحيتي.' },
+                    { sentence: 'Nous venons du supermarché.', explanation: 'Indique d\'où l\'on arrive.', sentence_ar: 'نحن قادمون من السوبر ماركت.', explanation_ar: 'بيدل على المكان اللي جينا منه.' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Quelle est la forme correcte pour "ils" ?', options: ['venons', 'venez', 'viennent'], correctAnswer: 'viennent', explanation: 'La conjugaison est "ils viennent".', topic: 'Le Verbe Venir', question_ar: 'ما هو التصريف الصحيح لضمير "ils" (هم)؟', explanation_ar: 'التصريف هو "ils viennent".' },
+                    { question: 'Complétez : "Vous ___ d\'Espagne ?"', options: ['venez', 'viennent', 'venons'], correctAnswer: 'venez', explanation: 'La conjugaison est "vous venez".', topic: 'Le Verbe Venir', question_ar: 'أكمل: "Vous ___ d\'Espagne ?" (أنتم ... من إسبانيا؟)', explanation_ar: 'التصريف هو "vous venez".' },
+                ]
+            },
+            {
+                id: 2,
+                title: 'Niveau 2: Le Passé Récent',
+                title_ar: 'المستوى الثاني: الماضي القريب',
+                content: [
+                    'Tout comme "aller" forme le futur proche, <strong>venir</strong> forme le <strong>passé récent</strong>. Il décrit une action qui vient juste de se terminer.',
+                    'La structure est : <code>sujet + venir (conjugué au présent) + de + verbe à l\'infinitif</code>.',
+                    'Cela se traduit par "have just" en anglais.'
+                ],
+                content_ar: [
+                    'زي ما "aller" بيعمل المستقبل القريب، فعل <strong>venir</strong> بيعمل <strong>الماضي القريب</strong>. بنستخدمه عشان نوصف فعل لسه حاصل من شوية صغيرين.',
+                    'التكوين هو: <code>الفاعل + فعل venir (متصرف في المضارع) + de + الفعل في المصدر</code>.',
+                    'غالبًا بيترجم لـ "لسه" بالعامية.'
+                ],
+                examples: [
+                    { sentence: 'Je viens de manger.', explanation: 'Signifie "I have just eaten". L\'action est terminée il y a très peu de temps.', sentence_ar: 'لقد أكلت للتو.', explanation_ar: 'معناها "أنا لسه واكل". الفعل خلص من وقت قليل جدًا.' },
+                    { sentence: 'Elle vient de finir ses devoirs.', explanation: 'Signifie "She has just finished her homework".', sentence_ar: 'هي أنهت واجباتها للتو.', explanation_ar: 'معناها "هي لسه مخلصة واجبها".' },
+                    { sentence: 'Ils viennent d\'arriver.', explanation: 'Signifie "They have just arrived".', sentence_ar: 'لقد وصلوا للتو.', explanation_ar: 'معناها "هم لسه واصلين".' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Comment forme-t-on le passé récent ?', options: ['venir + infinitif', 'venir + de + infinitif', 'être + de + infinitif'], correctAnswer: 'venir + de + infinitif', explanation: 'On utilise "venir de" suivi d\'un verbe à l\'infinitif.', topic: 'Le Verbe Venir', question_ar: 'كيف نكون زمن الماضي القريب؟', explanation_ar: 'بنستخدم "venir de" وبعدها الفعل في المصدر.' },
+                    { question: 'Que signifie "Nous venons de voir un film" ?', options: ['We are going to see a movie', 'We just saw a movie', 'We see a movie'], correctAnswer: 'We just saw a movie', explanation: 'C\'est le passé récent, indiquant une action qui vient de se terminer.', topic: 'Le Verbe Venir', question_ar: 'ماذا تعني "Nous venons de voir un film"؟', explanation_ar: 'ده الماضي القريب، بيدل على فعل لسه خلصان.' }
+                ]
+            },
+            {
+                id: 3,
+                title: 'Niveau 3: "Venir" pour l\'origine',
+                title_ar: 'المستوى الثالث: "Venir" للتعبير عن الأصل',
+                content: [
+                    'L\'utilisation la plus basique de <strong>venir</strong> est pour indiquer l\'origine géographique (pays, ville).',
+                    'On utilise la préposition <strong>de</strong> (et ses formes contractées <strong>du, des</strong>) avec le nom du lieu.',
+                    '<code>Je viens <strong>de</strong> France.</code> (pays féminin)',
+                    '<code>Il vient <strong>du</strong> Canada.</code> (pays masculin)',
+                    '<code>Elle vient <strong>des</strong> États-Unis.</code> (pays pluriel)',
+                    '<code>Tu viens <strong>d\'</strong>Italie.</code> (pays commençant par une voyelle)'
+                ],
+                content_ar: [
+                    'أبسط استخدام لفعل <strong>venir</strong> هو عشان نقول الأصل الجغرافي (بلد، مدينة).',
+                    'بنستخدم حرف الجر <strong>de</strong> (وأشكاله المدمجة <strong>du, des</strong>) مع اسم المكان.',
+                    '<code>Je viens <strong>de</strong> France.</code> (بلد مؤنثة)',
+                    '<code>Il vient <strong>du</strong> Canada.</code> (بلد مذكر)',
+                    '<code>Elle vient <strong>des</strong> États-Unis.</code> (بلد جمع)',
+                    '<code>Tu viens <strong>d\'</strong>Italie.</code> (بلد بتبدأ بحرف متحرك)'
+                ],
+                examples: [
+                    { sentence: 'Mes parents viennent du Maroc.', explanation: '"Maroc" est un pays masculin, donc "de + le" devient "du".', sentence_ar: 'والداي من المغرب.', explanation_ar: '"المغرب" بلد مذكر، عشان كده "de + le" بتتحول لـ "du".' },
+                    { sentence: 'Cette voiture vient d\'Allemagne.', explanation: '"Allemagne" commence par une voyelle.', sentence_ar: 'هذه السيارة من ألمانيا.', explanation_ar: '"ألمانيا" بتبدأ بحرف متحرك.' },
+                    { sentence: 'Vous venez de quelle ville ?', explanation: 'Question sur la ville d\'origine.', sentence_ar: 'أنتم من أي مدينة؟', explanation_ar: 'سؤال عن المدينة الأصلية.' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Complétez : "Je viens ___ Japon."', options: ['de', 'du', 'des'], correctAnswer: 'du', explanation: '"Japon" est un pays masculin, donc on utilise "du".', topic: 'Le Verbe Venir', question_ar: 'أكمل: "Je viens ___ Japon" (أنا من اليابان)', explanation_ar: '"اليابان" بلد مذكر، عشان كده بنستخدم "du".' },
+                    { question: 'Quelle est la préposition correcte pour un pays féminin comme "la Chine" ?', options: ['de', 'du', 'de la'], correctAnswer: 'de', explanation: 'On dit "Je viens de Chine".', topic: 'Le Verbe Venir', question_ar: 'ما هو حرف الجر الصحيح مع بلد مؤنث زي "la Chine" (الصين)؟', explanation_ar: 'بنقول "Je viens de Chine".' }
+                ]
+            },
+            {
+                id: 4,
+                title: 'Niveau 4: "Venir" vs "Aller"',
+                title_ar: 'المستوى الرابع: الفرق بين "Venir" و "Aller"',
+                content: [
+                    'La différence entre <strong>venir</strong> et <strong>aller</strong> est une question de perspective.',
+                    '<strong>Aller</strong> décrit un mouvement qui s\'éloigne du locuteur. <code>Je vais au supermarché.</code> (Je quitte ma position actuelle pour y aller).',
+                    '<strong>Venir</strong> décrit un mouvement vers le locuteur (ou la personne à qui on parle). <code>Tu viens chez moi ce soir ?</code> (Tu te déplaces vers ma position).',
+                ],
+                content_ar: [
+                    'الفرق بين <strong>venir</strong> و <strong>aller</strong> هو موضوع وجهة نظر (حسب مكانك).',
+                    '<strong>Aller</strong> (يذهب): بيوصف حركة بتبعد عن الشخص اللي بيتكلم. <code>Je vais au supermarché.</code> (أنا رايح السوبر ماركت - بسيب مكاني وأروح هناك).',
+                    '<strong>Venir</strong> (يأتي): بيوصف حركة جاية ناحية الشخص اللي بيتكلم (أو اللي بيكلمه). <code>Tu viens chez moi ce soir ?</code> (هتيجي عندي الليلة؟ - يعني هتتحرك وتيجي مكاني).'
+                ],
+                examples: [
+                    { sentence: 'Est-ce que tu viens à la fête ? (La fête est là où je suis)', explanation: 'Le mouvement est vers le locuteur.', sentence_ar: 'هل ستأتي إلى الحفلة؟ (الحفلة في المكان اللي أنا فيه)', explanation_ar: 'الحركة في اتجاه الشخص اللي بيتكلم.' },
+                    { sentence: 'Je ne peux pas, je vais chez mes grands-parents.', explanation: 'Le mouvement s\'éloigne du locuteur.', sentence_ar: 'لا أستطيع، سأذهب عند أجدادي.', explanation_ar: 'الحركة بتبعد عن الشخص اللي بيتكلم.' },
+                    { sentence: 'Le bus va à la gare. (Nous ne sommes pas à la gare)', explanation: 'Le bus s\'éloigne de nous.', sentence_ar: 'الأوتوبيس يذهب إلى المحطة. (إحنا مش في المحطة)', explanation_ar: 'الأوتوبيس بيبعد عننا.' },
+                    { sentence: 'Le bus vient ici toutes les 10 minutes. (Il arrive là où nous sommes)', explanation: 'Le bus se déplace vers notre position.', sentence_ar: 'الأوتوبيس يأتي إلى هنا כל 10 دقائق. (بيوصل للمكان اللي إحنا فيه)', explanation_ar: 'الأوتوبيس بيتحرك ناحية مكاننا.' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Si un ami vous invite chez lui, que dit-il ?', options: ['"Tu vas chez moi ?"', '"Tu viens chez moi ?"'], correctAnswer: '"Tu viens chez moi ?"', explanation: 'Il vous demande de venir vers lui.', topic: 'Le Verbe Venir', question_ar: 'لو صاحبك عزمك عنده في البيت، هيقول إيه؟', explanation_ar: 'هيطلب منك تيجي ناحيته.' },
+                    { question: 'Choisissez le bon verbe : "Demain, je ___ à la montagne."', options: ['viens', 'vais'], correctAnswer: 'vais', explanation: 'Vous décrivez un mouvement qui part de votre position actuelle vers une autre.', topic: 'Le Verbe Venir', question_ar: 'اختر الفعل الصحيح: "Demain, je ___ à la montagne" (بكرة، أنا ... إلى الجبل)', explanation_ar: 'أنت بتوصف حركة هتبدأ من مكانك الحالي لمكان تاني.' }
+                ]
+            },
+            {
+                id: 5,
+                title: 'Niveau 5: Verbes dérivés de "Venir"',
+                title_ar: 'المستوى الخامس: أفعال مشتقة من "Venir"',
+                content: [
+                    'Plusieurs verbes importants sont formés à partir de <strong>venir</strong> et se conjuguent de la même manière.',
+                    '<strong><code>Devenir</code></strong> : to become (<code>Il est devenu médecin.</code>)',
+                    '<strong><code>Revenir</code></strong> : to come back (<code>Je reviens tout de suite.</code>)',
+                    '<strong><code>Se souvenir</code></strong> : to remember (<code>Je me souviens de toi.</code>)',
+                    '<strong><code>Prévenir</code></strong> : to warn, to inform (<code>Préviens-moi quand tu arrives.</code>)'
+                ],
+                content_ar: [
+                    'فيه أفعال مهمة كتير متكونة من فعل <strong>venir</strong> وبتتصرف بنفس الطريقة.',
+                    '<strong><code>Devenir</code></strong> : يصبح (<code>Il est devenu médecin.</code> - هو أصبح طبيبًا).',
+                    '<strong><code>Revenir</code></strong> : يعود/يرجع (<code>Je reviens tout de suite.</code> - أنا راجع حالًا).',
+                    '<strong><code>Se souvenir</code></strong> : يتذكر (<code>Je me souviens de toi.</code> - أنا أتذكرك).',
+                    '<strong><code>Prévenir</code></strong> : يحذر / يبلغ (<code>Préviens-moi quand tu arrives.</code> - بلغني لما توصل).'
+                ],
+                examples: [
+                    { sentence: 'Avec le temps, elle est devenue plus confiante.', explanation: '"Devenir" signifie un changement, une transformation.', sentence_ar: 'مع الوقت، هي أصبحت أكثر ثقة بنفسها.', explanation_ar: '"Devenir" معناها تغيير أو تحول.' },
+                    { sentence: 'Nous revenons de vacances demain.', explanation: '"Revenir" signifie "venir encore une fois" ou "rentrer".', sentence_ar: 'سنعود من الأجازة غدًا.', explanation_ar: '"Revenir" معناها "يأتي مرة تانية" أو "يرجع".' },
+                    { sentence: 'Tu te souviens de ce film ?', explanation: '"Se souvenir" est un verbe pronominal qui signifie "se rappeler".', sentence_ar: 'هل تتذكر هذا الفيلم؟', explanation_ar: '"Se souvenir" هو فعل ضميري معناه "يتذكر".' }
+                ],
+                xpReward: 50,
+                quiz: [
+                    { question: 'Quel verbe signifie "to become" ?', options: ['Revenir', 'Devenir', 'Prévenir'], correctAnswer: 'Devenir', explanation: 'Exemple : Le petit garçon veut devenir pompier.', topic: 'Le Verbe Venir', question_ar: 'أي فعل يعني "يصبح"؟', explanation_ar: 'مثال: الولد الصغير يريد أن يصبح رجل إطفاء.' },
+                    { question: 'Complétez avec le bon verbe : "Je ne ___ souviens pas de son nom."', options: ['me', 'te', 'se'], correctAnswer: 'me', explanation: 'Le verbe est "se souvenir", et à la première personne, il devient "je me souviens".', topic: 'Le Verbe Venir', question_ar: 'أكمل بالفعل الصحيح: "Je ne ___ souviens pas de son nom" (أنا لا ... اسمه)', explanation_ar: 'الفعل هو "se souvenir"، ومع ضمير المتكلم "أنا" بيبقى "je me souviens".' }
+                ]
+            }
+        ]
+    }
+];
+
+// FIX: Export QUIZ_SETS_AR and QUIZ_SETS_FR by generating them from existing topics.
+export const QUIZ_SETS_AR: QuizSet[] = GRAMMAR_TOPICS_AR.map(topic => ({
+    id: `quiz_${topic.id}`,
+    title: `اختبار: ${topic.title}`,
+    description: `اختبر معلوماتك في درس "${topic.title}". يغطي هذا الاختبار جميع مستويات الدرس.`,
+    questions: topic.levels.flatMap(level => level.quiz || [])
+}));
+
+export const QUIZ_SETS_FR: QuizSet[] = GRAMMAR_TOPICS_FR.map(topic => ({
+    id: `quiz_${topic.id}`,
+    title: `Quiz : ${topic.title}`,
+    description: `Testez vos connaissances sur "${topic.title}". Ce quiz couvre tous les niveaux de la leçon.`,
+    questions: topic.levels.flatMap(level => level.quiz || [])
+}));
+
 export const STORE_ITEMS: StoreItem[] = [
     // Badges
     { id: 'badge_bronze', name: 'وسام نحوي برونزي', description: 'يضاعف كل نقاط الخبرة المكتسبة بمقدار 1.15x', icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201-4.42 5.5 5.5 0 011.043-2.298l.537-1.074a1 1 0 011.664 0l.537 1.074a5.5 5.5 0 011.043 2.298 5.5 5.5 0 01-3.62 6.424zM10 16a.75.75 0 01.75.75v.008a.75.75 0 01-1.5 0V16.75A.75.75 0 0110 16z" clip-rule="evenodd" /><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z" /></svg>', cost: 150, type: 'badge', payload: { multiplier: 1.15 } },
@@ -893,137 +1685,68 @@ export const STORE_ITEMS: StoreItem[] = [
     },
 ];
 
+const ALL_GRAMMAR_TOPICS = [...GRAMMAR_TOPICS_AR, ...GRAMMAR_TOPICS_FR];
 
 export const ACHIEVEMENTS: Achievement[] = [
     {
         id: 'ach_first_level', name: 'الخطوة الأولى', description: 'أكملت مستواك الأول بنجاح!', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12.25h.008v.008H3v-.008zM5.252 15h.008v.008h-.008V15zm2.248-2.75h.008v.008h-.008v-.008zM12 3.75l.008.008H12V3.75zM12 18.75l-.008.008H12v-.008zM18.75 12.25h.008v.008h-.008v-.008zm2.248 2.75h.008v.008h-.008V15zm-4.496-5.5h.008v.008h-.008v-.008z" /></svg>', xpReward: 50,
-        condition: (progress) => Object.keys(progress.completedLevels).length > 0
+        condition: (progress) => Object.values(progress.completedLevels).some(count => count > 0),
     },
     {
-        id: 'ach_first_topic', name: 'سيد درس', description: 'أتقنت جميع مستويات درس كامل.', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path d="M12 14.25a3.75 3.75 0 00.147-7.492c.03-.003.06-.006.09-.008C12.18 6.74 12.09 6.75 12 6.75c-2.063 0-3.93.816-5.303 2.197C5.32 10.32 4.5 12.188 4.5 14.25c0 4.142 3.358 7.5 7.5 7.5 1.15 0 2.242-.26 3.228-.737" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 14.25L16.5 18.75" /><path d="M12 14.25c-2.063 0-3.93.816-5.303 2.197C5.32 17.82 4.5 19.688 4.5 21.75c0 4.142 3.358 7.5 7.5 7.5 1.15 0 2.242-.26 3.228-.737" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75V3.75m0 3c.09 0 .18-.01.27-.013.03-.002.06-.005.09-.007.03-.002.06-.003.09-.005.03-.002.06-.003.09-.004v-3.23a3.734 3.734 0 01.166-.022c.03-.002.06-.004.09-.006.03-.002.06-.004.09-.006a3.752 3.752 0 011.23-1.662c1.373-1.373 3.24-2.197 5.303-2.197.81 0 1.58.128 2.292.368" /><path d="M16.5 6.75c0-1.776-1.024-3.32-2.5-4.045" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 9.75l-.008.008h.008v-.008z" /></svg>', xpReward: 150,
-        condition: (progress) => GRAMMAR_TOPICS.some(topic => (progress.completedLevels[topic.id] || 0) >= topic.levels.length)
+        id: 'ach_first_topic', name: 'سيد درس', description: 'أتقنت جميع مستويات درس كامل.', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9a9 9 0 119 0zM16.5 18.75a9 9 0 00-9 0m9 0a9 9 0 01-9 0m9 0v-4.875c0-.621-.504-1.125-1.125-1.125h-6.75c-.621 0-1.125.504-1.125 1.125v4.875" /></svg>', xpReward: 150,
+        condition: (progress) => {
+            return ALL_GRAMMAR_TOPICS.some(topic => progress.completedLevels[topic.id] === topic.levels.length);
+        }
     },
     {
         id: 'ach_perfect_quiz', name: 'العلامة الكاملة', description: 'حصلت على 100% في اختبار (10 أسئلة أو أكثر).', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>', xpReward: 100,
-        condition: (progress, payload) => payload?.score === payload?.total && payload?.total >= 10
+        condition: (progress, payload) => payload?.action === 'quiz_complete' && payload.total >= 10 && payload.score === payload.total
     },
     {
-        id: 'ach_first_purchase', name: 'المتسوق الأول', description: 'اشتريت أول عنصر من المتجر.', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c.51 0 .962-.328 1.09-.822l1.923-6.164a.5.5 0 00-.453-.692H5.688c-.482 0-.917.343-1.037.818L2.15 14.25zM7.5 14.25h11.218M15 17.25a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" /></svg>', xpReward: 25,
-        condition: (progress) => progress.purchasedItems.length > 0
+        id: 'ach_first_purchase', name: 'المتسوق الأول', description: 'اشتريت أول عنصر من المتجر.', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c.51 0 .962-.344 1.087-.835l.383-1.437M7.5 14.25L5.106 5.165A2.25 2.25 0 002.87 3H2.25" /></svg>', xpReward: 25,
+        condition: (progress, payload) => payload?.action === 'purchase' && progress.purchasedItems.length === 1,
     },
     {
-        id: 'ach_xp_250', name: 'طالب مجتهد', description: 'وصلت إلى 250 نقطة خبرة.', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /></svg>', xpReward: 75,
-        condition: (progress) => progress.xp >= 250
+        id: 'ach_xp_1000', name: 'خبير صاعد', description: 'وصلت إلى 1000 نقطة خبرة!', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" /></svg>', xpReward: 100,
+        condition: (progress) => progress.xp >= 1000,
     },
     {
-        id: 'ach_xp_1000', name: 'خبير صاعد', description: 'وصلت إلى 1000 نقطة خبرة!', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.63 2.25a14.98 14.98 0 00-5.84 7.38m5.84 2.58a14.98 14.98 0 017.38 5.84m-13.22-5.84a14.98 14.98 0 015.84-7.38" /></svg>', xpReward: 200,
-        condition: (progress) => progress.xp >= 1000
-    }
-];
-
-
-
-export const SIMPLE_EXAMPLES: SimpleExample[] = [
-    { sentence: 'ركض العدّاءُ ركضًا.', explanation: '`ركضًا` مفعول مطلق مؤكد للفعل.', topicTitle: 'المفعول المطلق' },
-    { sentence: 'أحترم الكبير احترامًا.', explanation: '`احترامًا` مفعول مطلق مؤكد للفعل.', topicTitle: 'المفعول المطلق' },
-    { sentence: 'قفز الولد قفز الأبطال.', explanation: '`قفز` مفعول مطلق مبين للنوع.', topicTitle: 'المفعول المطلق' },
-    { sentence: 'سافرْتُ رغبةً في الاستجمام.', explanation: '`رغبةً` مفعول لأجله يبيّن سبب السفر.', topicTitle: 'المفعول لأجله' },
-    { sentence: 'يذهبُ الطلابُ إلى المدرسةِ طلبًا للعلم.', explanation: '`طلبًا` مفعول لأجله يبيّن سبب الذهاب.', topicTitle: 'المفعول لأجله' },
-    { sentence: 'تصدقت على الفقير أملاً في الثواب.', explanation: '`أملاً` مفعول لأجله منصوب.', topicTitle: 'المفعول لأجله' },
-    { sentence: 'وصلَ القطارُ.', explanation: '`وصل` فعل لازم اكتفى بفاعله (القطار).', topicTitle: 'الفعل اللازم والمتعدي' },
-    { sentence: 'فاز الفريقُ في المباراة.', explanation: '`فاز` فعل لازم لا يحتاج مفعول به.', topicTitle: 'الفعل اللازم والمتعدي' },
-    { sentence: 'رسمَ الفنانُ لوحةً.', explanation: '`رسم` فعل متعدٍ نصب مفعولًا به (لوحةً).', topicTitle: 'الفعل اللازم والمتعدي' },
-    { sentence: 'عاد القائدُ منتصرًا.', explanation: '`منتصرًا` حال منصوبة تبين هيئة القائد.', topicTitle: 'الحال' },
-    { sentence: 'شاهدتُ العصفورَ فوق الشجرة.', explanation: '`فوق الشجرة` شبه جملة في محل نصب حال.', topicTitle: 'الحال' },
-    { sentence: 'أقبل الطفل وهو يبكي.', explanation: '`وهو يبكي` جملة اسمية في محل نصب حال.', topicTitle: 'الحال' },
-    { sentence: 'فَهِمَ الطالبُ الدرسَ.', explanation: '`فَهِمَ` فعل ثلاثي مجرد.', topicTitle: 'الفعل المجرد والمزيد' },
-    { sentence: 'أَفْهَمَ المعلمُ الطالبَ.', explanation: '`أَفْهَمَ` فعل ثلاثي مزيد بحرف (الهمزة).', topicTitle: 'الفعل المجرد والمزيد' },
-    { sentence: 'تزلزلت الأرض.', explanation: '`تزلزل` فعل رباعي مزيد بحرف (التاء).', topicTitle: 'الفعل المجرد والمزيد' },
-    { sentence: 'الرجلُ قائلٌ الحقَ.', explanation: '`قائل` اسم فاعل من الفعل الثلاثي `قال`.', topicTitle: 'اسم الفاعل واسم المفعول' },
-    { sentence: 'الحقُ مقولٌ.', explanation: '`مقول` اسم مفعول من الفعل الثلاثي `قيل`.', topicTitle: 'اسم الفاعل واسم المفعول' },
-    { sentence: 'المجتهد مُكرَمٌ.', explanation: '`مُكرَم` اسم مفعول من الفعل غير الثلاثي `أُكرِم`.', topicTitle: 'اسم الفاعل واسم المفعول' },
-];
-
-const ALL_QUESTIONS: QuizQuestion[] = GRAMMAR_TOPICS.flatMap(topic => topic.levels.flatMap(level => level.quiz || []));
-
-export const FILL_IN_THE_BLANK_EXERCISES: FillInTheBlankExercise[] = [
-    { part1: 'دافع المحامي عن موكله', part2: 'قويًا.', requiredType: 'المفعول المطلق', options: ['دفاعًا', 'مدافعًا', 'دفاع'], correctAnswer: 'دفاعًا'},
-    { part1: 'أعمل بجد', part2: 'في رضا النفس.', requiredType: 'المفعول لأجله', options: ['طمعًا', 'صلاةً', 'طامعًا'], correctAnswer: 'طمعًا'},
-    { part1: 'عاد أبي من السفر', part2: '.', requiredType: 'الحال', options: ['متعبًا', 'تعب', 'وهو متعبٌ'], correctAnswer: 'متعبًا'},
-    { part1: '', part2: 'الطفلُ.', requiredType: 'الفعل اللازم', options: ['نامَ', 'أكلَ', 'شربَ'], correctAnswer: 'نامَ'},
-    { part1: 'شرح المعلمُ', part2: '.', requiredType: 'الفعل المتعدي', options: ['الدرسَ', 'واقفًا', 'شرحًا'], correctAnswer: 'الدرسَ'},
-    { part1: 'المؤمن', part2: 'لربه.', requiredType: 'اسم الفاعل واسم المفعول', options: ['شاكرٌ', 'مشكورٌ', 'شكرًا'], correctAnswer: 'شاكرٌ' },
-    { part1: 'الهدف', part2: 'عليه.', requiredType: 'اسم الفاعل واسم المفعول', options: ['مُصوَّبٌ', 'مُصوِّبٌ', 'تصويبًا'], correctAnswer: 'مُصوَّبٌ' }
-];
-
-const fillInTheBlankQuizQuestions: QuizQuestion[] = FILL_IN_THE_BLANK_EXERCISES.map((ex) => ({
-    question: `أكمل الجملة التالية بـ(${ex.requiredType}) مناسب: "${ex.part1} ________ ${ex.part2}"`,
-    options: ex.options || [],
-    correctAnswer: ex.correctAnswer || '',
-    explanation: `الإجابة الصحيحة هي "${ex.correctAnswer}" لأنها ${ex.requiredType} مناسب لسياق الجملة.`,
-    topic: ex.requiredType
-}));
-
-export const QUIZ_SETS: QuizSet[] = [
-  {
-    id: 'comprehensive',
-    title: 'اختبار شامل',
-    description: 'اختبر معلوماتك في جميع الدروس المتاحة.',
-    questions: ALL_QUESTIONS,
-  },
-  {
-    id: 'mafaeel',
-    title: 'اختبار المفاعيل',
-    description: 'أسئلة مخصصة حول المفعول المطلق والمفعول لأجله.',
-    questions: ALL_QUESTIONS.filter(q => 
-        q.topic === 'المفعول المطلق' || 
-        q.topic === 'المفعول لأجله'
-    ),
-  },
-  {
-    id: 'haal',
-    title: 'اختبار الحال',
-    description: 'أسئلة تركز على تعريف الحال وأنواعه وإعرابه.',
-    questions: ALL_QUESTIONS.filter(q =>
-        q.topic === 'الحال'
-    ),
-  },
-  {
-    id: 'mujarrad_mazid',
-    title: 'اختبار المجرد والمزيد',
-    description: 'أسئلة للتمييز بين الأفعال المجردة والمزيدة وأوزانها.',
-    questions: ALL_QUESTIONS.filter(q =>
-        q.topic === 'الفعل المجرد والمزيد'
-    ),
-  },
-  {
-    id: 'lazim_mutaadi',
-    title: 'اختبار اللازم والمتعدي',
-    description: 'أسئلة للتمييز بين الأفعال اللازمة والمتعدية.',
-    questions: ALL_QUESTIONS.filter(q =>
-        q.topic === 'الفعل اللازم والمتعدي'
-    ),
-  },
-  {
-    id: 'ism_fael_mafool_quiz',
-    title: 'اختبار اسم الفاعل والمفعول',
-    description: 'أسئلة حول صياغة وعمل اسم الفاعل واسم المفعول.',
-    questions: ALL_QUESTIONS.filter(q =>
-        q.topic === 'اسم الفاعل واسم المفعول'
-    ),
-  },
-  {
-    id: 'i3rab_signs_quiz',
-    title: 'اختبار علامات الإعراب',
-    description: 'أسئلة حول علامات الإعراب الأصلية والفرعية.',
-    questions: ALL_QUESTIONS.filter(q =>
-        q.topic === 'علامات الإعراب الأصلية والفرعية'
-    ),
-  },
-  {
-    id: 'completer_quiz',
-    title: 'اختبار أكمل الجملة',
-    description: 'اختر الكلمة الصحيحة لإكمال الجملة حسب المطلوب.',
-    questions: fillInTheBlankQuizQuestions,
-  }
+        id: 'ach_polyglot', name: 'متعدد اللغات', description: 'بدأت رحلتك في تعلم لغة جديدة.', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 21l5.25-11.625M21 21l-5.25-11.625M3.75 5.25h16.5M4.5 21h15" /></svg>', xpReward: 75,
+        condition: (progress, payload) => payload?.action === 'switch_language',
+    },
+    {
+        id: 'ach_streak_3', name: 'متعلم ملتزم', description: 'سجلت الدخول لـ 3 أيام متتالية.', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.092 1.21-.138 2.43-.138 3.662v.513A12.01 12.01 0 003 15.242a12.01 12.01 0 0018 0v-.513z" /></svg>', xpReward: 100,
+        condition: (progress, payload) => payload?.action === 'login' && progress.loginStreak >= 3,
+    },
+    {
+        id: 'ach_night_owl', name: 'بومة الليل', description: 'درست في وقت متأخر من الليل.', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>', xpReward: 50,
+        condition: () => new Date().getHours() >= 23 || new Date().getHours() < 4,
+    },
+    {
+        id: 'ach_early_bird', name: 'الطائر المبكر', description: 'بدأت يومك بالتعلم مبكرًا.', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>', xpReward: 50,
+        condition: () => new Date().getHours() >= 5 && new Date().getHours() < 8,
+    },
+    {
+        id: 'ach_shopaholic', name: 'مهووس بالتسوق', description: 'اشتريت 3 عناصر من المتجر.', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.658-.463 1.243-1.117 1.243H4.252c-.654 0-1.187-.585-1.117-1.243l1.263-12A1.875 1.875 0 015.513 7.5h12.974c.576 0 1.059.435 1.117 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>', xpReward: 75,
+        condition: (progress, payload) => payload?.action === 'purchase' && progress.purchasedItems.length >= 3,
+    },
+    {
+        id: 'ach_theme_collector', name: 'جامع الثيمات', description: 'امتلكت كل الثيمات المتاحة.', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.998 15.998 0 013.388-1.62" /></svg>', xpReward: 200,
+        condition: (progress) => {
+            const allThemes = STORE_ITEMS.filter(item => item.type === 'theme').map(item => item.id);
+            return allThemes.every(themeId => progress.purchasedItems.includes(themeId));
+        }
+    },
+    {
+        id: 'ach_master_ar', name: 'بروفيسور العربية', description: 'أتقنت جميع دروس النحو العربي.', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0l-.07.004-.002.004-.002.003-.002.002-.003.002-.002.002-.002.001-.004.001-.004-.001-.004-.001-.003-.001-.002-.001-.002-.001-.002-.001h-.002a50.56 50.56 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0l.07.004c.002-.001.002-.002.003-.002l.002-.003.002-.004.004-.004.004-.004.004-.003.003-.002.003-.002.002-.002h.002z" /></svg>', xpReward: 500,
+        condition: (progress) => {
+            return GRAMMAR_TOPICS_AR.every(topic => progress.completedLevels[topic.id] === topic.levels.length);
+        }
+    },
+    {
+        id: 'ach_master_fr', name: 'Professeur de Français', description: 'أتقنت جميع دروس النحو الفرنسي.', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0l-.07.004-.002.004-.002.003-.002.002-.003.002-.002.002-.002.001-.004.001-.004-.001-.004-.001-.003-.001-.002-.001-.002-.001-.002-.001h-.002a50.56 50.56 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0l.07.004c.002-.001.002-.002.003-.002l.002-.003.002-.004.004-.004.004-.004.004-.003.003-.002.003-.002.002-.002h.002z" /></svg>', xpReward: 500,
+        condition: (progress) => {
+            return GRAMMAR_TOPICS_FR.every(topic => progress.completedLevels[topic.id] === topic.levels.length);
+        }
+    },
 ];

@@ -1,6 +1,8 @@
 export interface Example {
   sentence: string;
   explanation: string;
+  sentence_ar?: string;
+  explanation_ar?: string;
 }
 
 export interface QuizQuestion {
@@ -9,6 +11,8 @@ export interface QuizQuestion {
   correctAnswer: string;
   explanation: string;
   topic: GrammaticalConcept;
+  question_ar?: string;
+  explanation_ar?: string;
 }
 
 export interface LessonLevel {
@@ -18,6 +22,8 @@ export interface LessonLevel {
   examples: Example[];
   xpReward: number;
   quiz?: QuizQuestion[]; // Quiz at the end of the level
+  title_ar?: string;
+  content_ar?: string[];
 }
 
 export interface GrammarTopic {
@@ -28,14 +34,8 @@ export interface GrammarTopic {
   levels: LessonLevel[];
 }
 
-export type GrammaticalConcept = 'المفعول المطلق' | 'المفعول لأجله' | 'الحال' | 'الفعل المجرد والمزيد' | 'الفعل اللازم والمتعدي' | 'الفعل اللازم' | 'الفعل المتعدي' | 'اسم الفاعل واسم المفعول' | 'علامات الإعراب الأصلية والفرعية';
+export type GrammaticalConcept = 'المفعول المطلق' | 'المفعول لأجله' | 'الحال' | 'الفعل المجرد والمزيد' | 'الفعل اللازم والمتعدي' | 'الفعل اللازم' | 'الفعل المتعدي' | 'اسم الفاعل واسم المفعول' | 'علامات الإعراب الأصلية والفرعية' | 'Les Articles' | 'Le Verbe Être' | 'Le Verbe Avoir' | 'Le Verbe Aller' | 'Le Verbe Venir';
 
-
-export interface SimpleExample {
-    sentence: string;
-    explanation: string;
-    topicTitle: GrammaticalConcept;
-}
 
 export interface QuizSet {
   id: string;
@@ -44,12 +44,23 @@ export interface QuizSet {
   questions: QuizQuestion[];
 }
 
+export interface SimpleExample {
+  topic: GrammaticalConcept;
+  sentence: string;
+  explanation: string;
+  quiz: {
+    question: string;
+    options: string[];
+    correctAnswer: string;
+  };
+}
+
 export interface FillInTheBlankExercise {
-    part1: string;
-    part2: string;
-    requiredType: GrammaticalConcept;
-    options?: string[];
-    correctAnswer?: string;
+  topic: GrammaticalConcept;
+  part1: string;
+  part2: string;
+  options: string[];
+  correctAnswer: string;
 }
 
 // New types for gamification
@@ -90,4 +101,5 @@ export interface UserProgress {
     activeThemeId: string;
     achievements: string[];
     lastLoginDate: string; // ISO date string: YYYY-MM-DD
+    loginStreak: number;
 }

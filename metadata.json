@@ -1,5 +1,5 @@
 {
-  "name": "موسوعة النحو المبسط",
-  "description": "تطبيق ويب تعليمي متقدم لإتقان قواعد النحو العربي. يقدم شروحات مفصلة، أمثلة تفاعلية، ومولد أمثلة ذكي. اختبر فهمك باختبارات قابلة للتخصيص.",
+  "name": "موسوعة النحو | Encyclopédie Grammaticale",
+  "description": "تطبيق ويب تعليمي لإتقان قواعد النحو العربي والفرنسي. يقدم شروحات مفصلة، أمثلة تفاعلية، ومولد أمثلة ذكي. Un site web éducatif pour maîtriser la grammaire arabe et française.",
   "requestFramePermissions": []
 }
