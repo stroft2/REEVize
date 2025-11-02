@@ -169,7 +169,7 @@ const Settings: React.FC<SettingsProps> = ({
     return (
         <>
             {isResetModalOpen && <ResetDataModal onClose={() => setIsResetModalOpen(false)} onConfirm={onResetAllData} T={T} />}
-            <div className="animation-pop-in space-y-8">
+            <div className="animation-view-in space-y-8">
                 <div className="text-center">
                     <h2 className="text-4xl font-bold text-gradient-brand">
                         {T.settings}

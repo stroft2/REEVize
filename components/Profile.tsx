@@ -41,7 +41,7 @@ const Profile: React.FC<ProfileProps> = ({ progress, topics, T }) => {
     }).sort((a,b) => (b.isUnlocked ? 1 : 0) - (a.isUnlocked ? 1 : 0)), [progress.achievements, T]);
 
     return (
-        <div className="animation-pop-in space-y-8">
+        <div className="animation-view-in space-y-8">
             <div className="text-center">
                 <h2 className="text-4xl font-bold text-gradient-brand">
                     {T.profile}
@@ -51,7 +51,7 @@ const Profile: React.FC<ProfileProps> = ({ progress, topics, T }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Progress Card */}
-                <div className="stat-card">
+                <div className="stat-card animation-slide-in-staggered" style={{ animationDelay: '0ms' }}>
                     <h3 className="text-2xl font-bold text-white mb-4">{T.profileStats}</h3>
                     <div className="space-y-4">
                         <div className="flex justify-between items-center bg-slate-800/60 p-3 rounded-lg">
@@ -75,7 +75,7 @@ const Profile: React.FC<ProfileProps> = ({ progress, topics, T }) => {
                 </div>
 
                 {/* Achievements Card */}
-                <div className="stat-card">
+                <div className="stat-card animation-slide-in-staggered" style={{ animationDelay: '100ms' }}>
                     <h3 className="text-2xl font-bold text-white mb-4">{T.profileAchievements} ({unlockedAchievements.filter(a => a.isUnlocked).length} / {ACHIEVEMENTS.length})</h3>
                     {unlockedAchievements.length > 0 ? (
                         <div className="space-y-3 max-h-64 overflow-y-auto pr-2">

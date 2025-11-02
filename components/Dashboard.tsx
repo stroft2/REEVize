@@ -10,7 +10,7 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onSelectTopic, progress, topics, T }) => (
-    <div className="animation-pop-in">
+    <div className="animation-view-in">
         <h2 className="text-4xl font-bold text-center mb-10 text-gradient-brand">
             {T.dashboardTitle}
         </h2>
@@ -23,7 +23,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectTopic, progress, topics, 
                 return (
                     <div
                         key={topic.id}
-                        className="topic-card animation-slide-in-staggered shine-effect"
+                        className="topic-card animation-slide-in-staggered"
                         onClick={() => onSelectTopic(topic)}
                         style={{'animationDelay': `${index * 70}ms`} as React.CSSProperties}
                     >

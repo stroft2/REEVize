@@ -190,10 +190,18 @@ const Quiz: React.FC<QuizProps> = ({ questions, onBack, onQuizComplete, playSoun
         </div>
         {selectedAnswer && (
           <div className={`mt-6 p-4 rounded-lg animation-fade-in-up border ${isCorrect ? 'bg-green-900/30 border-green-500/30' : 'bg-red-900/30 border-red-500/30'}`}>
-            <p className={`font-bold text-lg ${isCorrect ? 'text-green-400' : 'text-red-400' }`}>
-              {isCorrect ? T.correctAnswer : T.incorrectAnswerTitle}
-            </p>
-            <p className="text-gray-300 mt-1">{currentQuestion.explanation}</p>
+            {isCorrect ? (
+              <>
+                <p className="font-bold text-lg text-green-400">{T.correctAnswer}</p>
+                <p className="text-gray-300 mt-1">{currentQuestion.explanation}</p>
+              </>
+            ) : (
+              <>
+                <p className="font-bold text-lg text-red-400">{T.incorrectAnswerTitle}</p>
+                <p className="text-gray-300 mt-1" dangerouslySetInnerHTML={{ __html: `${T.incorrectAnswer} <strong>${currentQuestion.correctAnswer}</strong>`}}></p>
+                <p className="text-gray-300 mt-1">{currentQuestion.explanation}</p>
+              </>
+            )}
           </div>
         )}
       </div>

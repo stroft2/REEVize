@@ -39,7 +39,7 @@ const QuizFlow: React.FC<QuizFlowProps> = ({ selectedQuizSet, quizQuestions, onS
          const availableCounts = Array.from(counts).sort((a, b) => a - b);
 
          return (
-             <div className="animation-pop-in bg-slate-900/70 border border-slate-700/50 rounded-2xl shadow-2xl shadow-brand/10 p-8 text-center backdrop-blur-sm">
+             <div className="animation-view-in bg-slate-900/70 border border-slate-700/50 rounded-2xl shadow-2xl shadow-brand/10 p-8 text-center backdrop-blur-sm">
                 <button onClick={() => onSelectQuizSet(null)} className="flex items-center gap-2 text-brand hover:text-brand-light font-bold mb-6 transition-colors mx-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${T.lang === 'fr' ? 'transform scale-x-[-1]' : ''}`} viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
                     {T.quizSelectionBack}
@@ -64,7 +64,7 @@ const QuizFlow: React.FC<QuizFlowProps> = ({ selectedQuizSet, quizQuestions, onS
     }
     
     return (
-      <div className="animation-pop-in">
+      <div className="animation-view-in">
         <h2 className="text-4xl font-bold text-center mb-10 text-gradient-brand">
           {T.quizSelectionTitle}
         </h2>

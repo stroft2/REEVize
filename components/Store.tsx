@@ -45,7 +45,7 @@ const Store: React.FC<StoreProps> = ({ progress, onPurchase, onActivateTheme, on
     };
 
     return (
-    <div className="animation-pop-in">
+    <div className="animation-view-in">
         <div className="text-center mb-10">
             <h2 className="text-4xl font-bold text-gradient-brand">
                 {T.storeTitle}
@@ -62,13 +62,17 @@ const Store: React.FC<StoreProps> = ({ progress, onPurchase, onActivateTheme, on
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {storeSections[activeTab].map(item => {
+            {storeSections[activeTab].map((item, index) => {
                 const isPurchased = progress.purchasedItems.includes(item.id);
                 const canAfford = progress.xp >= item.cost;
                 const isActiveTheme = item.type === 'theme' && progress.activeThemeId === item.id;
 
                 return (
-                    <div key={item.id} className={`shine-effect relative bg-slate-900/70 border border-slate-700/50 rounded-2xl p-6 flex flex-col text-center items-center transition-all duration-300 ${isPurchased && !isActiveTheme ? 'opacity-70' : ''}`}>
+                    <div 
+                        key={item.id} 
+                        className={`relative bg-slate-900/70 border border-slate-700/50 rounded-2xl p-6 flex flex-col text-center items-center transition-all duration-300 animation-slide-in-staggered ${isPurchased && !isActiveTheme ? 'opacity-70' : ''}`}
+                        style={{ animationDelay: `${index * 50}ms` }}
+                    >
                         <div className="w-20 h-20 mb-4 text-brand-light" dangerouslySetInnerHTML={{ __html: item.icon }} />
                         <h4 className="text-xl font-bold text-white mb-2">{item.name}</h4>
                         <p className="text-slate-400 text-sm mb-4 flex-grow">{item.description}</p>

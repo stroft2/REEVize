@@ -34,7 +34,7 @@ const translations = {
     ar: {
         lang: 'ar',
         dashboard: 'الرئيسية',
-        generator: 'مولّد الأمثلة',
+        generator: 'مولّد الاختبارات',
         completer: 'أكمل الجملة',
         quiz: 'الاختبارات',
         store: 'المتجر',
@@ -59,13 +59,13 @@ const translations = {
         level: 'المستوى',
         levelPassed: 'المستوى مكتمل! +{xp} XP 🎉',
         allTopicsFilter: 'كل الدروس',
-        generatorTitle: 'مولّد الأمثلة الذكي',
-        generatorDescription: 'احصل على أمثلة جديدة لفهم القواعد بشكل أفضل.',
+        generatorTitle: 'مولّد الاختبارات الذكي',
+        generatorDescription: 'احصل على اختبارات ذكاء اصطناعي جديدة لفهم القواعد بشكل أفضل.',
         filterByLesson: 'فلترة حسب الدرس',
         noExamples: 'لا توجد أمثلة لهذا الفلتر.',
         correctAnswer: 'إجابة صحيحة!',
         incorrectAnswer: 'إجابة خاطئة. الصحيحة هي:',
-        generateNewExample: 'توليد مثال جديد',
+        generateNewExample: 'توليد اختبار جديد',
         quizResult100: 'ممتاز!',
         quizResult80: 'رائع!',
         quizResult60: 'جيد جداً!',
@@ -172,7 +172,7 @@ const translations = {
     fr: {
         lang: 'fr',
         dashboard: 'Accueil',
-        generator: 'Générateur',
+        generator: 'Générateur de Quiz',
         completer: 'Compléter',
         quiz: 'Quiz',
         store: 'Boutique',
@@ -197,13 +197,13 @@ const translations = {
         level: 'Niveau',
         levelPassed: 'Niveau terminé ! +{xp} XP 🎉',
         allTopicsFilter: 'Toutes les leçons',
-        generatorTitle: 'Générateur d\'exemples IA',
-        generatorDescription: 'Obtenez de nouveaux exemples pour mieux comprendre les règles.',
+        generatorTitle: 'Générateur de Quiz IA',
+        generatorDescription: 'Obtenez de nouveaux quiz générés par IA pour mieux comprendre les règles.',
         filterByLesson: 'Filtrer par leçon',
         noExamples: 'Aucun exemple pour ce filtre.',
         correctAnswer: 'Bonne réponse !',
         incorrectAnswer: 'Mauvaise réponse. La bonne était :',
-        generateNewExample: 'Générer un nouvel exemple',
+        generateNewExample: 'Générer un nouveau quiz',
         quizResult100: 'Parfait !',
         quizResult80: 'Excellent !',
         quizResult60: 'Très bien !',
@@ -319,7 +319,7 @@ const NavButton: React.FC<{
 }> = ({ isActive, onClick, children, icon }) => (
     <button
         onClick={onClick}
-        className={`relative flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--c-bg-surface)] focus-ring-brand ${isActive ? 'text-white' : 'text-slate-300 hover:text-white hover:bg-slate-700/50'}`}
+        className={`magnetic-effect relative flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--c-bg-surface)] focus-ring-brand ${isActive ? 'text-white' : 'text-slate-300 hover:text-white hover:bg-slate-700/50'}`}
         style={isActive ? { backgroundColor: 'var(--c-brand)', color: 'white' } : {}}
     >
         {icon}
@@ -336,7 +336,7 @@ const Toast: React.FC<{ notification: Notification; onDismiss: () => void }> = (
   }, [onDismiss]);
 
   return (
-    <div className={`fixed bottom-5 ${notification.lang === 'ar' ? 'right-5' : 'left-5'} bg-slate-800 border border-brand-light/50 rounded-xl shadow-2xl shadow-brand/20 p-4 flex items-center gap-4 z-50 animation-fade-in-up`}>
+    <div className={`fixed bottom-5 ${notification.lang === 'ar' ? 'right-5' : 'left-5'} bg-slate-800 border border-brand-light/50 rounded-xl shadow-2xl shadow-brand/20 p-4 flex items-center gap-4 z-50 animation-view-in`}>
       <div className="w-10 h-10 text-brand-light" dangerouslySetInnerHTML={{ __html: notification.icon }} />
       <div>
         <p className="font-bold text-white">{notification.lang === 'ar' ? 'تهانينا!' : 'Félicitations !'}</p>
@@ -442,6 +442,49 @@ const App: React.FC = () => {
             if (stopwatchIntervalRef.current) clearInterval(stopwatchIntervalRef.current);
         };
     }, []);
+
+    // Custom Cursor Logic
+    useEffect(() => {
+      const cursorDot = document.getElementById('cursor-dot');
+      const cursorOutline = document.getElementById('cursor-outline');
+
+      if (!cursorDot || !cursorOutline) return;
+
+      const handleMouseMove = (e: MouseEvent) => {
+          const { clientX: posX, clientY: posY } = e;
+          cursorDot.style.left = `${posX}px`;
+          cursorDot.style.top = `${posY}px`;
+          cursorOutline.animate(
+              { left: `${posX}px`, top: `${posY}px` },
+              { duration: 500, fill: "forwards" }
+          );
+      };
+
+      const handleMouseEnter = () => {
+          cursorOutline.classList.add('magnetic-hover');
+      };
+      const handleMouseLeave = () => {
+          cursorOutline.classList.remove('magnetic-hover');
+      };
+
+      window.addEventListener('mousemove', handleMouseMove);
+
+      const interactiveElements = document.querySelectorAll(
+          'button, a, .topic-card, [role="button"], input, select'
+      );
+      interactiveElements.forEach(el => {
+          el.addEventListener('mouseenter', handleMouseEnter);
+          el.addEventListener('mouseleave', handleMouseLeave);
+      });
+
+      return () => {
+          window.removeEventListener('mousemove', handleMouseMove);
+          interactiveElements.forEach(el => {
+              el.removeEventListener('mouseenter', handleMouseEnter);
+              el.removeEventListener('mouseleave', handleMouseLeave);
+          });
+      };
+    }, [activeView]); // Re-run to catch new elements on view change
   
   const T = translations[language];
   const GRAMMAR_TOPICS = language === 'ar' ? GRAMMAR_TOPICS_AR : GRAMMAR_TOPICS_FR;
@@ -778,7 +821,7 @@ const App: React.FC = () => {
       case 'dashboard': return <Dashboard onSelectTopic={handleSelectTopic} progress={progress} topics={GRAMMAR_TOPICS} T={T} />;
       case 'lesson':
         return selectedTopic && <GrammarSection topic={selectedTopic} onBack={() => handleViewChange('dashboard')} completedLevels={progress.completedLevels[selectedTopic.id] || 0} onCompleteLevel={handleCompleteLevel} triggerVisualEffect={triggerVisualEffect} T={T} />;
-      case 'generator': return <ExampleGenerator addXP={addXP} grammarTopics={GRAMMAR_TOPICS} language={language} triggerVisualEffect={triggerVisualEffect} T={T} />;
+      case 'generator': return <ExampleGenerator addXP={addXP} grammarTopics={GRAMMAR_TOPICS} language={language} playSound={playSound} triggerVisualEffect={triggerVisualEffect} T={T} />;
       case 'completer': return <CompleteSentence addXP={addXP} grammarTopics={GRAMMAR_TOPICS} language={language} triggerVisualEffect={triggerVisualEffect} T={T} />;
       case 'quiz': return <QuizFlow 
                             quizSets={QUIZ_SETS} 
@@ -865,7 +908,7 @@ const App: React.FC = () => {
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => handleLanguageChange(language === 'ar' ? 'fr' : 'ar')}
-                        className="bg-slate-800/80 border border-slate-700/50 rounded-lg px-3 py-2.5 font-bold text-lg flex items-center gap-2 text-white hover:bg-slate-700 transition-colors"
+                        className="magnetic-effect bg-slate-800/80 border border-slate-700/50 rounded-lg px-3 py-2.5 font-bold text-lg flex items-center gap-2 text-white hover:bg-slate-700 transition-colors"
                         aria-label={`Switch to ${language === 'ar' ? 'French' : 'Arabic'}`}
                     >
                         {language === 'ar' ? 'FR' : 'AR'}
@@ -898,13 +941,13 @@ const App: React.FC = () => {
         </div>
       </header>
       
-      <main className={`container mx-auto max-w-6xl p-4 md:p-8 transition-all duration-300 ${isAnimatingOut ? 'animation-fade-out' : 'animation-fade-in'} ${isLangSwitching ? 'animation-lang-switch-out' : 'animation-lang-switch-in'}`}>
+      <main className={`container mx-auto max-w-6xl p-4 md:p-8 transition-all duration-300 ${isAnimatingOut ? 'animation-view-out' : 'animation-view-in'} ${isLangSwitching ? 'animation-lang-switch-out' : 'animation-lang-switch-in'}`}>
         {renderContent()}
       </main>
 
        <button
             onClick={() => setIsChatbotOpen(true)}
-            className="fixed bottom-6 right-6 z-30 w-16 h-16 rounded-full bg-gradient-brand text-white shadow-2xl shadow-brand/40 flex items-center justify-center transform hover:scale-110 transition-transform duration-300 interactive-press"
+            className="magnetic-effect fixed bottom-6 right-6 z-30 w-16 h-16 rounded-full bg-gradient-brand text-white shadow-2xl shadow-brand/40 flex items-center justify-center transform hover:scale-110 transition-transform duration-300 interactive-press"
             aria-label="Open AI Chatbot"
         >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V8.25a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 8.25v7.5a2.25 2.25 0 002.25 2.25z" /></svg>

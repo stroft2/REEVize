@@ -109,7 +109,7 @@ const CompleteSentence: React.FC<CompleteSentenceProps> = ({ addXP, grammarTopic
     };
 
     return (
-    <div className="bg-slate-900/70 border border-slate-700/50 rounded-2xl shadow-xl shadow-brand/10 animation-pop-in p-6 md:p-8 backdrop-blur-sm">
+    <div className="bg-slate-900/70 border border-slate-700/50 rounded-2xl shadow-xl shadow-brand/10 animation-view-in p-6 md:p-8 backdrop-blur-sm">
       <h2 className="text-3xl font-bold text-gradient-brand mb-2">
         {T.completerTitle}
       </h2>
@@ -144,7 +144,7 @@ const CompleteSentence: React.FC<CompleteSentenceProps> = ({ addXP, grammarTopic
             <p>{error}</p>
         </div>
       ) : currentExercise ? (
-        <>
+        <div className="animation-fade-in">
             <div className="bg-slate-800/50 rounded-lg p-6 flex flex-col justify-center items-center transition-opacity duration-300 mb-6 border border-brand/20">
                 <p className="text-gray-400 text-sm mb-4">{T.requiredLabel} <span className="font-bold text-gradient-brand">{filter}</span></p>
                 <p className="text-2xl font-semibold text-center" dir={language === 'ar' ? 'rtl' : 'ltr'}>
@@ -185,7 +185,7 @@ const CompleteSentence: React.FC<CompleteSentenceProps> = ({ addXP, grammarTopic
             >
                 {T.newExercise}
             </button>
-        </>
+        </div>
       ) : (
         <div className="text-center py-12 text-slate-500">
             <p>{T.noExercises}</p>
