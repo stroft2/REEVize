@@ -3,7 +3,7 @@ import { GoogleGenAI } from '@google/genai';
 import type { Translations } from '../App';
 
 interface AiChatbotProps {
-    language: 'ar' | 'fr';
+    language: 'ar' | 'fr' | 'en';
     onClose: () => void;
     T: Translations;
 }
@@ -20,8 +20,9 @@ const AiChatbot: React.FC<AiChatbotProps> = ({ language, onClose, T }) => {
     const [error, setError] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    const langName = language === 'ar' ? 'Arabic' : 'French';
-    const systemInstruction = `You are a helpful and friendly grammar tutor specializing in ${langName}. Your name is 'نحوي' for Arabic and 'GrammaireGPT' for French. Answer questions clearly, provide examples, and keep explanations concise and easy to understand for a language learner. Format your responses using markdown for readability (e.g., use **bold** for key terms, lists for rules, and code blocks for examples).`;
+    const langName = language === 'ar' ? 'Arabic' : language === 'fr' ? 'French' : 'English';
+    const botName = language === 'ar' ? 'نحوي' : language === 'fr' ? 'GrammaireGPT' : 'GrammarBot';
+    const systemInstruction = `You are a helpful and friendly grammar tutor specializing in ${langName}. Your name is '${botName}'. Answer questions clearly, provide examples, and keep explanations concise and easy to understand for a language learner. Format your responses using markdown for readability (e.g., use **bold** for key terms, lists for rules, and code blocks for examples).`;
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -74,7 +75,7 @@ const AiChatbot: React.FC<AiChatbotProps> = ({ language, onClose, T }) => {
             setIsLoading(true);
             try {
                 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
-                const prompt = `You are a helpful and friendly grammar tutor specializing in ${langName}. Your name is '${language === 'ar' ? 'نحوي' : 'GrammaireGPT'}'. Generate a short, friendly, and encouraging greeting for a student who has just opened the chat. Introduce yourself briefly. Keep it under 3 sentences.`;
+                const prompt = `You are a helpful and friendly grammar tutor specializing in ${langName}. Your name is '${botName}'. Generate a short, friendly, and encouraging greeting for a student who has just opened the chat. Introduce yourself briefly. Keep it under 3 sentences.`;
                 const response = await ai.models.generateContent({
                     model: 'gemini-2.5-flash',
                     contents: prompt,
@@ -95,7 +96,7 @@ const AiChatbot: React.FC<AiChatbotProps> = ({ language, onClose, T }) => {
              // If already greeted in this session, just show the static greeting
             setMessages([{ role: 'model', text: T.aiGreeting }]);
         }
-    }, [language, T.aiGreeting, langName]);
+    }, [language, T.aiGreeting, langName, botName]);
 
 
     return (
@@ -111,7 +112,7 @@ const AiChatbot: React.FC<AiChatbotProps> = ({ language, onClose, T }) => {
                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V8.25a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 8.25v7.5a2.25 2.25 0 002.25 2.25z" /></svg>
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-white">{language === 'ar' ? 'نحوي' : 'GrammaireGPT'}</h3>
+                            <h3 className="text-xl font-bold text-white">{botName}</h3>
                             <p className="text-sm text-green-400 flex items-center gap-1">
                                 <span className="w-2 h-2 bg-green-400 rounded-full inline-block"></span>
                                 Online

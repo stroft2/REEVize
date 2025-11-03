@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import GrammarSection from './components/GrammarSection';
-import ExampleGenerator from './components/ExampleGenerator';
 import QuizFlow from './components/QuizFlow';
 import ParticleBackground from './components/ParticleBackground';
-import CompleteSentence from './components/CompleteSentence';
 import Settings from './components/Settings';
 import AiChatbot from './components/AiChatbot';
 import Dashboard from './components/Dashboard';
@@ -11,31 +9,28 @@ import Store from './components/Store';
 import Profile from './components/Profile';
 import { 
     GRAMMAR_TOPICS_AR, QUIZ_SETS_AR, STORE_ITEMS, ACHIEVEMENTS,
-    GRAMMAR_TOPICS_FR, QUIZ_SETS_FR
+    GRAMMAR_TOPICS_FR, QUIZ_SETS_FR,
+    GRAMMAR_TOPICS_EN, QUIZ_SETS_EN
 } from './constants';
 import type { QuizSet, QuizQuestion, GrammarTopic, UserProgress, StoreItem, Achievement } from './types';
 
-type View = 'dashboard' | 'lesson' | 'generator' | 'completer' | 'quiz' | 'store' | 'settings' | 'profile';
+type View = 'dashboard' | 'lesson' | 'quiz' | 'store' | 'settings' | 'profile';
 type Sound = 'correct' | 'incorrect' | 'level-up' | 'purchase' | 'achievement';
-type Language = 'ar' | 'fr';
+type Language = 'ar' | 'fr' | 'en';
 type VisualEffect = 'rainbow' | 'grayscale' | 'correct-answer' | 'incorrect-answer' | null;
 
 const ICONS: Record<Exclude<View, 'lesson'>, React.ReactNode> = {
     dashboard: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg>,
-    generator: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" /></svg>,
-    completer: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M15.5,5.5h-0.959c-0.23,0-0.45,0.082-0.627,0.24L10.5,9.586L8.087,7.172C7.91,7.016,7.69,6.934,7.459,6.934H6.5c-0.414,0-0.75,0.336-0.75,0.75v0.922c0,0.229,0.084,0.449,0.244,0.625l3.5,3.594c0.195,0.199,0.451,0.293,0.707,0.293s0.512-0.094,0.707-0.293l4.5-4.594C15.916,10.375,16,10.156,16,9.926V9c0-0.414-0.336-0.75-0.75-0.75h-0.922c-0.229,0-0.449-0.084-0.625-0.244L10.5,4.414l2.413,2.413C12.984,6.899,13.204,6.98,13.434,6.98H14.5c0.414,0,0.75-0.336,0.75-0.75V5.5C15.25,5.086,14.914,4.75,14.5,4.75z M4,4h8c0.552,0,1,0.448,1,1s-0.448,1-1,1H4C3.448,6,3,5.552,3,5S3.448,4,4,4z M13,15h-1v-2c0-0.552-0.448-1-1-1H5c-0.552,0-1,0.448-1,1v2H3c-0.552,0-1,0.448-1,1s0.448,1,1,1h10c0.552,0,1-0.448,1-1S13.552,15,13,15z" clipRule="evenodd"/></svg>,
     quiz: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M11.3,2.268a2,2,0,0,0-2.6,0l-6,5.25A2,2,0,0,0,2,9.25v6.5a2,2,0,0,0,2,2h12a2,2,0,0,0,2-2v-6.5a2,2,0,0,0-0.7-1.732l-6-5.25ZM10,4.5l6,5.25v6.5H4v-6.5L10,4.5ZM9,11v4h2v-4H9Zm0-3h2v2H9V8Z" clipRule="evenodd" /></svg>,
     store: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l.237-.237.954-3.818.008-.032.01-.041L9.4 3H15a1 1 0 000-2H3zM6 16a2 2 0 100 4 2 2 0 000-4zm9-2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>,
     profile: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" /></svg>,
-    settings: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01-.947-2.287c1.561-.379-1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" /></svg>,
+    settings: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01-.947-2.287c1.561-.379-1.561-2.6 0-2.978a1.532 1.532 0 01.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" /></svg>,
 };
 
 const translations = {
     ar: {
         lang: 'ar',
         dashboard: 'الرئيسية',
-        generator: 'مولّد الاختبارات',
-        completer: 'أكمل الجملة',
         quiz: 'الاختبارات',
         store: 'المتجر',
         profile: 'الملف الشخصي',
@@ -59,13 +54,8 @@ const translations = {
         level: 'المستوى',
         levelPassed: 'المستوى مكتمل! +{xp} XP 🎉',
         allTopicsFilter: 'كل الدروس',
-        generatorTitle: 'مولّد الاختبارات الذكي',
-        generatorDescription: 'احصل على اختبارات ذكاء اصطناعي جديدة لفهم القواعد بشكل أفضل.',
-        filterByLesson: 'فلترة حسب الدرس',
-        noExamples: 'لا توجد أمثلة لهذا الفلتر.',
         correctAnswer: 'إجابة صحيحة!',
         incorrectAnswer: 'إجابة خاطئة. الصحيحة هي:',
-        generateNewExample: 'توليد اختبار جديد',
         quizResult100: 'ممتاز!',
         quizResult80: 'رائع!',
         quizResult60: 'جيد جداً!',
@@ -82,14 +72,6 @@ const translations = {
         quizQuestionCount: 'اختر عدد الأسئلة لبدء الاختبار.',
         questionsLabel: 'أسئلة',
         quizNotEnoughQuestions: 'لا توجد أسئلة كافية لهذا الموضوع حاليًا.',
-        completerTitle: 'أكمل الجملة',
-        completerDescription: 'اختر الكلمة المناسبة لإكمال الجملة بشكل صحيح.',
-        selectRequiredType: 'اختر النوع المطلوب',
-        requiredLabel: 'المطلوب:',
-        correctAnswerXP: 'إجابة صحيحة! +5 XP',
-        correctAnswerIs: 'الإجابة الصحيحة هي:',
-        newExercise: 'تمرين جديد',
-        noExercises: 'لا توجد تمارين لهذا الفلتر حاليًا.',
         settingsDescription: 'تحكم في تفضيلاتك وبيانات التطبيق.',
         appearance: 'المظهر',
         lightMode: 'الوضع الفاتح',
@@ -107,7 +89,6 @@ const translations = {
         aiError: 'عذرًا، حدث خطأ أثناء الاتصال بالمساعد. يرجى المحاولة مرة أخرى.',
         sendMessage: 'أرسل رسالة',
         aiThinking: 'يفكر...',
-        aiGenerating: 'جاري التوليد...',
         profileDescription: 'نظرة عامة على تقدمك وإنجازاتك.',
         profileStats: 'إحصائيات التقدم',
         profileXP: 'نقاط الخبرة (XP):',
@@ -168,12 +149,12 @@ const translations = {
         ach_master_ar_desc: 'أتقنت جميع دروس النحو العربي.',
         ach_master_fr_name: 'Professeur de Français',
         ach_master_fr_desc: 'أتقنت جميع دروس النحو الفرنسي.',
+        ach_master_en_name: 'بروفيسور الإنجليزية',
+        ach_master_en_desc: 'أتقنت جميع دروس النحو الإنجليزي.',
     },
     fr: {
         lang: 'fr',
         dashboard: 'Accueil',
-        generator: 'Générateur de Quiz',
-        completer: 'Compléter',
         quiz: 'Quiz',
         store: 'Boutique',
         profile: 'Profil',
@@ -197,13 +178,8 @@ const translations = {
         level: 'Niveau',
         levelPassed: 'Niveau terminé ! +{xp} XP 🎉',
         allTopicsFilter: 'Toutes les leçons',
-        generatorTitle: 'Générateur de Quiz IA',
-        generatorDescription: 'Obtenez de nouveaux quiz générés par IA pour mieux comprendre les règles.',
-        filterByLesson: 'Filtrer par leçon',
-        noExamples: 'Aucun exemple pour ce filtre.',
         correctAnswer: 'Bonne réponse !',
         incorrectAnswer: 'Mauvaise réponse. La bonne était :',
-        generateNewExample: 'Générer un nouveau quiz',
         quizResult100: 'Parfait !',
         quizResult80: 'Excellent !',
         quizResult60: 'Très bien !',
@@ -220,14 +196,6 @@ const translations = {
         quizQuestionCount: 'Choisissez le nombre de questions pour commencer.',
         questionsLabel: 'questions',
         quizNotEnoughQuestions: 'Pas assez de questions pour ce sujet pour le moment.',
-        completerTitle: 'Complétez la phrase',
-        completerDescription: 'Choisissez le bon mot pour compléter la phrase correctement.',
-        selectRequiredType: 'Sélectionnez le type requis',
-        requiredLabel: 'Requis :',
-        correctAnswerXP: 'Bonne réponse ! +5 XP',
-        correctAnswerIs: 'La bonne réponse est :',
-        newExercise: 'Nouvel exercice',
-        noExercises: 'Aucun exercice pour ce filtre pour le moment.',
         settingsDescription: 'Gérez vos préférences et les données de l\'application.',
         appearance: 'Apparence',
         lightMode: 'Mode Clair',
@@ -245,7 +213,6 @@ const translations = {
         aiError: 'Désolé, une erreur s\'est produite lors de la connexion à l\'assistant. Veuillez réessayer.',
         sendMessage: 'Envoyer un message',
         aiThinking: 'Réfléchit...',
-        aiGenerating: 'Génération en cours...',
         profileDescription: 'Un aperçu de vos progrès et de vos réalisations.',
         profileStats: 'Statistiques de progression',
         profileXP: 'Points d\'expérience (XP) :',
@@ -306,6 +273,132 @@ const translations = {
         ach_master_ar_desc: 'Vous avez maîtrisé toutes les leçons de grammaire arabe.',
         ach_master_fr_name: 'Professeur de Français',
         ach_master_fr_desc: 'Vous avez maîtrisé toutes les leçons de grammaire française.',
+        ach_master_en_name: 'Professeur d\'Anglais',
+        ach_master_en_desc: 'Vous avez maîtrisé toutes les leçons de grammaire anglaise.',
+    },
+    en: {
+        lang: 'en',
+        dashboard: 'Home',
+        quiz: 'Quizzes',
+        store: 'Store',
+        profile: 'Profile',
+        settings: 'Settings',
+        title: 'Grammar Encyclopedia',
+        dashboardTitle: 'Choose a lesson to begin your journey',
+        dashboardProgress: 'Progress',
+        dashboardLevels: 'levels',
+        quizTitle: 'Test Your Understanding',
+        checkAnswers: 'Check Answers',
+        retryQuiz: 'Retry Quiz',
+        quizCorrect: 'All answers correct! Well done!',
+        incorrectAnswerTitle: 'Incorrect Answer',
+        masteryTitle: 'Total Mastery!',
+        masteryDescription: 'You have mastered the "{topicTitle}" lesson. Excellent work!',
+        continueLearning: 'Continue Learning',
+        backToLessons: 'Back to Lessons',
+        lessonLevels: 'Lesson Levels',
+        examplesTitle: 'Examples',
+        explanation: 'Explanation',
+        level: 'Level',
+        levelPassed: 'Level complete! +{xp} XP 🎉',
+        allTopicsFilter: 'All Lessons',
+        correctAnswer: 'Correct answer!',
+        incorrectAnswer: 'Incorrect answer. The correct one was:',
+        quizResult100: 'Perfect!',
+        quizResult80: 'Excellent!',
+        quizResult60: 'Very good!',
+        quizResult40: 'You can do better!',
+        quizResult0: 'Keep trying!',
+        yourFinalScore: 'Your final score',
+        youEarnedXP: 'You earned {xp} XP',
+        backToMenu: 'Back to Menu',
+        retakeQuiz: 'Retake Quiz',
+        question: 'Question',
+        quizYourself: 'Quiz Yourself',
+        quizSelectionTitle: 'Choose a Quiz',
+        quizSelectionBack: 'Back to Quiz Selection',
+        quizQuestionCount: 'Choose the number of questions to start.',
+        questionsLabel: 'questions',
+        quizNotEnoughQuestions: 'Not enough questions for this topic at the moment.',
+        settingsDescription: 'Manage your preferences and application data.',
+        appearance: 'Appearance',
+        lightMode: 'Light Mode',
+        resetTheme: 'Reset Theme',
+        dataManagement: 'Data Management',
+        dataWarning: 'Warning: This action will permanently delete all your progress and purchases and cannot be undone.',
+        deleteAllData: 'Delete All Data',
+        resetModalTitle: 'Are you sure?',
+        resetModalDescription: '<strong>All</strong> your data will be permanently deleted. This includes your experience points, completed levels, purchases, and achievements.',
+        resetModalChallenge: 'To confirm, solve the following equation:',
+        resetModalPlaceholder: 'Enter the value of x',
+        resetModalCancel: 'Cancel',
+        resetModalConfirm: 'Yes, delete everything',
+        aiGreeting: 'Hello! I am GrammarBot, your English grammar tutor. How can I help you today?',
+        aiError: 'Sorry, an error occurred while connecting to the assistant. Please try again.',
+        sendMessage: 'Send a message',
+        aiThinking: 'Thinking...',
+        profileDescription: 'An overview of your progress and achievements.',
+        profileStats: 'Progress Statistics',
+        profileXP: 'Experience Points (XP):',
+        profileLevels: 'Levels Completed:',
+        profileTotalProgress: 'Total Progress',
+        profileAchievements: 'Unlocked Achievements',
+        profileNoAchievements: 'No achievements unlocked yet. Keep learning!',
+        storeTitle: 'Rewards Store',
+        storeDescription: 'Use your experience points (XP) to purchase unique badges and themes!',
+        storeBadges: 'Badges',
+        storeThemes: 'Themes',
+        storePreview: 'Preview',
+        storeThemeActive: 'Active Theme',
+        storeThemeActivate: 'Activate Theme',
+        storePurchased: 'Purchased',
+        storePurchase: 'Purchase',
+        badge_bronze_name: 'Bronze Grammar Badge',
+        badge_bronze_desc: 'Multiplies all earned XP by 1.15x',
+        badge_silver_name: 'Silver Grammar Badge',
+        badge_silver_desc: 'Multiplies all earned XP by 1.25x',
+        badge_gold_name: 'Gold Grammar Badge',
+        badge_gold_desc: 'Multiplies all earned XP by 1.40x',
+        badge_expert_name: 'Grammar Expert Badge',
+        badge_expert_desc: 'The highest honor, multiplies XP by 1.60x',
+        badge_book_name: 'Book Lover Badge',
+        badge_book_desc: 'Adds +0.05 to your current XP multiplier.',
+        badge_star_name: 'Star of Excellence',
+        badge_star_desc: 'Adds +0.05 to your current XP multiplier.',
+        theme_ocean_name: 'Ocean Breeze Theme',
+        theme_ocean_desc: 'A calming theme with blue and turquoise ocean colors.',
+        theme_sunset_name: 'Sunset Glow Theme',
+        theme_sunset_desc: 'A warm theme with orange and red sunset colors.',
+        theme_forest_name: 'Emerald Forest Theme',
+        theme_forest_desc: 'A nature-inspired theme with soothing green colors.',
+        ach_first_level_name: 'First Step',
+        ach_first_level_desc: 'You successfully completed your first level!',
+        ach_first_topic_name: 'Lesson Master',
+        ach_first_topic_desc: 'You mastered all levels of a complete lesson.',
+        ach_perfect_quiz_name: 'Perfect Score',
+        ach_perfect_quiz_desc: 'You got 100% on a quiz (10 questions or more).',
+        ach_first_purchase_name: 'First Purchase',
+        ach_first_purchase_desc: 'You bought your first item from the store.',
+        ach_xp_1000_name: 'Rising Expert',
+        ach_xp_1000_desc: 'You reached 1000 experience points!',
+        ach_polyglot_name: 'Polyglot',
+        ach_polyglot_desc: 'You started your journey in a new language.',
+        ach_streak_3_name: 'Committed Learner',
+        ach_streak_3_desc: 'Logged in for 3 consecutive days.',
+        ach_night_owl_name: 'Night Owl',
+        ach_night_owl_desc: 'You studied late at night.',
+        ach_early_bird_name: 'Early Bird',
+        ach_early_bird_desc: 'You started your day by learning early.',
+        ach_shopaholic_name: 'Shopaholic',
+        ach_shopaholic_desc: 'You purchased 3 items from the store.',
+        ach_theme_collector_name: 'Theme Collector',
+        ach_theme_collector_desc: 'You own all available themes.',
+        ach_master_ar_name: 'Professor of Arabic',
+        ach_master_ar_desc: 'You have mastered all Arabic grammar lessons.',
+        ach_master_fr_name: 'Professor of French',
+        ach_master_fr_desc: 'You have mastered all French grammar lessons.',
+        ach_master_en_name: 'Professor of English',
+        ach_master_en_desc: 'You have mastered all English grammar lessons.',
     }
 };
 
@@ -319,7 +412,7 @@ const NavButton: React.FC<{
 }> = ({ isActive, onClick, children, icon }) => (
     <button
         onClick={onClick}
-        className={`magnetic-effect relative flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--c-bg-surface)] focus-ring-brand ${isActive ? 'text-white' : 'text-slate-300 hover:text-white hover:bg-slate-700/50'}`}
+        className={`magnetic-effect relative flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--c-bg-surface)] focus-ring-brand ${isActive ? 'text-white' : 'text-slate-300 hover:text-white hover:bg-slate-700/50'}`}
         style={isActive ? { backgroundColor: 'var(--c-brand)', color: 'white' } : {}}
     >
         {icon}
@@ -336,10 +429,13 @@ const Toast: React.FC<{ notification: Notification; onDismiss: () => void }> = (
   }, [onDismiss]);
 
   return (
-    <div className={`fixed bottom-5 ${notification.lang === 'ar' ? 'right-5' : 'left-5'} bg-slate-800 border border-brand-light/50 rounded-xl shadow-2xl shadow-brand/20 p-4 flex items-center gap-4 z-50 animation-view-in`}>
+    <div 
+      className={`fixed bottom-5 ${notification.lang === 'ar' ? 'right-5' : 'left-5'} bg-slate-800 border border-brand-light/50 rounded-xl shadow-2xl shadow-brand/20 p-4 flex items-center gap-4 z-50 animation-toast-in`}
+      style={{'--toast-from': notification.lang === 'ar' ? '100%' : '-100%'} as React.CSSProperties}
+    >
       <div className="w-10 h-10 text-brand-light" dangerouslySetInnerHTML={{ __html: notification.icon }} />
       <div>
-        <p className="font-bold text-white">{notification.lang === 'ar' ? 'تهانينا!' : 'Félicitations !'}</p>
+        <p className="font-bold text-white">{notification.lang === 'ar' ? 'تهانينا!' : notification.lang === 'fr' ? 'Félicitations !' : 'Congratulations!'}</p>
         <p className="text-slate-300">{notification.message}</p>
       </div>
     </div>
@@ -376,119 +472,59 @@ const App: React.FC = () => {
   const [selectedQuizSet, setSelectedQuizSet] = useState<QuizSet | null>(null);
   const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[] | null>(null);
   
-  // Focus Tools (Timer/Stopwatch) State - Lifted from Settings
-    const [timerSeconds, setTimerSeconds] = useState(25 * 60);
-    const [isTimerRunning, setIsTimerRunning] = useState(false);
-    const timerIntervalRef = useRef<number | null>(null);
-    const [stopwatchMs, setStopwatchMs] = useState(0);
-    const [isStopwatchRunning, setIsStopwatchRunning] = useState(false);
-    const stopwatchIntervalRef = useRef<number | null>(null);
-    const [laps, setLaps] = useState<number[]>([]);
-    
-    // Timer Logic
-    const handleTimerStartStop = useCallback(() => {
-        if (isTimerRunning) {
-            if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-            setIsTimerRunning(false);
-        } else {
-            setIsTimerRunning(true);
-            timerIntervalRef.current = window.setInterval(() => {
-                setTimerSeconds(prev => {
-                    if (prev <= 1) {
-                        if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-                        setIsTimerRunning(false);
-                        (document.getElementById('alarm-sound') as HTMLAudioElement)?.play();
-                        return 0;
-                    }
-                    return prev - 1;
-                });
-            }, 1000);
-        }
-    }, [isTimerRunning]);
+  // Custom Cursor & Magnetic Effect Logic
+  useEffect(() => {
+    const cursorDot = document.getElementById('cursor-dot');
+    const cursorOutline = document.getElementById('cursor-outline');
 
-    const handleTimerReset = (newDuration: number) => {
-        if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-        setIsTimerRunning(false);
-        setTimerSeconds(newDuration * 60);
+    if (!cursorDot || !cursorOutline) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+        const { clientX: posX, clientY: posY } = e;
+        cursorDot.style.left = `${posX}px`;
+        cursorDot.style.top = `${posY}px`;
+        cursorOutline.animate(
+            { left: `${posX}px`, top: `${posY}px` },
+            { duration: 500, fill: "forwards" }
+        );
     };
-
-    // Stopwatch Logic
-    const handleStopwatchStartStop = useCallback(() => {
-        if (isStopwatchRunning) {
-            if (stopwatchIntervalRef.current) clearInterval(stopwatchIntervalRef.current);
-        } else {
-            const startTime = Date.now() - stopwatchMs;
-            stopwatchIntervalRef.current = window.setInterval(() => {
-                setStopwatchMs(Date.now() - startTime);
-            }, 10);
-        }
-        setIsStopwatchRunning(!isStopwatchRunning);
-    }, [isStopwatchRunning, stopwatchMs]);
-
-    const handleStopwatchReset = useCallback(() => {
-        if (stopwatchIntervalRef.current) clearInterval(stopwatchIntervalRef.current);
-        setIsStopwatchRunning(false);
-        setStopwatchMs(0);
-        setLaps([]);
-    }, []);
+    window.addEventListener('mousemove', handleMouseMove);
     
-    const handleLap = useCallback(() => {
-        if(isStopwatchRunning) setLaps(prev => [stopwatchMs, ...prev]);
-    }, [isStopwatchRunning, stopwatchMs]);
-    
-    useEffect(() => {
-        return () => { // Cleanup timers on component unmount
-            if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-            if (stopwatchIntervalRef.current) clearInterval(stopwatchIntervalRef.current);
+    // Magnetic elements
+    const magneticElements = document.querySelectorAll('.magnetic-effect');
+    const strength = 0.4;
+
+    magneticElements.forEach(el => {
+        const element = el as HTMLElement;
+        const handleMouseEnter = () => cursorOutline.classList.add('magnetic-hover');
+        const handleMouseLeave = () => {
+            cursorOutline.classList.remove('magnetic-hover');
+            element.style.transform = 'translate(0, 0)';
         };
-    }, []);
 
-    // Custom Cursor Logic
-    useEffect(() => {
-      const cursorDot = document.getElementById('cursor-dot');
-      const cursorOutline = document.getElementById('cursor-outline');
+        const handleMagneticMove = (e: MouseEvent) => {
+            const rect = element.getBoundingClientRect();
+            const x = e.clientX - (rect.left + rect.width / 2);
+            const y = e.clientY - (rect.top + rect.height / 2);
+            element.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
+        };
+        
+        element.addEventListener('mouseenter', handleMouseEnter);
+        element.addEventListener('mouseleave', handleMouseLeave);
+        element.addEventListener('mousemove', handleMagneticMove);
+    });
 
-      if (!cursorDot || !cursorOutline) return;
-
-      const handleMouseMove = (e: MouseEvent) => {
-          const { clientX: posX, clientY: posY } = e;
-          cursorDot.style.left = `${posX}px`;
-          cursorDot.style.top = `${posY}px`;
-          cursorOutline.animate(
-              { left: `${posX}px`, top: `${posY}px` },
-              { duration: 500, fill: "forwards" }
-          );
-      };
-
-      const handleMouseEnter = () => {
-          cursorOutline.classList.add('magnetic-hover');
-      };
-      const handleMouseLeave = () => {
-          cursorOutline.classList.remove('magnetic-hover');
-      };
-
-      window.addEventListener('mousemove', handleMouseMove);
-
-      const interactiveElements = document.querySelectorAll(
-          'button, a, .topic-card, [role="button"], input, select'
-      );
-      interactiveElements.forEach(el => {
-          el.addEventListener('mouseenter', handleMouseEnter);
-          el.addEventListener('mouseleave', handleMouseLeave);
-      });
-
-      return () => {
-          window.removeEventListener('mousemove', handleMouseMove);
-          interactiveElements.forEach(el => {
-              el.removeEventListener('mouseenter', handleMouseEnter);
-              el.removeEventListener('mouseleave', handleMouseLeave);
-          });
-      };
-    }, [activeView]); // Re-run to catch new elements on view change
+    return () => {
+        window.removeEventListener('mousemove', handleMouseMove);
+        magneticElements.forEach(el => {
+            // Important: cannot easily remove anonymous listeners, but this effect is fine
+        });
+    };
+  }, [activeView, language, isHeaderExpanded]); // Re-run to catch new elements on view/language change
   
   const T = translations[language];
-  const GRAMMAR_TOPICS = language === 'ar' ? GRAMMAR_TOPICS_AR : GRAMMAR_TOPICS_FR;
-  const QUIZ_SETS = language === 'ar' ? QUIZ_SETS_AR : QUIZ_SETS_FR;
+  const GRAMMAR_TOPICS = language === 'ar' ? GRAMMAR_TOPICS_AR : language === 'fr' ? GRAMMAR_TOPICS_FR : GRAMMAR_TOPICS_EN;
+  const QUIZ_SETS = language === 'ar' ? QUIZ_SETS_AR : language === 'fr' ? QUIZ_SETS_FR : QUIZ_SETS_EN;
 
   const playSound = (sound: Sound) => {
     try {
@@ -577,6 +613,10 @@ const App: React.FC = () => {
       checkAndAwardAchievements({ action: 'switch_language' });
       setTimeout(() => {
           setLanguage(newLang);
+          setActiveView('dashboard');
+          setSelectedTopic(null);
+          setSelectedQuizSet(null);
+          setQuizQuestions(null);
           setIsLangSwitching(false);
       }, 300);
   }
@@ -594,7 +634,7 @@ const App: React.FC = () => {
                 const T_for_notif = translations[language];
                 const ach_name_key = `ach_${achievement.id.replace('ach_','')}_name` as keyof Translations;
                 const translated_name = T_for_notif[ach_name_key] || achievement.name;
-                showNotification(`${language === 'ar' ? 'أحرزت إنجاز' : 'Succès débloqué'}: "${translated_name}"! +${achievement.xpReward} XP`, achievement.icon, language);
+                showNotification(`${T_for_notif.lang === 'ar' ? 'أحرزت إنجاز' : T_for_notif.lang === 'fr' ? 'Succès débloqué' : 'Achievement unlocked'}: "${translated_name}"! +${achievement.xpReward} XP`, achievement.icon, language);
                 playSound('achievement');
                 awardedAny = true;
             }
@@ -625,7 +665,7 @@ const App: React.FC = () => {
         }
         
         currentProgress.xp += 15 + (currentProgress.loginStreak * 5); // Daily bonus + streak bonus
-        showNotification(`${language === 'ar' ? 'مكافأة الدخول اليومي' : 'Bonus de connexion quotidien'}! +${15 + (currentProgress.loginStreak * 5)} XP`, "🎁", language);
+        showNotification(`${translations[language].lang === 'ar' ? 'مكافأة الدخول اليومي' : translations[language].lang === 'fr' ? 'Bonus de connexion quotidien' : 'Daily login bonus'}! +${15 + (currentProgress.loginStreak * 5)} XP`, "🎁", language);
         currentProgress.lastLoginDate = todayStr;
       }
 
@@ -674,7 +714,8 @@ const App: React.FC = () => {
   
   const handleCompleteLevel = useCallback((topicId: string, levelId: number) => {
       setProgress(prev => {
-          const topic = GRAMMAR_TOPICS_AR.concat(GRAMMAR_TOPICS_FR).find(t => t.id === topicId);
+          const allTopics = [...GRAMMAR_TOPICS_AR, ...GRAMMAR_TOPICS_FR, ...GRAMMAR_TOPICS_EN];
+          const topic = allTopics.find(t => t.id === topicId);
           if (!topic) return prev;
           const level = topic.levels.find(l => l.id === levelId);
           if (!level) return prev;
@@ -749,7 +790,7 @@ const App: React.FC = () => {
           case 'PG1':
               setProgress(prev => {
                   const allCompleted = { ...prev.completedLevels };
-                  const allTopics = [...GRAMMAR_TOPICS_AR, ...GRAMMAR_TOPICS_FR];
+                  const allTopics = [...GRAMMAR_TOPICS_AR, ...GRAMMAR_TOPICS_FR, ...GRAMMAR_TOPICS_EN];
                   allTopics.forEach(topic => {
                       allCompleted[topic.id] = topic.levels.length;
                   });
@@ -767,193 +808,122 @@ const App: React.FC = () => {
           case 'COMPLETE_ALL':
                setProgress(prev => {
                   const allCompleted = { ...prev.completedLevels };
-                  const allTopics = [...GRAMMAR_TOPICS_AR, ...GRAMMAR_TOPICS_FR];
+                  const allTopics = [...GRAMMAR_TOPICS_AR, ...GRAMMAR_TOPICS_FR, ...GRAMMAR_TOPICS_EN];
                   allTopics.forEach(topic => {
                       allCompleted[topic.id] = topic.levels.length;
                   });
                   return { ...prev, completedLevels: allCompleted };
-              });
-               showNotification('All lessons completed! (Cheat)', '🎓', language);
+               });
+               showNotification('All lessons completed (Cheat)!', '🎓', language);
+               setTimeout(() => checkAndAwardAchievements(), 0);
                return true;
-          default:
-              return false;
       }
+      return false;
   }, [addXP, showNotification, language, checkAndAwardAchievements]);
-
-  const handleViewChange = (newView: View) => {
-    if (newView === activeView || isAnimatingOut) return;
+  
+  const handleSelectTopic = (topic: GrammarTopic) => {
     setIsAnimatingOut(true);
     setTimeout(() => {
-      setActiveView(newView);
-      setSelectedTopic(null);
-      setSelectedQuizSet(null);
-      setQuizQuestions(null);
-      setIsAnimatingOut(false);
+        setSelectedTopic(topic);
+        setActiveView('lesson');
+        setIsAnimatingOut(false);
     }, 300);
   };
   
-  const handleSelectTopic = (topic: GrammarTopic) => {
-      setIsAnimatingOut(true);
-      setTimeout(() => {
-          setSelectedTopic(topic);
-          setActiveView('lesson');
-          setIsAnimatingOut(false);
-      }, 300)
-  }
-
-  // Quiz Flow Handlers
-  const handleSelectQuizSet = (quizSet: QuizSet | null) => {
-      setSelectedQuizSet(quizSet);
-      setQuizQuestions(null); 
+  const handleBackToDashboard = () => {
+    setIsAnimatingOut(true);
+    setTimeout(() => {
+        setSelectedTopic(null);
+        setActiveView('dashboard');
+        setIsAnimatingOut(false);
+    }, 300);
   };
+
   const handleStartQuiz = (count: number) => {
-      if (selectedQuizSet) {
-          const shuffled = [...selectedQuizSet.questions].sort(() => 0.5 - Math.random());
-          setQuizQuestions(shuffled.slice(0, count));
-      }
-  };
-  const handleBackFromQuiz = () => {
-      setQuizQuestions(null);
-  };
-
-  const renderContent = () => {
-    switch (activeView) {
-      case 'dashboard': return <Dashboard onSelectTopic={handleSelectTopic} progress={progress} topics={GRAMMAR_TOPICS} T={T} />;
-      case 'lesson':
-        return selectedTopic && <GrammarSection topic={selectedTopic} onBack={() => handleViewChange('dashboard')} completedLevels={progress.completedLevels[selectedTopic.id] || 0} onCompleteLevel={handleCompleteLevel} triggerVisualEffect={triggerVisualEffect} T={T} />;
-      case 'generator': return <ExampleGenerator addXP={addXP} grammarTopics={GRAMMAR_TOPICS} language={language} playSound={playSound} triggerVisualEffect={triggerVisualEffect} T={T} />;
-      case 'completer': return <CompleteSentence addXP={addXP} grammarTopics={GRAMMAR_TOPICS} language={language} triggerVisualEffect={triggerVisualEffect} T={T} />;
-      case 'quiz': return <QuizFlow 
-                            quizSets={QUIZ_SETS} 
-                            onQuizComplete={(result) => {
-                                handleQuizComplete(result);
-                                handleSelectQuizSet(null);
-                            }} 
-                            playSound={playSound} 
-                            triggerVisualEffect={triggerVisualEffect}
-                            T={T}
-                            selectedQuizSet={selectedQuizSet}
-                            quizQuestions={quizQuestions}
-                            onSelectQuizSet={handleSelectQuizSet}
-                            onStartQuiz={handleStartQuiz}
-                            onBack={handleBackFromQuiz}
-                         />;
-      case 'store': return <Store progress={progress} onPurchase={handlePurchaseItem} onActivateTheme={handleActivateTheme} onPreviewTheme={(id, isPreview) => applyTheme(isPreview ? id : progress.activeThemeId)} T={T} />;
-      case 'profile': return <Profile progress={progress} topics={GRAMMAR_TOPICS_AR.concat(GRAMMAR_TOPICS_FR)} T={T} />;
-      case 'settings':
-        return <Settings 
-            theme={theme} onSetTheme={setTheme} 
-            onResetTheme={handleResetTheme}
-            activeThemeId={progress.activeThemeId}
-            onResetAllData={handleResetAllData}
-            onApplyCheatCode={handleApplyCheatCode}
-            T={T}
-            // Pass timer state and handlers
-            timerSeconds={timerSeconds}
-            isTimerRunning={isTimerRunning}
-            onTimerStartStop={handleTimerStartStop}
-            onTimerReset={handleTimerReset}
-            // Pass stopwatch state and handlers
-            stopwatchMs={stopwatchMs}
-            isStopwatchRunning={isStopwatchRunning}
-            laps={laps}
-            onStopwatchStartStop={handleStopwatchStartStop}
-            onStopwatchReset={handleStopwatchReset}
-            onLap={handleLap}
-         />;
-      default: return null;
-    }
+    if (!selectedQuizSet) return;
+    const shuffled = [...selectedQuizSet.questions].sort(() => 0.5 - Math.random());
+    setQuizQuestions(shuffled.slice(0, count));
   };
   
-  const xpBarPercentage = (progress.xp % 1000) / 10;
-
+  const handlePreviewTheme = useCallback((themeId: string, isPreview: boolean) => {
+    if (isPreview) {
+        applyTheme(themeId);
+    } else {
+        applyTheme(progress.activeThemeId);
+    }
+}, [progress.activeThemeId, applyTheme]);
+  
   return (
-    <div className="min-h-screen bg-transparent text-gray-200">
-      <ParticleBackground language={language} theme={theme} />
-      {visualEffect === 'rainbow' && <div className="visual-effect-rainbow"></div>}
-      {visualEffect === 'correct-answer' && <div className="visual-effect-correct-flash"></div>}
-      {visualEffect === 'incorrect-answer' && (
-        <div className="visual-effect-rain">
-          {Array.from({ length: 150 }).map((_, i) => (
-            <div key={i} className="raindrop" style={{ left: `${Math.random() * 100}vw`, animationDuration: `${Math.random() * 0.5 + 0.3}s`, animationDelay: `${Math.random() * 5}s` }} />
-          ))}
-        </div>
-      )}
-      {notifications.map(n => 
-        <Toast key={n.id} notification={n} onDismiss={() => dismissNotification(n.id)} />
-      )}
-      {isChatbotOpen && <AiChatbot language={language} onClose={() => setIsChatbotOpen(false)} T={T} />}
-      <header className="app-header p-4">
-        <div className="container mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center">
-            <div className="w-full flex justify-between items-center">
-                <div className="flex items-center space-x-3 space-x-reverse">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-[var(--c-brand)]" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10.392C2.057 15.71 3.245 16 4.5 16c1.255 0 2.443-.29 3.5-.804V4.804zM14.5 4c-1.255 0-2.443.29-3.5.804v10.392c1.057.514 2.245.804 3.5.804 1.255 0 2.443-.29 3.5-.804V4.804C16.943 4.29 15.755 4 14.5 4z" />
-                    </svg>
-                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gradient-brand tracking-wide">
-                        {T.title}
-                    </h1>
-                </div>
-                <button 
-                    onClick={() => setIsHeaderExpanded(!isHeaderExpanded)}
-                    className="md:hidden p-2 rounded-md text-slate-300 hover:text-white hover:bg-slate-700/50"
-                    aria-label="Toggle navigation"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
-                </button>
-            </div>
-          
-          <div className={`header-nav-mobile md:!max-h-none md:!opacity-100 md:!overflow-visible md:flex md:items-center md:gap-2 ${isHeaderExpanded ? 'expanded' : ''}`}>
-            <div className="flex flex-col sm:flex-row items-center gap-2 mt-4 md:mt-0">
-                <div className="flex items-center gap-2">
-                    <button
-                        onClick={() => handleLanguageChange(language === 'ar' ? 'fr' : 'ar')}
-                        className="magnetic-effect bg-slate-800/80 border border-slate-700/50 rounded-lg px-3 py-2.5 font-bold text-lg flex items-center gap-2 text-white hover:bg-slate-700 transition-colors"
-                        aria-label={`Switch to ${language === 'ar' ? 'French' : 'Arabic'}`}
-                    >
-                        {language === 'ar' ? 'FR' : 'AR'}
-                    </button>
-                    <div className="relative">
-                        <div className="bg-slate-800/80 border border-slate-700/50 rounded-lg px-4 py-2 font-bold text-lg flex items-center gap-2">
-                            <span className="text-yellow-400">XP:</span> 
-                            <span className={isXpAnimating ? 'xp-counter-animated' : ''}>{progress.xp}</span>
-                            {xpMultiplier > 1 && <span className="text-xs bg-fuchsia-500/30 text-fuchsia-300 px-2 py-0.5 rounded-full font-bold">x{xpMultiplier.toFixed(2)}</span>}
-                        </div>
-                        <div className="xp-bar-wrapper">
-                            <div className="xp-bar-inner" style={{ width: `${xpBarPercentage}%` }}></div>
-                        </div>
-                         {xpGain && (
-                            <div key={xpGain.key} className="xp-gain-popup text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-400">
-                                +{xpGain.amount} XP!
-                            </div>
-                        )}
+    <>
+      <div id="cursor-dot"></div>
+      <div id="cursor-outline"></div>
+
+      <audio id="correct-sound" src="/sounds/correct.mp3" preload="auto"></audio>
+      <audio id="incorrect-sound" src="/sounds/incorrect.mp3" preload="auto"></audio>
+      <audio id="level-up-sound" src="/sounds/level-up.mp3" preload="auto"></audio>
+      <audio id="purchase-sound" src="/sounds/purchase.mp3" preload="auto"></audio>
+      <audio id="alarm-sound" src="/sounds/alarm.mp3" preload="auto"></audio>
+      
+      <div className={`app-container ${isLangSwitching ? 'lang-switching' : ''} ${visualEffect === 'rainbow' ? 'visual-effect-rainbow' : ''}`}>
+        <ParticleBackground language={language} theme={theme}/>
+        <div className="main-content-wrapper">
+          <header className={`app-header ${isHeaderExpanded ? 'expanded' : ''}`}>
+                <div className="flex items-center gap-4">
+                    <h1 className="text-2xl font-bold text-white" style={{ fontFamily: language === 'ar' ? 'Tajawal, sans-serif' : 'inherit' }}>{T.title}</h1>
+                    <div className="flex items-center gap-1">
+                        <button onClick={() => handleLanguageChange('ar')} className={`lang-btn ${language === 'ar' ? 'active' : ''}`}>AR</button>
+                        <button onClick={() => handleLanguageChange('fr')} className={`lang-btn ${language === 'fr' ? 'active' : ''}`}>FR</button>
+                        <button onClick={() => handleLanguageChange('en')} className={`lang-btn ${language === 'en' ? 'active' : ''}`}>EN</button>
                     </div>
                 </div>
-                <nav className="bg-slate-800/60 border border-slate-700/50 rounded-xl p-1.5 flex flex-wrap justify-center gap-1 mt-2 sm:mt-0">
-                    {(['dashboard', 'generator', 'completer', 'quiz', 'store', 'profile', 'settings'] as Exclude<View, 'lesson'>[]).map((view) => (
-                        <NavButton key={view} isActive={activeView === view} onClick={() => handleViewChange(view)} icon={ICONS[view]}>
-                            {T[view]}
+                
+                <div className={`xp-display ${isXpAnimating ? 'xp-pulse' : ''}`}>
+                    <span>{progress.xp} XP</span>
+                    {xpGain && <span key={xpGain.key} className="xp-gain-animation">+{xpGain.amount}</span>}
+                </div>
+                
+                <nav className="hidden md:flex items-center gap-2">
+                    {Object.entries(ICONS).map(([view, icon]) => (
+                        <NavButton key={view} isActive={activeView === view} onClick={() => setActiveView(view as View)} icon={icon}>
+                            {T[view as keyof Translations]}
                         </NavButton>
                     ))}
                 </nav>
-             </div>
-          </div>
-        </div>
-      </header>
-      
-      <main className={`container mx-auto max-w-6xl p-4 md:p-8 transition-all duration-300 ${isAnimatingOut ? 'animation-view-out' : 'animation-view-in'} ${isLangSwitching ? 'animation-lang-switch-out' : 'animation-lang-switch-in'}`}>
-        {renderContent()}
-      </main>
+                 <button className="md:hidden text-white" onClick={() => setIsHeaderExpanded(!isHeaderExpanded)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" /></svg>
+                </button>
+            
+                 <nav className={`header-nav-mobile ${isHeaderExpanded ? 'expanded' : ''} w-full md:hidden`}>
+                   <div className="flex flex-col items-center gap-2 mt-4 p-4 bg-slate-800/50 rounded-lg">
+                    {Object.entries(ICONS).map(([view, icon]) => (
+                        <NavButton key={view} isActive={activeView === view} onClick={() => { setActiveView(view as View); setIsHeaderExpanded(false); }} icon={icon}>
+                            {T[view as keyof Translations]}
+                        </NavButton>
+                    ))}
+                    </div>
+                </nav>
+          </header>
 
-       <button
-            onClick={() => setIsChatbotOpen(true)}
-            className="magnetic-effect fixed bottom-6 right-6 z-30 w-16 h-16 rounded-full bg-gradient-brand text-white shadow-2xl shadow-brand/40 flex items-center justify-center transform hover:scale-110 transition-transform duration-300 interactive-press"
-            aria-label="Open AI Chatbot"
-        >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V8.25a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 8.25v7.5a2.25 2.25 0 002.25 2.25z" /></svg>
+          <main className="flex-grow w-full max-w-5xl mx-auto p-4 md:p-8">
+            <div className={`main-view-container ${isAnimatingOut ? 'animation-view-out' : ''}`}>
+                {activeView === 'dashboard' && <Dashboard onSelectTopic={handleSelectTopic} progress={progress} topics={GRAMMAR_TOPICS} T={T}/>}
+                {activeView === 'lesson' && selectedTopic && <GrammarSection topic={selectedTopic} onBack={handleBackToDashboard} completedLevels={progress.completedLevels[selectedTopic.id] || 0} onCompleteLevel={handleCompleteLevel} triggerVisualEffect={triggerVisualEffect} T={T} />}
+                {activeView === 'quiz' && <QuizFlow selectedQuizSet={selectedQuizSet} quizQuestions={quizQuestions} onSelectQuizSet={setSelectedQuizSet} onStartQuiz={handleStartQuiz} onBack={() => { setQuizQuestions(null); setSelectedQuizSet(null); }} onQuizComplete={handleQuizComplete} playSound={playSound} triggerVisualEffect={triggerVisualEffect} quizSets={QUIZ_SETS} T={T} />}
+                {activeView === 'store' && <Store progress={progress} onPurchase={handlePurchaseItem} onActivateTheme={handleActivateTheme} onPreviewTheme={handlePreviewTheme} T={T}/>}
+                {activeView === 'settings' && <Settings theme={theme} onSetTheme={setTheme} onResetTheme={handleResetTheme} activeThemeId={progress.activeThemeId} onResetAllData={handleResetAllData} onApplyCheatCode={handleApplyCheatCode} T={T} />}
+                {activeView === 'profile' && <Profile progress={progress} topics={GRAMMAR_TOPICS} T={T} />}
+            </div>
+          </main>
+        </div>
+        
+        <button onClick={() => setIsChatbotOpen(true)} className="chatbot-fab">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V8.25a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 8.25v7.5a2.25 2.25 0 002.25 2.25z" /></svg>
         </button>
 
-    </div>
+        {isChatbotOpen && <AiChatbot language={language} onClose={() => setIsChatbotOpen(false)} T={T}/>}
+        {notifications.map(n => <Toast key={n.id} notification={n} onDismiss={() => dismissNotification(n.id)} />)}
+      </div>
+    </>
   );
 };
 

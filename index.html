@@ -116,14 +116,23 @@
 
       .app-header {
         background-color: rgba(15, 23, 42, 0.65); /* slate-900 with more opacity */
-        backdrop-filter: blur(24px);
-        -webkit-backdrop-filter: blur(24px);
-        border-bottom: 1px solid var(--c-border);
+        backdrop-filter: blur(32px);
+        -webkit-backdrop-filter: blur(32px);
+        border: 1px solid var(--c-border);
+        border-radius: 1rem;
         position: sticky;
-        top: 0;
+        top: 1.5rem;
         z-index: 20;
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-        transition: background-color 0.3s ease;
+        transition: all 0.3s ease;
+        max-width: 1024px;
+        margin: 1.5rem auto;
+        padding: 0.75rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        animation: breathing-glow 5s infinite ease-in-out;
       }
       .light-theme .app-header {
         background-color: rgba(255, 255, 255, 0.75);
@@ -137,8 +146,8 @@
           border-radius: 1rem;
           box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
           transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-          -webkit-backdrop-filter: blur(12px);
-          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(16px);
+          backdrop-filter: blur(16px);
           transform-style: preserve-3d;
       }
        .light-theme .topic-card {
@@ -185,8 +194,8 @@
         background-color: rgba(15, 23, 42, 0.7);
         border: 1px solid var(--c-border);
         border-radius: 1rem;
-        -webkit-backdrop-filter: blur(16px);
-        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(24px);
+        backdrop-filter: blur(24px);
         background-image: radial-gradient(circle at 0% 0%, rgba(168, 85, 247, 0.05), transparent 40%);
       }
       .light-theme .level-content-area {
@@ -197,8 +206,30 @@
       }
 
       /* Buttons & Gradients */
+      .lang-btn {
+        padding: 0.3rem 0.8rem;
+        border: 1px solid var(--c-border);
+        border-radius: 0.5rem;
+        font-weight: 700;
+        font-size: 0.875rem;
+        background-color: transparent;
+        transition: all 0.3s ease;
+      }
+      .lang-btn:hover {
+        background-color: var(--c-bg-muted);
+        border-color: var(--c-brand-light);
+        color: var(--c-brand-light);
+      }
+      .lang-btn.active {
+        background-color: var(--c-brand);
+        border-color: var(--c-brand);
+        color: white;
+        box-shadow: 0 0 15px var(--c-brand);
+        animation: pulse-glow-button 2.5s infinite ease-in-out;
+      }
+
       .btn {
-          padding: 0.75rem 1.5rem;
+          padding: 0.75rem 2rem;
           font-weight: bold;
           border-radius: 0.5rem;
           transition: all 0.3s ease-in-out;
@@ -219,7 +250,7 @@
       }
       .btn-primary:hover {
         background-position: right center;
-        box-shadow: 0 0 35px var(--c-brand-light);
+        box-shadow: 0 0 25px var(--c-brand-light), 0 0 45px var(--c-brand);
         transform: translateY(-2px) scale(1.05);
       }
       .btn-secondary {
@@ -231,6 +262,7 @@
         background-color: var(--c-brand);
         color: white;
         transform: translateY(-2px);
+        box-shadow: 0 0 25px var(--c-brand-light);
       }
       .btn-danger {
         color: white;
@@ -256,16 +288,24 @@
       }
       
       /* --- ANIMATIONS --- */
+       @keyframes breathing-glow {
+        0%, 100% { box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), 0 0 20px -5px transparent; }
+        50% { box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), 0 0 35px -5px var(--c-brand); }
+      }
+      @keyframes pulse-glow-button {
+        0%, 100% { box-shadow: 0 0 10px var(--c-brand); }
+        50% { box-shadow: 0 0 20px var(--c-brand-light); }
+      }
       @keyframes zoom-in-fade-in {
-        from { opacity: 0; transform: scale(0.95); filter: blur(5px); }
-        to { opacity: 1; transform: scale(1); filter: blur(0); }
+        from { opacity: 0; transform: scale(0.95) translateY(20px); filter: blur(8px); }
+        to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
       }
       @keyframes zoom-out-fade-out {
         from { opacity: 1; transform: scale(1); filter: blur(0); }
-        to { opacity: 0; transform: scale(0.95); filter: blur(5px); }
+        to { opacity: 0; transform: scale(0.98); filter: blur(4px); }
       }
-      .animation-view-in { animation: zoom-in-fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-      .animation-view-out { animation: zoom-out-fade-out 0.3s ease-out forwards; }
+      .animation-view-in { animation: zoom-in-fade-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      .animation-view-out { animation: zoom-out-fade-out 0.25s ease-out forwards; }
       
       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
       @keyframes popInBouncy {
@@ -289,12 +329,17 @@
         from { opacity: 0; filter: blur(5px); transform: translateY(-20px); }
         to { opacity: 1; filter: blur(0); transform: translateY(0); }
       }
+      @keyframes toast-in {
+        from { transform: translateX(var(--toast-from, 100%)) scale(0.9); opacity: 0; }
+        to { transform: translateX(0) scale(1); opacity: 1; }
+      }
       
       .animation-fade-in { animation: fadeIn 0.4s ease-in-out forwards; }
       .animation-pop-in-bouncy { animation: popInBouncy 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
       .animation-slide-in-staggered { animation: slideInUpStaggered 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; animation-fill-mode: forwards; }
       .animation-lang-switch-out { animation: lang-switch-out 0.3s ease-out forwards; }
       .animation-lang-switch-in { animation: lang-switch-in 0.3s ease-out forwards; }
+      .animation-toast-in { animation: toast-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 
       .chat-message-animation { animation: slideInFromSide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
       .justify-start .chat-message-animation { --slide-from: -20px; }
@@ -332,6 +377,9 @@
         height: 70px;
         border-width: 3px;
         border-color: var(--c-accent);
+      }
+      .magnetic-effect {
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       }
 
       /* XP Gain Animation */
@@ -435,7 +483,7 @@
         padding: 1.5rem;
         border: 1px solid var(--c-border);
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-        backdrop-filter: blur(12px);
+        backdrop-filter: blur(20px);
       }
       .light-theme .stat-card {
         background-color: rgba(255, 255, 255, 0.65);
@@ -445,7 +493,7 @@
         position: fixed;
         inset: 0;
         background-color: rgba(0,0,0,0.7);
-        backdrop-filter: blur(16px);
+        backdrop-filter: blur(20px);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -460,7 +508,7 @@
         position: fixed;
         inset: 0;
         background-color: rgba(0,0,0,0.7);
-        backdrop-filter: blur(16px);
+        backdrop-filter: blur(20px);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -492,7 +540,7 @@
         position: fixed;
         inset: 0;
         background-color: rgba(0,0,0,0.7);
-        backdrop-filter: blur(16px);
+        backdrop-filter: blur(20px);
         display: flex;
         align-items: center;
         justify-content: center;

@@ -7,7 +7,7 @@ import Quiz from './Quiz';
 interface ExampleGeneratorProps {
     addXP: (amount: number) => void;
     grammarTopics: GrammarTopic[];
-    language: 'ar' | 'fr';
+    language: 'ar' | 'fr' | 'en';
     playSound: (sound: 'correct' | 'incorrect') => void;
     triggerVisualEffect: (effect: 'correct-answer' | 'incorrect-answer', duration: number) => void;
     T: Translations;
@@ -31,7 +31,7 @@ const ExampleGenerator: React.FC<ExampleGeneratorProps> = ({ addXP, grammarTopic
         ? grammarTopics[Math.floor(Math.random() * grammarTopics.length)].title 
         : filter;
     
-    const langName = language === 'ar' ? 'Arabic' : 'French';
+    const langName = language === 'ar' ? 'Arabic' : language === 'fr' ? 'French' : 'English';
 
     const prompt = `Generate a set of 5 multiple-choice quiz questions for the grammar topic "${topic}" in ${langName}. Each question must have exactly 3 options: one correct answer and two plausible incorrect distractors. The options must be shuffled. For each question, also provide a brief, one-sentence explanation for why the correct answer is right.`;
 

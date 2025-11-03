@@ -29,6 +29,7 @@ const Profile: React.FC<ProfileProps> = ({ progress, topics, T }) => {
             'ach_theme_collector': { name: T.ach_theme_collector_name, description: T.ach_theme_collector_desc },
             'ach_master_ar': { name: T.ach_master_ar_name, description: T.ach_master_ar_desc },
             'ach_master_fr': { name: T.ach_master_fr_name, description: T.ach_master_fr_desc },
+            'ach_master_en': { name: T.ach_master_en_name, description: T.ach_master_en_desc },
         };
         const isUnlocked = progress.achievements.includes(ach.id);
         const translated = itemTranslations[ach.id];

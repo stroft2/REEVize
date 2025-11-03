@@ -26,10 +26,10 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ language, theme
             gradientPoints.current.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                radius: (Math.random() * 0.5 + 0.5) * Math.min(canvas.width, canvas.height) * 0.5,
+                radius: (Math.random() * 0.5 + 0.5) * Math.max(canvas.width, canvas.height) * 0.6,
                 color: colors[i % colors.length],
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: (Math.random() - 0.5) * 0.5,
+                vx: (Math.random() - 0.5) * 0.2,
+                vy: (Math.random() - 0.5) * 0.2,
             });
         }
     };
@@ -59,7 +59,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ language, theme
                 if (point.y - point.radius < 0 || point.y + point.radius > canvas.height) point.vy *= -1;
 
                 const gradient = ctx.createRadialGradient(point.x, point.y, 0, point.x, point.y, point.radius);
-                gradient.addColorStop(0, `${point.color}33`); // ~20% opacity
+                gradient.addColorStop(0, `${point.color}26`); // ~15% opacity
                 gradient.addColorStop(1, `${point.color}00`); // 0% opacity
                 
                 ctx.fillStyle = gradient;
@@ -68,7 +68,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ language, theme
                 ctx.fill();
             });
 
-            ctx.filter = 'blur(100px)'; // The magic sauce for the fluid look
+            ctx.filter = 'blur(120px)'; // The magic sauce for the fluid look
 
             animationFrameId.current = requestAnimationFrame(animate);
         };

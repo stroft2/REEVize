@@ -6,7 +6,7 @@ import type { Translations } from '../App';
 interface CompleteSentenceProps {
     addXP: (amount: number) => void;
     grammarTopics: GrammarTopic[];
-    language: 'ar' | 'fr';
+    language: 'ar' | 'fr' | 'en';
     triggerVisualEffect: (effect: 'correct-answer' | 'incorrect-answer', duration: number) => void;
     T: Translations;
 }
@@ -38,7 +38,7 @@ const CompleteSentence: React.FC<CompleteSentenceProps> = ({ addXP, grammarTopic
             ? grammarTopics[Math.floor(Math.random() * grammarTopics.length)].title
             : filter;
         
-        const langName = language === 'ar' ? 'Arabic' : 'French';
+        const langName = language === 'ar' ? 'Arabic' : language === 'fr' ? 'French' : 'English';
         
         const prompt = `Create a fill-in-the-blank exercise for the grammar topic "${topic}" in ${langName}. The exercise should be clear and suitable for a language learner. Provide the sentence in two parts ("part1", "part2"), the correct answer that fills the blank ("correctAnswer"), and two plausible incorrect options. Ensure the "options" array contains exactly 3 items: the correct answer and two distractors, and that the items are shuffled.`;
 
