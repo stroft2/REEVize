@@ -756,6 +756,104 @@ export const GRAMMAR_TOPICS_AR: GrammarTopic[] = [
         ]
       },
     ]
+  },
+  {
+    id: 'sahih_verb',
+    title: 'الفعل الصحيح',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
+    description: 'تعرف على الفعل الذي تخلو حروفه الأصلية من حروف العلة.',
+    levels: [
+      {
+        id: 1,
+        title: 'المستوى الأول: التعريف والأنواع',
+        content: [
+            '<strong>التعريف:</strong> الفعل الصحيح هو كل فعل تخلو حروفه الأصلية (في صيغة الماضي) من حروف العلة، وهي: الألف (ا)، الواو (و)، الياء (ي).',
+            'ينقسم الفعل الصحيح إلى ثلاثة أنواع رئيسية:',
+            '<strong>1. السالم:</strong> هو ما سلمت حروفه الأصلية من الهمزة (ء) والتضعيف (الحرف المكرر). مثال: <code>كتب</code>، <code>شرب</code>، <code>فهم</code>.',
+            '<strong>2. المهموز:</strong> هو ما كان أحد حروفه الأصلية همزة. مثال: <code>أكل</code> (في أوله)، <code>سأل</code> (في وسطه)، <code>قرأ</code> (في آخره).',
+            '<strong>3. المضعّف:</strong> هو ما كان أحد حروفه الأصلية مكررًا، وينقسم إلى: <ul><li><strong>ثلاثي:</strong> ثانيه وثالثه من نفس الجنس. مثال: <code>مدَّ</code> (أصلها مدد)، <code>شدَّ</code>، <code>فرَّ</code>.</li><li><strong>رباعي:</strong> أوله وثالثه من جنس، وثانيه ورابعه من جنس. مثال: <code>زلزل</code>، <code>وسوس</code>.</li></ul>'
+        ],
+        examples: [
+          { sentence: 'كتب الطالب الدرس.', explanation: 'الفعل "كتب" صحيح سالم، لا يوجد به همزة أو تضعيف.' },
+          { sentence: 'أخذ الولد جائزة.', explanation: 'الفعل "أخذ" صحيح مهموز، لأن أوله همزة.' },
+          { sentence: 'ردَّ الرجل التحية.', explanation: 'الفعل "ردَّ" صحيح مضعف، لأن أصله "ردد".' }
+        ],
+        xpReward: 50,
+        quiz: [
+          { question: "ما هو الفعل الصحيح؟", options: ['ما كان فيه حرف علة', 'ما خلت أصوله من حروف العلة', 'ما كان فيه همزة'], correctAnswer: 'ما خلت أصوله من حروف العلة', explanation: 'الفعل الصحيح يخلو من الألف والواو والياء.', topic: 'الفعل الصحيح' },
+          { question: "أي نوع من الأفعال الصحيحة هو الفعل 'بدأ'؟", options: ['سالم', 'مهموز', 'مضعف'], correctAnswer: 'مهموز', explanation: 'لأن آخره همزة وهي من حروفه الأصلية.', topic: 'الفعل الصحيح' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'المستوى الثاني: التمييز والتطبيق',
+        content: [
+            'للحكم على الفعل بأنه صحيح أو معتل، يجب رده دائمًا إلى صيغة <strong>الماضي المفرد المذكر الغائب</strong> وتجريده من أي حروف زائدة.',
+            'مثال: الفعل "يكتبون". ماضيه هو "كتب". الفعل "كتب" لا يحتوي على حروف علة، إذن هو فعل صحيح (سالم).',
+            'مثال آخر: الفعل "استمرّ". عند تجريده من حروف الزيادة (ا، س، ت) يصبح "مرّ". الفعل "مرّ" أصله "مرر"، فهو صحيح مضعف.'
+        ],
+        examples: [
+          { sentence: 'الأطفال يلعبون في الحديقة.', explanation: 'الفعل "يلعبون"، ماضيه "لَعِبَ". "لَعِبَ" فعل صحيح سالم.' },
+          { sentence: 'لا تفرّ من واجباتك.', explanation: 'الفعل "تفرّ"، ماضيه "فَرَّ". "فَرَّ" فعل صحيح مضعف.' },
+          { sentence: 'اسأل عن أخيك.', explanation: 'الفعل "اسأل"، ماضيه "سَأَلَ". "سَأَلَ" فعل صحيح مهموز.' }
+        ],
+        xpReward: 50,
+        quiz: [
+          { question: "الفعل 'يعدُّون' (من العدّ)، ما نوعه؟", options: ['صحيح سالم', 'صحيح مهموز', 'صحيح مضعف'], correctAnswer: 'صحيح مضعف', explanation: 'ماضيه "عدَّ"، وأصله "عدد".', topic: 'الفعل الصحيح' },
+          { question: "أي من الأفعال التالية صحيح سالم؟", options: ['أمر', 'مدّ', 'جلس'], correctAnswer: 'جلس', explanation: '"أمر" مهموز و "مدّ" مضعف، أما "جلس" فهو سالم.', topic: 'الفعل الصحيح' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'mu3tal_verb',
+    title: 'الفعل المعتل',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.369-2.23 8.287 8.287 0 002.393-2.156z" /></svg>',
+    description: 'تعرف على الفعل الذي يحتوي على حرف أو أكثر من حروف العلة.',
+    levels: [
+      {
+        id: 1,
+        title: 'المستوى الأول: التعريف والأنواع الأساسية',
+        content: [
+            '<strong>التعريف:</strong> الفعل المعتل هو ما كان أحد حروفه الأصلية حرف علة. حروف العلة هي: <strong>الألف (ا)، الواو (و)، الياء (ي)</strong>.',
+            'ينقسم الفعل المعتل حسب موضع حرف العلة إلى:',
+            '<strong>1. المثال:</strong> هو ما كان أول حروفه الأصلية حرف علة (غالبًا الواو أو الياء). مثال: <code>وقف</code>، <code>وعد</code>، <code>يسر</code>.',
+            '<strong>2. الأجوف:</strong> هو ما كان ثاني حروفه الأصلية حرف علة (ألف منقلبة عن واو أو ياء). مثال: <code>قال</code> (أصله قول)، <code>باع</code> (أصله بيع)، <code>نام</code>.',
+            '<strong>3. الناقص:</strong> هو ما كان آخر حروفه الأصلية حرف علة. مثال: <code>دعا</code>، <code>رمى</code>، <code>سعى</code>.'
+        ],
+        examples: [
+          { sentence: 'وقف الرجل في الظل.', explanation: 'الفعل "وقف" معتل مثال، لأن أوله حرف علة (الواو).' },
+          { sentence: 'صام المسلم رمضان.', explanation: 'الفعل "صام" معتل أجوف، لأن وسطه حرف علة (الألف).' },
+          { sentence: 'جرى الحصان بسرعة.', explanation: 'الفعل "جرى" معتل ناقص، لأن آخره حرف علة (الألف المقصورة).' }
+        ],
+        xpReward: 50,
+        quiz: [
+          { question: "ما هو الفعل المعتل الأجوف؟", options: ['ما كان أوله حرف علة', 'ما كان وسطه حرف علة', 'ما كان آخره حرف علة'], correctAnswer: 'ما كان وسطه حرف علة', explanation: 'كلمة "جوف" تعني الوسط أو الداخل.', topic: 'الفعل المعتل' },
+          { question: "أي نوع من الأفعال المعتلة هو الفعل 'وجد'؟", options: ['مثال', 'أجوف', 'ناقص'], correctAnswer: 'مثال', explanation: 'لأن أول حرف من أصوله هو الواو.', topic: 'الفعل المعتل' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'المستوى الثاني: اللفيف وتطبيقات',
+        content: [
+            'هناك نوع خاص من الفعل المعتل يحتوي على حرفي علة، ويسمى <strong>اللفيف</strong>.',
+            'اللفيف نوعان:',
+            '<strong>1. لفيف مقرون:</strong> وفيه يجتمع حرفا العلة معًا دون أن يفرق بينهما حرف صحيح. مثال: <code>شوى</code> (الواو والياء معًا)، <code>روى</code>، <code>كوى</code>.',
+            '<strong>2. لفيف مفروق:</strong> وفيه يفرق حرف صحيح بين حرفي العلة. مثال: <code>وعى</code> (الواو والألف، فرّق بينهما العين)، <code>وقى</code>، <code>وشى</code>.',
+            'تذكر دائمًا: للحكم على الفعل، يجب رده إلى <strong>الماضي المجرد</strong>. فالفعل "يستوي" ماضيه "استوى"، وأصله المجرد "سوي"، وهو لفيف مقرون.'
+        ],
+        examples: [
+          { sentence: 'وعى الطالب الدرس جيدًا.', explanation: 'الفعل "وعى" لفيف مفروق، لأن حرفي العلة (و، ى) فرق بينهما حرف العين.' },
+          { sentence: 'كوى الرجل قميصه.', explanation: 'الفعل "كوى" لفيف مقرون، لأن حرفي العلة (و، ى) جاءا متجاورين.' },
+          { sentence: 'لا تنسَ ذكر الله.', explanation: 'الفعل "تنسَ" ماضيه "نسي". "نسي" فعل معتل ناقص.' }
+        ],
+        xpReward: 50,
+        quiz: [
+          { question: "الفعل 'روى' هو مثال على:", options: ['لفيف مفروق', 'لفيف مقرون', 'معتل ناقص'], correctAnswer: 'لفيف مقرون', explanation: 'لأن حرفي العلة (الواو والياء) جاءا متجاورين.', topic: 'الفعل المعتل' },
+          { question: "أي من الأفعال التالية يعتبر لفيفًا مفروقًا؟", options: ['قضى', 'وقى', 'نوى'], correctAnswer: 'وقى', explanation: 'لأن الواو والألف المقصورة فرق بينهما حرف القاف.', topic: 'الفعل المعتل' }
+        ]
+      }
+    ]
   }
 ];
 
@@ -965,7 +1063,7 @@ export const GRAMMAR_TOPICS_EN: GrammarTopic[] = [
         ],
         xpReward: 50,
         quiz: [
-          { question: "The slogan 'I'm lovin' it' is an example of...", options: ['A grammatical error that became famous', 'A deliberate, informal use of a stative verb', 'A standard rule of grammar'], correctAnswer: 'A deliberate, informal use of a stative verb', explanation: 'It breaks the traditional rule for stylistic effect.', topic: 'Stative Verbs' },
+          { question: "The slogan 'I\'m lovin\' it' is an example of...", options: ['A grammatical error that became famous', 'A deliberate, informal use of a stative verb', 'A standard rule of grammar'], correctAnswer: 'A deliberate, informal use of a stative verb', explanation: 'It breaks the traditional rule for stylistic effect.', topic: 'Stative Verbs' },
           { question: "For academic or professional writing, what should you do?", options: ['Use stative verbs in continuous tenses to sound modern', 'Strictly follow the rule and avoid using stative verbs in continuous tenses', 'It does not matter'], correctAnswer: 'Strictly follow the rule and avoid using stative verbs in continuous tenses', explanation: 'Following standard grammar rules is crucial for formal communication.', topic: 'Stative Verbs' },
         ]
       },
@@ -1542,6 +1640,18 @@ export const QUIZ_SETS_AR: QuizSet[] = [
         title: 'تحدي اسم الفاعل واسم المفعول',
         description: 'اختبر قدرتك على صياغة وإعمال المشتقات.',
         questions: GRAMMAR_TOPICS_AR.find(t => t.id === 'ism_fael_mafool')?.levels.flatMap(l => l.quiz ?? []) ?? []
+    },
+    {
+        id: 'sahih_verb-quiz',
+        title: 'تحدي الفعل الصحيح',
+        description: 'اختبر معرفتك بأنواع الفعل الصحيح وتمييزه.',
+        questions: GRAMMAR_TOPICS_AR.find(t => t.id === 'sahih_verb')?.levels.flatMap(l => l.quiz ?? []) ?? []
+    },
+    {
+        id: 'mu3tal_verb-quiz',
+        title: 'تحدي الفعل المعتل',
+        description: 'اختبر معرفتك بأنواع الفعل المعتل وتصنيفاته.',
+        questions: GRAMMAR_TOPICS_AR.find(t => t.id === 'mu3tal_verb')?.levels.flatMap(l => l.quiz ?? []) ?? []
     }
 ];
 
