@@ -1594,6 +1594,128 @@ export const GRAMMAR_TOPICS_FR: GrammarTopic[] = [
         ]
       },
     ]
+  },
+  {
+    id: 'exam_october',
+    title: "L'examination d'octobre",
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>',
+    description: 'Une révision complète des sujets pour l\'examen d\'octobre.',
+    levels: [
+      {
+        id: 1,
+        title: 'Niveau 1: Le Vocabulaire Essentiel',
+        title_ar: 'المستوى ١: المفردات الأساسية',
+        content: [
+          '<strong>Le vocabulaire de la rentrée :</strong>',
+          '<ul><li>un cartable (school bag), une trousse (pencil case), un livre (book), un cahier (notebook), un stylo (pen), un crayon (pencil), une gomme (eraser), une règle (ruler).</li></ul>',
+          '<strong>Les jours de la semaine :</strong> lundi, mardi, mercredi, jeudi, vendredi, samedi, dimanche.',
+          '<strong>Les mois de l\'année :</strong> janvier, février, mars, avril, mai, juin, juillet, août, septembre, octobre, novembre, décembre.'
+        ],
+        xpReward: 50,
+        examples: [
+          { sentence: 'Dans ma trousse, j\'ai un stylo et une gomme.', explanation: 'Using back-to-school vocabulary.' },
+          { sentence: 'Aujourd\'hui, c\'est lundi 1er octobre.', explanation: 'Using a day and a month.' }
+        ],
+        quiz: [
+          { question: "Quel jour vient après mardi ?", options: ['lundi', 'mercredi', 'jeudi'], correctAnswer: 'mercredi', explanation: 'Les jours de la semaine sont dans l\'ordre.', topic: "L'examination d'octobre" },
+          { question: "Que met-on dans un cartable ?", options: ['des livres et des cahiers', 'un chat et un chien', 'une table et une chaise'], correctAnswer: 'des livres et des cahiers', explanation: 'Le cartable sert à transporter les affaires d\'école.', topic: "L'examination d'octobre" }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Niveau 2: Les Articles',
+        title_ar: 'المستوى ٢: أدوات التعريف والتنكير',
+        content: [
+          '<strong>Articles Indéfinis (un, une, des) :</strong> Pour parler de quelque chose de non spécifique.',
+          '<ul><li><code>un</code> garçon (a boy), <code>une</code> fille (a girl), <code>des</code> enfants (children).</li></ul>',
+          '<strong>Articles Définis (le, la, l\', les) :</strong> Pour parler de quelque chose de spécifique.',
+          '<ul><li><code>le</code> soleil (the sun), <code>la</code> lune (the moon), <code>l\'</code>école (the school), <code>les</code> étoiles (the stars).</li></ul>'
+        ],
+        xpReward: 50,
+        examples: [
+          { sentence: 'J\'ai un chat. Le chat est noir.', explanation: 'On utilise "un" pour la première mention, puis "le" car le chat est maintenant connu.' },
+          { sentence: 'Je mange une pomme.', explanation: 'Une pomme en général, pas une pomme spécifique.' }
+        ],
+        quiz: [
+          { question: "Complétez : J'ai ___ ami qui habite à Paris.", options: ['un', 'le', 'des'], correctAnswer: 'un', explanation: 'On parle d\'un ami pour la première fois, de manière non spécifique.', topic: "L'examination d'octobre" },
+          { question: "Complétez : Regarde, ___ Tour Eiffel !", options: ['une', 'la', 'l\''], correctAnswer: 'la', explanation: 'Il n\'y a qu\'une seule Tour Eiffel, c\'est donc spécifique. "La" car "Tour" est féminin.', topic: "L'examination d'octobre" }
+        ]
+      },
+      {
+        id: 3,
+        title: 'Niveau 3: Verbes Être et Avoir',
+        title_ar: 'المستوى ٣: الفعلان Être و Avoir',
+        content: [
+          '<strong>Être (to be) :</strong> je suis, tu es, il/elle est, nous sommes, vous êtes, ils/elles sont.',
+          '<strong>Avoir (to have) :</strong> j\'ai, tu as, il/elle a, nous avons, vous avez, ils/elles ont.',
+          'On utilise <code>être</code> pour la description, la nationalité, la profession. On utilise <code>avoir</code> pour la possession et l\'âge.'
+        ],
+        xpReward: 50,
+        examples: [
+          { sentence: 'Je suis grand et j\'ai les cheveux bruns.', explanation: 'Utilisation de "être" pour la description et "avoir" pour la possession.' },
+          { sentence: 'Elle est médecin et elle a 30 ans.', explanation: 'Utilisation de "être" pour la profession et "avoir" pour l\'âge.' }
+        ],
+        quiz: [
+          { question: "Complétez : Vous ___ de la chance !", options: ['êtes', 'avez', 'allez'], correctAnswer: 'avez', explanation: 'L\'expression "avoir de la chance" (to be lucky) utilise le verbe avoir.', topic: "L'examination d'octobre" },
+          { question: "Complétez : Nous ___ fatigués.", options: ['sommes', 'avons', 'faisons'], correctAnswer: 'sommes', explanation: '"Être fatigué" (to be tired) utilise le verbe être.', topic: "L'examination d'octobre" }
+        ]
+      },
+      {
+        id: 4,
+        title: 'Niveau 4: Verbes Aller, Venir, Faire',
+        title_ar: 'المستوى ٤: الأفعال Aller, Venir, Faire',
+        content: [
+          '<strong>Aller (to go) :</strong> je vais, tu vas, il/elle va, nous allons, vous allez, ils/elles vont.',
+          '<strong>Venir (to come) :</strong> je viens, tu viens, il/elle vient, nous venons, vous venez, ils/elles viennent.',
+          '<strong>Faire (to do/make) :</strong> je fais, tu fais, il/elle fait, nous faisons, vous faites, ils/elles font.',
+        ],
+        xpReward: 50,
+        examples: [
+          { sentence: 'Je vais à la piscine.', explanation: 'Verbe "aller" pour indiquer une destination.' },
+          { sentence: 'Tu fais tes devoirs.', explanation: 'Verbe "faire" pour indiquer une action.' }
+        ],
+        quiz: [
+          { question: "Complétez : Ils ___ du sport tous les jours.", options: ['vont', 'viennent', 'font'], correctAnswer: 'font', explanation: 'L\'expression "faire du sport" signifie "to play sports".', topic: "L'examination d'octobre" },
+          { question: "Complétez : D'où ___-tu ?", options: ['vas', 'viens', 'fais'], correctAnswer: 'viens', explanation: 'La question "D\'où viens-tu ?" signifie "Where do you come from?".', topic: "L'examination d'octobre" }
+        ]
+      },
+      {
+        id: 5,
+        title: 'Niveau 5: Verbes du 1er Groupe (-er)',
+        title_ar: 'المستوى ٥: أفعال المجموعة الأولى (-er)',
+        content: [
+          'Les verbes du 1er groupe se terminent par <strong>-er</strong> (sauf "aller").',
+          'Pour les conjuguer au présent, on enlève <strong>-er</strong> et on ajoute les terminaisons suivantes :',
+          '<ul><li>Je: <strong>-e</strong></li><li>Tu: <strong>-es</strong></li><li>Il/Elle/On: <strong>-e</strong></li><li>Nous: <strong>-ons</strong></li><li>Vous: <strong>-ez</strong></li><li>Ils/Elles: <strong>-ent</strong></li></ul>',
+          'Exemple avec <strong>parler</strong> : je parle, tu parles, il parle, nous parlons, vous parlez, ils parlent.'
+        ],
+        xpReward: 50,
+        examples: [
+          { sentence: 'Nous chantons une belle chanson.', explanation: 'Verbe "chanter", terminaison "-ons" pour "nous".' },
+          { sentence: 'Les enfants jouent dans le jardin.', explanation: 'Verbe "jouer", terminaison "-ent" pour "les enfants" (ils).' }
+        ],
+        quiz: [
+          { question: "Quelle est la forme correcte pour 'Je (aimer) le chocolat' ?", options: ['aime', 'aimes', 'aimons'], correctAnswer: 'aime', explanation: 'La terminaison pour "Je" avec les verbes en -er est "-e".', topic: "L'examination d'octobre" },
+          { question: "Complétez : Vous ___ très bien le français.", options: ['parle', 'parlez', 'parlent'], correctAnswer: 'parlez', explanation: 'La terminaison pour "Vous" est "-ez".', topic: "L'examination d'octobre" }
+        ]
+      },
+      {
+        id: 6,
+        title: 'Niveau 6: Compréhension de Texte',
+        title_ar: 'المستوى ٦: فهم النص',
+        content: [
+          'Lisez attentivement le texte suivant et répondez aux questions.',
+          '<strong>Texte :</strong><br>Bonjour, je m\'appelle Léo. J\'ai dix ans et je suis en classe de CM2. C\'est la rentrée ! Dans mon cartable, j\'ai beaucoup de livres et de cahiers. Mon jour préféré de la semaine est le vendredi, parce que nous avons cours de sport. J\'aime jouer au football avec mes amis. Le mois de mon anniversaire est octobre. Je n\'aime pas beaucoup les lundis, je suis souvent fatigué.'
+        ],
+        xpReward: 50,
+        examples: [],
+        quiz: [
+          { question: "Quel âge a Léo ?", options: ['Neuf ans', 'Dix ans', 'Onze ans'], correctAnswer: 'Dix ans', explanation: 'Le texte dit "J\'ai dix ans".', topic: "L'examination d'octobre" },
+          { question: "Pourquoi Léo aime-t-il le vendredi ?", options: ['Parce qu\'il a des maths', 'Parce que c\'est la fin de la semaine', 'Parce qu\'il a cours de sport'], correctAnswer: 'Parce qu\'il a cours de sport', explanation: 'Le texte dit "...le vendredi, parce que nous avons cours de sport."', topic: "L'examination d'octobre" },
+          { question: "Quel jour de la semaine Léo n'aime pas beaucoup ?", options: ['Le lundi', 'Le mercredi', 'Le dimanche'], correctAnswer: 'Le lundi', explanation: 'Le texte dit "Je n\'aime pas beaucoup les lundis...".', topic: "L'examination d'octobre" }
+        ]
+      }
+    ]
   }
 ];
 
@@ -1700,6 +1822,12 @@ export const QUIZ_SETS_FR: QuizSet[] = [
         title: 'Défi Le Verbe Venir',
         description: 'Testez vos connaissances sur le verbe "venir".',
         questions: GRAMMAR_TOPICS_FR.find(t => t.id === 'le_verbe_venir')?.levels.flatMap(l => l.quiz ?? []) ?? []
+    },
+    {
+        id: 'exam_october-quiz',
+        title: 'Défi Examination d\'octobre',
+        description: 'Testez vos connaissances pour l\'examen d\'octobre.',
+        questions: GRAMMAR_TOPICS_FR.find(t => t.id === 'exam_october')?.levels.flatMap(l => l.quiz ?? []) ?? []
     }
 ];
 

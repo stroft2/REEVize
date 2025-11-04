@@ -34,7 +34,7 @@ export interface GrammarTopic {
   levels: LessonLevel[];
 }
 
-export type GrammaticalConcept = 'المفعول المطلق' | 'المفعول لأجله' | 'الحال' | 'الفعل المجرد والمزيد' | 'الفعل اللازم والمتعدي' | 'الفعل اللازم' | 'الفعل المتعدي' | 'اسم الفاعل واسم المفعول' | 'علامات الإعراب الأصلية والفرعية' | 'الفعل الصحيح' | 'الفعل المعتل' | 'Les Articles' | 'Le Verbe Être' | 'Le Verbe Avoir' | 'Le Verbe Aller' | 'Le Verbe Venir' | 'Dynamic Verbs' | 'Stative Verbs';
+export type GrammaticalConcept = 'المفعول المطلق' | 'المفعول لأجله' | 'الحال' | 'الفعل المجرد والمزيد' | 'الفعل اللازم والمتعدي' | 'الفعل اللازم' | 'الفعل المتعدي' | 'اسم الفاعل واسم المفعول' | 'علامات الإعراب الأصلية والفرعية' | 'الفعل الصحيح' | 'الفعل المعتل' | 'Les Articles' | 'Le Verbe Être' | 'Le Verbe Avoir' | 'Le Verbe Aller' | 'Le Verbe Venir' | 'L\'examination d\'octobre' | 'Dynamic Verbs' | 'Stative Verbs';
 
 
 export interface QuizSet {
